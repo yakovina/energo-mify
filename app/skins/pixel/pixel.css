@@ -6,7 +6,7 @@
    Принцип (рев’ю арт-директора): пікселі — для форм, шрифти Хмарочоса — для слів.
    Усе піксельне стоїть на сітці 4 px: кути зі сходинками по 4 px, лінія 2 px,
    тінь 4 px. Рамки — SVG-кадри 22×22 (кут 10 px + 2 px середини), ріжуться
-   border-image; кнопки мають фаску 4 px знизу й «вдавлюються» на 4 px.
+   border-image; кнопки мають фаску 4 px знизу й сплющуються під пальцем.
    Піксельний шрифт Pixelify Sans — лише бал на результаті, великим кеглем. */
 
 .pixel {
@@ -36,14 +36,10 @@
   --fr-card: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22' shape-rendering='crispEdges'%3E%3Cpath fill='%23232b4a' d='M8 0h6v4h4v4h4v6h-4v4h-4v4H8v-4H4v-4H0V8h4V4h4z'/%3E%3Cpath fill='%23f7f8fd' d='M10 2h2v4h4v4h4v2h-4v4h-4v4h-2v-4H6v-4H2v-2h4V6h4z'/%3E%3C/svg%3E");
   --fr-shade: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22' shape-rendering='crispEdges'%3E%3Cpath fill='%23bfc7e7' d='M8 0h6v4h4v4h4v6h-4v4h-4v4H8v-4H4v-4H0V8h4V4h4z'/%3E%3C/svg%3E");
   --fr-yes: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22' shape-rendering='crispEdges'%3E%3Cpath fill='%23232b4a' d='M8 0h6v4h4v4h4v6h-4v4h-4v4H8v-4H4v-4H0V8h4V4h4z'/%3E%3Cpath fill='%23f8e840' d='M10 2h2v4h4v4h4v2h-4v4h-4v4h-2v-4H6v-4H2v-2h4V6h4z'/%3E%3Cpath fill='%23fcc63d' d='M10 16h2v4h-2zM6 12h4v4H6zM12 12h4v4h-4z'/%3E%3C/svg%3E");
-  --fr-yes-p: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22' shape-rendering='crispEdges'%3E%3Cpath fill='%23232b4a' d='M8 0h6v4h4v4h4v6h-4v4h-4v4H8v-4H4v-4H0V8h4V4h4z'/%3E%3Cpath fill='%23f8e840' d='M10 2h2v4h4v4h4v2h-4v4h-4v4h-2v-4H6v-4H2v-2h4V6h4z'/%3E%3C/svg%3E");
   --fr-no: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22' shape-rendering='crispEdges'%3E%3Cpath fill='%23232b4a' d='M8 0h6v4h4v4h4v6h-4v4h-4v4H8v-4H4v-4H0V8h4V4h4z'/%3E%3Cpath fill='%23aab3dd' d='M10 2h2v4h4v4h4v2h-4v4h-4v4h-2v-4H6v-4H2v-2h4V6h4z'/%3E%3Cpath fill='%238396d6' d='M10 16h2v4h-2zM6 12h4v4H6zM12 12h4v4h-4z'/%3E%3C/svg%3E");
-  --fr-no-p: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22' shape-rendering='crispEdges'%3E%3Cpath fill='%23232b4a' d='M8 0h6v4h4v4h4v6h-4v4h-4v4H8v-4H4v-4H0V8h4V4h4z'/%3E%3Cpath fill='%23aab3dd' d='M10 2h2v4h4v4h4v2h-4v4h-4v4h-2v-4H6v-4H2v-2h4V6h4z'/%3E%3C/svg%3E");
   --fr-wrong: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22' shape-rendering='crispEdges'%3E%3Cpath fill='%23232b4a' d='M8 0h6v4h4v4h4v6h-4v4h-4v4H8v-4H4v-4H0V8h4V4h4z'/%3E%3Cpath fill='%23923a16' d='M10 2h2v4h4v4h4v2h-4v4h-4v4h-2v-4H6v-4H2v-2h4V6h4z'/%3E%3Cpath fill='%236e2a0f' d='M10 16h2v4h-2zM6 12h4v4H6zM12 12h4v4h-4z'/%3E%3C/svg%3E");
   --fr-blue: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22' shape-rendering='crispEdges'%3E%3Cpath fill='%23232b4a' d='M8 0h6v4h4v4h4v6h-4v4h-4v4H8v-4H4v-4H0V8h4V4h4z'/%3E%3Cpath fill='%235f74c4' d='M10 2h2v4h4v4h4v2h-4v4h-4v4h-2v-4H6v-4H2v-2h4V6h4z'/%3E%3Cpath fill='%234458a8' d='M10 16h2v4h-2zM6 12h4v4H6zM12 12h4v4h-4z'/%3E%3C/svg%3E");
-  --fr-blue-p: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22' shape-rendering='crispEdges'%3E%3Cpath fill='%23232b4a' d='M8 0h6v4h4v4h4v6h-4v4h-4v4H8v-4H4v-4H0V8h4V4h4z'/%3E%3Cpath fill='%235f74c4' d='M10 2h2v4h4v4h4v2h-4v4h-4v4h-2v-4H6v-4H2v-2h4V6h4z'/%3E%3C/svg%3E");
   --fr-ghost: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22' shape-rendering='crispEdges'%3E%3Cpath fill='%23232b4a' d='M8 0h6v4h4v4h4v6h-4v4h-4v4H8v-4H4v-4H0V8h4V4h4z'/%3E%3Cpath fill='%23f7f8fd' d='M10 2h2v4h4v4h4v2h-4v4h-4v4h-2v-4H6v-4H2v-2h4V6h4z'/%3E%3Cpath fill='%23c3cae9' d='M10 16h2v4h-2zM6 12h4v4H6zM12 12h4v4h-4z'/%3E%3C/svg%3E");
-  --fr-ghost-p: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22' shape-rendering='crispEdges'%3E%3Cpath fill='%23232b4a' d='M8 0h6v4h4v4h4v6h-4v4h-4v4H8v-4H4v-4H0V8h4V4h4z'/%3E%3Cpath fill='%23f7f8fd' d='M10 2h2v4h4v4h4v2h-4v4h-4v4h-2v-4H6v-4H2v-2h4V6h4z'/%3E%3C/svg%3E");
   --fr-yellow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22' shape-rendering='crispEdges'%3E%3Cpath fill='%23232b4a' d='M8 0h6v4h4v4h4v6h-4v4h-4v4H8v-4H4v-4H0V8h4V4h4z'/%3E%3Cpath fill='%23f8e840' d='M10 2h2v4h4v4h4v2h-4v4h-4v4h-2v-4H6v-4H2v-2h4V6h4z'/%3E%3Cpath fill='%23fcc63d' d='M10 16h2v4h-2zM6 12h4v4H6zM12 12h4v4h-4z'/%3E%3C/svg%3E");
   --fr-cloud: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22' shape-rendering='crispEdges'%3E%3Cpath fill='%23232b4a' d='M8 0h6v4h4v4h4v6h-4v4h-4v4H8v-4H4v-4H0V8h4V4h4z'/%3E%3Cpath fill='%23aab3dd' d='M10 2h2v4h4v4h4v2h-4v4h-4v4h-2v-4H6v-4H2v-2h4V6h4z'/%3E%3Cpath fill='%238396d6' d='M10 16h2v4h-2zM6 12h4v4H6zM12 12h4v4h-4z'/%3E%3C/svg%3E");
   --band-ok: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='12' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='8' height='8' fill='%23f8e840'/%3E%3Crect x='0' y='8' width='8' height='4' fill='%23f8e840'/%3E%3Crect x='8' y='0' width='8' height='8' fill='%23fcc63d'/%3E%3Crect x='16' y='0' width='8' height='8' fill='%23f8e840'/%3E%3Crect x='16' y='8' width='8' height='4' fill='%23f8e840'/%3E%3Crect x='24' y='0' width='8' height='8' fill='%23fcc63d'/%3E%3Crect x='24' y='8' width='8' height='4' fill='%23fcc63d'/%3E%3Crect x='32' y='0' width='8' height='8' fill='%23f8e840'/%3E%3Crect x='40' y='0' width='8' height='8' fill='%23fcc63d'/%3E%3Crect x='48' y='0' width='8' height='8' fill='%23f8e840'/%3E%3Crect x='48' y='8' width='8' height='4' fill='%23f8e840'/%3E%3Crect x='56' y='0' width='8' height='8' fill='%23fcc63d'/%3E%3C/svg%3E");
@@ -116,7 +112,7 @@
   border-image: var(--fr-shade) 10 fill / 10px;
 }
 
-/* кнопка-кадр: --f звичайний (з фаскою), --fp натиснутий (без фаски) */
+/* кнопка-кадр: --f — кадр із фаскою 4 px знизу */
 .pixel .fr {
   border: 10px solid transparent;
   border-image: var(--f) 10 fill / 10px;
@@ -131,10 +127,14 @@
   }
 }
 
+/* натиск — кнопка сплющується під пальцем (як було до піксельних кадрів) */
 .pixel .fr:not([aria-disabled="true"]):active {
-  transform: translateY(4px);
-  border-image-source: var(--fp, var(--f));
+  transform: translateY(1px) scale(1.01, 0.97);
   transition-duration: 0.05s;
+}
+
+.pixel .choice:not([aria-disabled="true"]):active {
+  transform: scale(1.02, 0.95);
 }
 
 /* пунктир на сітці 4 px — роздільники */
@@ -413,13 +413,11 @@
 
 .pixel .btn.primary {
   --f: var(--fr-blue);
-  --fp: var(--fr-blue-p);
   color: #fff;
 }
 
 .pixel .btn.ghost {
   --f: var(--fr-ghost);
-  --fp: var(--fr-ghost-p);
   color: var(--navy);
 }
 
@@ -564,25 +562,21 @@
 
 .pixel .sbtn.fb {
   --f: var(--fr-blue);
-  --fp: var(--fr-blue-p);
   color: #fff;
 }
 
 .pixel .sbtn.tg {
   --f: var(--fr-cloud);
-  --fp: var(--fr-no-p);
   color: var(--navy);
 }
 
 .pixel .sbtn.copy {
   --f: var(--fr-yellow);
-  --fp: var(--fr-yes-p);
   color: var(--navy);
 }
 
 .pixel .sbtn.more {
   --f: var(--fr-ghost);
-  --fp: var(--fr-ghost-p);
   color: var(--navy);
 }
 
@@ -644,12 +638,10 @@
 
 .pixel .choice.yes {
   --f: var(--fr-yes);
-  --fp: var(--fr-yes-p);
 }
 
 .pixel .choice.no {
   --f: var(--fr-no);
-  --fp: var(--fr-no-p);
 }
 
 .pixel .choice[aria-disabled="true"] {
@@ -712,75 +704,36 @@
   background-image: var(--band-miss);
 }
 
-/* заголовок вердикту і поруч — лампочка або свічка художниці */
-.pixel .vhead {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.pixel .vhead b {
+/* заголовок вердикту; праворуч лишаємо місце під лампочку чи свічку на куті */
+.pixel .vtitle {
+  display: block;
+  padding-right: 84px;
   font-family: "Lora", serif;
   font-weight: 700;
   font-size: 24px;
   line-height: 1.2;
 }
 
-.pixel .vart {
-  flex: none;
-  width: auto;
+/* велика лампочка (влучно) «вкручується» на кут картки, свічка (мимо) гойдається */
+.pixel .answer .corner {
+  position: absolute;
   pointer-events: none;
 }
 
-.pixel .vart.bulb {
-  height: 68px;
-  margin: -16px -6px 0 0;
+.pixel .answer .corner.bulb {
+  right: -34px;
+  top: -84px;
+  width: 150px;
   transform-origin: 70% 0;
   animation: pxBulbIn 0.6s cubic-bezier(0.3, 1.25, 0.5, 1) 0.12s both;
 }
 
-.pixel .vart.candle {
-  height: 54px;
-  margin-top: -12px;
+.pixel .answer .corner.candle {
+  right: -4px;
+  top: -54px;
+  width: 44px;
   transform-origin: 50% 100%;
   animation: pxCandle 2.4s ease-in-out infinite;
-}
-
-/* «Це неправда.» — слово жирне під піксельним маркером кольору кнопки */
-.pixel .truth {
-  margin: 6px 0 0;
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--ink-2);
-}
-
-.pixel .truth .word {
-  position: relative;
-  isolation: isolate;
-  padding: 0 4px;
-  font-weight: 700;
-  color: var(--navy);
-}
-
-.pixel .truth .word::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 1px;
-  height: 60%;
-  z-index: -1;
-  background: var(--mark);
-  clip-path: polygon(0 2px, 2px 2px, 2px 0, calc(100% - 2px) 0, calc(100% - 2px) 2px, 100% 2px, 100% calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) 100%, 2px 100%, 2px calc(100% - 2px), 0 calc(100% - 2px));
-}
-
-.pixel .truth .word.yes {
-  --mark: var(--yellow);
-}
-
-.pixel .truth .word.no {
-  --mark: var(--cloud);
 }
 
 .pixel .expl {
@@ -813,16 +766,19 @@
 }
 
 @media (min-width: 900px) {
-  .pixel .vhead b {
+  .pixel .vtitle {
     font-size: 28px;
+    padding-right: 120px;
   }
-  .pixel .vart.bulb {
-    height: 88px;
-    margin: -28px -12px 0 0;
+  .pixel .answer .corner.bulb {
+    right: -58px;
+    top: -112px;
+    width: 210px;
   }
-  .pixel .vart.candle {
-    height: 64px;
-    margin-top: -18px;
+  .pixel .answer .corner.candle {
+    right: -8px;
+    top: -70px;
+    width: 58px;
   }
   .pixel .answer .btn {
     width: auto;

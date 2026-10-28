@@ -23,7 +23,6 @@ const UI = {
   finish: "Мій результат",
   right: "Влучно!",
   wrong: "Цього разу мимо",
-  answerIs: "Це",
   sources: "Джерела:",
   again: "Пройти ще раз",
   take: "Пройти тест",
@@ -381,11 +380,19 @@ function Sheet({ quiz }: { quiz: QuizApi }) {
     if (screen !== "reveal" || !cardRef.current) return;
     const el = cardRef.current;
     el.focus({ preventScroll: true });
-    const top = el.getBoundingClientRect().top + window.scrollY - 24;
-    // картка й так видна цілком — не смикаємо сторінку
-    if (el.getBoundingClientRect().bottom < window.innerHeight - 16) return;
+    // м'яко підтягуємо картку відповіді до ~40 % висоти екрана, але так, щоб кнопки
+    // з ✓/✕ лишились у кадрі: видно і що натиснули, і вердикт. Якщо заголовок
+    // вердикту й так у верхній частині екрана — не рухаємо сторінку.
+    const vh = window.innerHeight;
+    const cardTop = el.getBoundingClientRect().top;
+    if (cardTop < vh * 0.6) return;
+    const choices = document.querySelector<HTMLElement>(".qpane .choices");
+    const keep = choices ? choices.getBoundingClientRect().top - 16 : cardTop;
+    const by = Math.min(cardTop - vh * 0.4, keep);
+    if (by <= 0) return;
+    const top = window.scrollY + by;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) window.scrollTo(0, top);
-    else glide(top, 420);
+    else glide(top, 650);
   }, [screen, idx]);
 
   return (
@@ -409,14 +416,10 @@ function Sheet({ quiz }: { quiz: QuizApi }) {
           {answered && (
             <section className={`panel answer in ${ok ? "ok" : "miss"}`} ref={cardRef} tabIndex={-1} aria-live="polite">
               <span className="band" aria-hidden />
-              <div className="vhead">
-                <b>{ok ? UI.right : UI.wrong}</b>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img className={`vart ${ok ? "bulb" : "candle"}`} src={asset(ok ? "/art/bulb.webp" : "/art/candle.webp")} alt="" />
-              </div>
-              <p className="truth">
-                {UI.answerIs} <span className={`word ${q.correct ? "yes" : "no"}`}>{VERDICT_LABEL(q.correct).toLowerCase()}</span>.
-              </p>
+              {/* велика лампочка (влучно) чи свічка (мимо) художниці — на куті картки */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img className={`corner ${ok ? "bulb" : "candle"}`} src={asset(ok ? "/art/bulb.webp" : "/art/candle.webp")} alt="" />
+              <b className="vtitle">{ok ? UI.right : UI.wrong}</b>
               <p className="expl">{q.explanation}</p>
               <Sources q={q} />
               <button
