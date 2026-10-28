@@ -44,6 +44,7 @@ export const viewport: Viewport = { themeColor: "#d7ddf2" };
 const FONTS = [
   "/fonts/hm/open-sans-v29-latin_cyrillic-ext-regular.woff2",
   "/fonts/hm/open-sans-v29-latin_cyrillic-ext-500.woff2",
+  "/fonts/hm/open-sans-v29-latin_cyrillic-ext-700.woff2",
   "/fonts/hm/lora-v24-latin_cyrillic-ext-500.woff2",
   "/fonts/hm/lora-v24-latin_cyrillic-ext-700.woff2",
 ];

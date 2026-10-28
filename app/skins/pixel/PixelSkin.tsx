@@ -23,7 +23,7 @@ const UI = {
   finish: "Мій результат",
   right: "Влучно!",
   wrong: "Цього разу мимо",
-  answerIs: "Правильна відповідь —",
+  answerIs: "Це",
   sources: "Джерела:",
   again: "Пройти ще раз",
   take: "Пройти тест",
@@ -156,15 +156,30 @@ function Bar({ right }: { right: React.ReactNode }) {
 }
 
 /** Батарейка на 8 поділок. history — результати пройдених тверджень; now — індекс поточного. */
+/** Хрестик у хибній поділці: колір не єдина ознака. */
+const CellCross = () => (
+  <svg viewBox="0 0 4 4" shapeRendering="crispEdges" aria-hidden>
+    <path d="M0 0h1v1H0zM3 0h1v1H3zM1 1h2v2H1zM0 3h1v1H0zM3 3h1v1H3z" fill="#f7f8fd" />
+  </svg>
+);
+
 function Battery({ history, now, big, pop }: { history: boolean[]; now?: number; big?: boolean; pop?: boolean }) {
   return (
-    <div className={`battery${big ? " big" : ""}`} role="img" aria-label={`Пройдено ${history.length} з ${TOTAL}`}>
+    <div
+      className={`battery${big ? " big" : ""}`}
+      role="img"
+      aria-label={`Пройдено ${history.length} з ${TOTAL}, влучно ${history.filter(Boolean).length}`}
+    >
       <div className="cells">
         {Array.from({ length: TOTAL }, (_, i) => {
           const st = i < history.length ? (history[i] ? "ok" : "miss") : i === now ? "now" : "";
           // щойно заряджена поділка «підстрибує»
           const p = pop && i === history.length - 1 ? " pop" : "";
-          return <span key={i} className={`cell ${st}${p}`} style={big ? { animationDelay: `${150 + i * 90}ms` } : undefined} />;
+          return (
+            <span key={i} className={`cell ${st}${p}`} style={big ? { animationDelay: `${150 + i * 90}ms` } : undefined}>
+              {st === "miss" && <CellCross />}
+            </span>
+          );
         })}
       </div>
       <span className="nub" />
@@ -204,19 +219,19 @@ function Share({ url, text, label }: { url: string; text: string; label: string 
     <div className="share">
       <p className="shareLabel">{label}</p>
       <div className={`shareGrid${native ? " four" : ""}`}>
-        <button type="button" className="sbtn fb" onClick={() => popup(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`)}>
+        <button type="button" className="fr sbtn fb" onClick={() => popup(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`)}>
           <svg viewBox="0 0 24 24" aria-hidden>
             <path d={FB} fill="currentColor" />
           </svg>
           <span>Facebook</span>
         </button>
-        <button type="button" className="sbtn tg" onClick={() => popup(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`)}>
+        <button type="button" className="fr sbtn tg" onClick={() => popup(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`)}>
           <svg viewBox="0 0 24 24" aria-hidden>
             <path d={TG} fill="currentColor" />
           </svg>
           <span>Telegram</span>
         </button>
-        <button type="button" className={`sbtn copy${copied ? " isCopied" : ""}`} onClick={copy}>
+        <button type="button" className={`fr sbtn copy${copied ? " isCopied" : ""}`} onClick={copy}>
           {copied ? (
             <Check />
           ) : (
@@ -227,7 +242,7 @@ function Share({ url, text, label }: { url: string; text: string; label: string 
           <span>{copied ? UI.copied : UI.copy}</span>
         </button>
         {native && (
-          <button type="button" className="sbtn more" onClick={more}>
+          <button type="button" className="fr sbtn more" onClick={more}>
             <svg viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 3v12M7 8l5-5 5 5M5 14v7h14v-7" />
             </svg>
@@ -313,10 +328,13 @@ function Choice({ v, q, picked, answered, onPick }: { v: Verdict; q: Question; p
   const state = !answered ? "" : v === q.correct ? " isRight" : v === picked ? " isWrong" : "";
   return (
     <button
-      className={`px choice ${v ? "yes" : "no"}${state}${answered && v === picked ? " isPicked" : ""}`}
-      disabled={answered}
+      className={`fr choice ${v ? "yes" : "no"}${state}${answered && v === picked ? " isPicked" : ""}`}
+      // aria-disabled замість disabled: кнопка лишається у фокусі й озвучує свій стан
+      aria-disabled={answered || undefined}
       data-verdict={String(v)}
-      onClick={(e) => onPick(v, e.currentTarget)}
+      onClick={(e) => {
+        if (!answered) onPick(v, e.currentTarget);
+      }}
       aria-keyshortcuts={v ? "1" : "2"}
     >
       <span className="t">{VERDICT_LABEL(v)}</span>
@@ -377,7 +395,7 @@ function Sheet({ quiz }: { quiz: QuizApi }) {
         <Bar right={<Battery history={history} now={answered ? undefined : idx} pop={answered} />} />
 
         <div key={q.id} className="qwrap">
-          <section className={`px panel qpane in${answered && !ok ? " hit" : ""}`} data-scroll-anchor="(max-width: 899px)">
+          <section className={`panel qpane in${answered && !ok ? " hit" : ""}`} data-scroll-anchor="(max-width: 899px)">
             <p className="qnum">{UI.qOf(idx + 1, total)}</p>
             <p className="statement" ref={stRef} tabIndex={-1}>
               {q.statement}
@@ -389,19 +407,20 @@ function Sheet({ quiz }: { quiz: QuizApi }) {
           </section>
 
           {answered && (
-            <section className={`px panel answer in ${ok ? "ok" : "miss"}`} ref={cardRef} tabIndex={-1} aria-live="polite">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img className={`corner ${ok ? "bulb" : "candle"}`} src={asset(ok ? "/art/bulb.webp" : "/art/candle.webp")} alt="" />
-              <div className="verdict">
+            <section className={`panel answer in ${ok ? "ok" : "miss"}`} ref={cardRef} tabIndex={-1} aria-live="polite">
+              <span className="band" aria-hidden />
+              <div className="vhead">
                 <b>{ok ? UI.right : UI.wrong}</b>
-                <p className="truth">
-                  {UI.answerIs} <span className={`word ${q.correct ? "yes" : "no"}`}>{VERDICT_LABEL(q.correct).toLowerCase()}</span>
-                </p>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img className={`vart ${ok ? "bulb" : "candle"}`} src={asset(ok ? "/art/bulb.webp" : "/art/candle.webp")} alt="" />
               </div>
+              <p className="truth">
+                {UI.answerIs} <span className={`word ${q.correct ? "yes" : "no"}`}>{VERDICT_LABEL(q.correct).toLowerCase()}</span>.
+              </p>
               <p className="expl">{q.explanation}</p>
               <Sources q={q} />
               <button
-                className="px btn primary"
+                className="fr btn primary"
                 onClick={() => {
                   buzz(8);
                   quiz.next();
@@ -451,7 +470,7 @@ function ResultBody({ level, history, onRestart }: { level: Level; history?: boo
       <Sky />
       <div className="col">
         <Bar right={<SiteLink />} />
-        <section className="px panel resPane in">
+        <section className="panel resPane in">
           <div className="resTop">
             <div className="resHead">
               <p className="kicker">{history ? UI.yourResult : `${UI.sharedResult} «${intro.title}»`}</p>
@@ -483,7 +502,7 @@ function ResultBody({ level, history, onRestart }: { level: Level; history?: boo
           )}
           {onRestart ? (
             <button
-              className="px btn ghost"
+              className="fr btn ghost"
               onClick={() => {
                 buzz(8);
                 onRestart();
@@ -492,7 +511,7 @@ function ResultBody({ level, history, onRestart }: { level: Level; history?: boo
               {UI.again}
             </button>
           ) : (
-            <a className="px btn primary" href={asset("/")}>
+            <a className="fr btn primary" href={asset("/")}>
               {UI.take}
               <Arrow />
             </a>
@@ -514,11 +533,11 @@ export function NotFound() {
       <Sky />
       <div className="col">
         <Bar right={<SiteLink />} />
-        <section className="px panel resPane in">
+        <section className="panel resPane in">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img className="nfArt" src={asset("/art/candle.webp")} alt="" />
           <h1 className="ltitle">{UI.nf}</h1>
-          <a className="px btn primary" href={asset("/")}>
+          <a className="fr btn primary" href={asset("/")}>
             {UI.home}
             <Arrow />
           </a>
@@ -544,7 +563,7 @@ export default function PixelSkin({ quiz }: { quiz: QuizApi }) {
         <Sky />
         <div className="col">
           <Bar right={<SiteLink />} />
-          <section className="px panel hero in">
+          <section className="panel hero in">
             <figure className="cover">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -569,7 +588,7 @@ export default function PixelSkin({ quiz }: { quiz: QuizApi }) {
                 ))}
               </p>
               <button
-                className="px btn primary"
+                className="fr btn primary"
                 onClick={() => {
                   buzz(8);
                   quiz.start();
