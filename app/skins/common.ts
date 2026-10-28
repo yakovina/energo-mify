@@ -5,8 +5,10 @@
 import { useEffect, useRef } from "react";
 import type { QuizApi } from "../useQuiz";
 
-/** Плавна прокрутка власним кроком: не залежить від scroll-behavior браузера. */
-export function glide(to: number, ms: number) {
+/** Плавна прокрутка власним кроком: не залежить від scroll-behavior браузера.
+ *  easing "out" — рух стартує одразу й гальмує в кінці (для реакції на дію: без
+ *  повільного розгону, який відчувається як підвисання); "inOut" — симетричний. */
+export function glide(to: number, ms: number, easing: "inOut" | "out" = "inOut") {
   const from = window.scrollY;
   const dist = to - from;
   if (Math.abs(dist) < 2) return;
@@ -16,7 +18,7 @@ export function glide(to: number, ms: number) {
     // хтось інший прокрутив сторінку (новий екран, користувач) — зупиняємось
     if (Math.abs(window.scrollY - expected) > 3) return;
     const p = Math.min(1, (now - t0) / ms);
-    const e = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+    const e = easing === "out" ? 1 - Math.pow(1 - p, 3) : p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
     expected = Math.round(from + dist * e);
     window.scrollTo(0, expected);
     if (p < 1) requestAnimationFrame(step);

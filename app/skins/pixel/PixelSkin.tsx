@@ -260,6 +260,8 @@ function preload(src: string) {
   const img = new Image();
   img.decoding = "async";
   img.src = src;
+  // розпаковуємо наперед: інакше телефон декодує лампочку саме в момент відповіді
+  img.decode?.().catch(() => {});
 }
 
 // ——— твердження ———
@@ -392,7 +394,7 @@ function Sheet({ quiz }: { quiz: QuizApi }) {
     if (by <= 0) return;
     const top = window.scrollY + by;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) window.scrollTo(0, top);
-    else glide(top, 650);
+    else glide(top, 450, "out");
   }, [screen, idx]);
 
   return (
@@ -416,9 +418,21 @@ function Sheet({ quiz }: { quiz: QuizApi }) {
           {answered && (
             <section className={`panel answer in ${ok ? "ok" : "miss"}`} ref={cardRef} tabIndex={-1} aria-live="polite">
               <span className="band" aria-hidden />
-              {/* велика лампочка (влучно) чи свічка (мимо) художниці — на куті картки */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img className={`corner ${ok ? "bulb" : "candle"}`} src={asset(ok ? "/art/bulb.webp" : "/art/candle.webp")} alt="" />
+              {ok ? (
+                <>
+                  {/* влучно — лампочка висить на шнурі з нижнього краю картки твердження
+                      й звисає в кут картки відповіді; текст її обтікає (hangSpace) */}
+                  <span className="hang" aria-hidden>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={asset("/art/bulb-hang.webp")} alt="" decoding="async" />
+                  </span>
+                  <span className="hangSpace" aria-hidden />
+                </>
+              ) : (
+                // мимо — свічка стоїть на куті картки
+                // eslint-disable-next-line @next/next/no-img-element
+                <img className="corner candle" src={asset("/art/candle.webp")} alt="" decoding="async" />
+              )}
               <b className="vtitle">{ok ? UI.right : UI.wrong}</b>
               <p className="expl">{q.explanation}</p>
               <Sources q={q} />
@@ -557,7 +571,7 @@ export default function PixelSkin({ quiz }: { quiz: QuizApi }) {
   const { screen, level, history } = quiz;
   useKeys(quiz);
   useEffect(() => {
-    for (const a of ["bulb", "candle", "battery", "hills-day", "hills-night"]) preload(asset(`/art/${a}.webp`));
+    for (const a of ["bulb-hang", "candle", "bulb", "battery", "hills-day", "hills-night"]) preload(asset(`/art/${a}.webp`));
   }, []);
 
   if (screen === "intro") {
