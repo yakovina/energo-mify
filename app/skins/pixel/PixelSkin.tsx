@@ -23,7 +23,7 @@ const UI = {
   finish: "Мій результат",
   right: "Влучно!",
   wrong: "Цього разу мимо",
-  answerIs: "Відповідь:",
+  answerIs: "Правильна відповідь —",
   sources: "Джерела:",
   again: "Пройти ще раз",
   take: "Пройти тест",
@@ -394,9 +394,9 @@ function Sheet({ quiz }: { quiz: QuizApi }) {
               <img className={`corner ${ok ? "bulb" : "candle"}`} src={asset(ok ? "/art/bulb.webp" : "/art/candle.webp")} alt="" />
               <div className="verdict">
                 <b>{ok ? UI.right : UI.wrong}</b>
-                <span className={`tag ${q.correct ? "yes" : "no"}`}>
-                  {UI.answerIs} {VERDICT_LABEL(q.correct).toLowerCase()}
-                </span>
+                <p className="truth">
+                  {UI.answerIs} <span className={`word ${q.correct ? "yes" : "no"}`}>{VERDICT_LABEL(q.correct).toLowerCase()}</span>
+                </p>
               </div>
               <p className="expl">{q.explanation}</p>
               <Sources q={q} />
