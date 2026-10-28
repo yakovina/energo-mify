@@ -5,6 +5,8 @@
 // тінню, пагорби ілюстраторки внизу сторінки. Прогрес — батарейка на вісім
 // поділок: правильна відповідь заряджає поділку жовтим, хибна — іржавим.
 // Після відповіді: влучно — у кутку картки світить лампочка, мимо — свічка.
+// Рух — «аркадний»: картка падає й пружинить, кнопка сплющується під пальцем,
+// влучно — іскри-пікселі й «+1», мимо — кнопка «вимикається», картка струшується.
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { scrollToStart, type QuizApi } from "../../useQuiz";
@@ -154,13 +156,15 @@ function Bar({ right }: { right: React.ReactNode }) {
 }
 
 /** Батарейка на 8 поділок. history — результати пройдених тверджень; now — індекс поточного. */
-function Battery({ history, now, big }: { history: boolean[]; now?: number; big?: boolean }) {
+function Battery({ history, now, big, pop }: { history: boolean[]; now?: number; big?: boolean; pop?: boolean }) {
   return (
     <div className={`battery${big ? " big" : ""}`} role="img" aria-label={`Пройдено ${history.length} з ${TOTAL}`}>
       <div className="cells">
         {Array.from({ length: TOTAL }, (_, i) => {
           const st = i < history.length ? (history[i] ? "ok" : "miss") : i === now ? "now" : "";
-          return <span key={i} className={`cell ${st}`} style={big ? { animationDelay: `${120 + i * 70}ms` } : undefined} />;
+          // щойно заряджена поділка «підстрибує»
+          const p = pop && i === history.length - 1 ? " pop" : "";
+          return <span key={i} className={`cell ${st}${p}`} style={big ? { animationDelay: `${150 + i * 90}ms` } : undefined} />;
         })}
       </div>
       <span className="nub" />
@@ -262,16 +266,57 @@ function Sources({ q }: { q: Question }) {
   );
 }
 
-function Choice({ v, q, picked, answered, onPick }: { v: Verdict; q: Question; picked: Verdict | null; answered: boolean; onPick: (v: Verdict) => void }) {
+const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+/** Іскри-пікселі й «+1» з центру кнопки — як у аркаді за влучання. */
+function burst(btn: HTMLElement) {
+  if (reducedMotion()) return;
+  const r = btn.getBoundingClientRect();
+  const cx = r.left + r.width / 2;
+  const cy = r.top + r.height / 2;
+  const colors = ["#f8e840", "#fcc63d", "#cc8619", "#ffffff"];
+  const n = 16;
+  for (let k = 0; k < n; k++) {
+    const p = document.createElement("span");
+    p.className = "pxSpark";
+    p.style.background = colors[k % colors.length];
+    p.style.left = `${cx}px`;
+    p.style.top = `${cy}px`;
+    document.body.append(p);
+    const a = (Math.PI * 2 * k) / n + Math.random() * 0.4;
+    const d = 56 + Math.random() * 60;
+    p.animate(
+      [
+        { transform: "translate(-50%, -50%)", opacity: 1 },
+        { transform: `translate(calc(-50% + ${Math.cos(a) * d}px), calc(-50% + ${Math.sin(a) * d - 24}px))`, opacity: 0 },
+      ],
+      { duration: 600 + Math.random() * 250, easing: "cubic-bezier(.2,.8,.2,1)" },
+    ).onfinish = () => p.remove();
+  }
+  const plus = document.createElement("span");
+  plus.className = "pxPlus";
+  plus.textContent = "+1";
+  plus.style.left = `${cx}px`;
+  plus.style.top = `${r.top - 6}px`;
+  document.body.append(plus);
+  plus.animate(
+    [
+      { transform: "translate(-50%, 0) scale(.6)", opacity: 0 },
+      { transform: "translate(-50%, -14px) scale(1.15)", opacity: 1, offset: 0.25 },
+      { transform: "translate(-50%, -44px) scale(1)", opacity: 0 },
+    ],
+    { duration: 950, easing: "ease-out" },
+  ).onfinish = () => plus.remove();
+}
+
+function Choice({ v, q, picked, answered, onPick }: { v: Verdict; q: Question; picked: Verdict | null; answered: boolean; onPick: (v: Verdict, btn: HTMLElement) => void }) {
   const state = !answered ? "" : v === q.correct ? " isRight" : v === picked ? " isWrong" : "";
   return (
     <button
       className={`px choice ${v ? "yes" : "no"}${state}${answered && v === picked ? " isPicked" : ""}`}
       disabled={answered}
-      onClick={() => {
-        buzz(v === q.correct ? 18 : [28, 45, 28]);
-        onPick(v);
-      }}
+      data-verdict={String(v)}
+      onClick={(e) => onPick(v, e.currentTarget)}
       aria-keyshortcuts={v ? "1" : "2"}
     >
       <span className="t">{VERDICT_LABEL(v)}</span>
@@ -295,10 +340,31 @@ function Sheet({ quiz }: { quiz: QuizApi }) {
   const ok = picked === q.correct;
   const stRef = useRef<HTMLParagraphElement>(null);
   const cardRef = useRef<HTMLElement>(null);
+  const lock = useRef(false);
+
+  // натиск: кнопка сплющується, коротка пауза-«удар» (70 мс) — і лише тоді реакція
+  const pick = (v: Verdict, btn: HTMLElement) => {
+    if (lock.current || answered) return;
+    lock.current = true;
+    const hit = v === q.correct;
+    buzz(hit ? 18 : [28, 45, 28]);
+    btn.classList.remove("squash");
+    void btn.offsetWidth;
+    btn.classList.add("squash");
+    window.setTimeout(
+      () => {
+        btn.classList.remove("squash");
+        if (hit) burst(btn);
+        quiz.answer(v);
+      },
+      reducedMotion() ? 0 : 70,
+    );
+  };
 
   // після відповіді — у тому ж кадрі гортаємо до картки
   useLayoutEffect(() => {
     if (screen === "question") {
+      lock.current = false;
       scrollToStart();
       stRef.current?.focus({ preventScroll: true });
       return;
@@ -317,17 +383,17 @@ function Sheet({ quiz }: { quiz: QuizApi }) {
     <main className="pixel sheet">
       <Sky />
       <div className="col">
-        <Bar right={<Battery history={history} now={answered ? undefined : idx} />} />
+        <Bar right={<Battery history={history} now={answered ? undefined : idx} pop={answered} />} />
 
         <div key={q.id} className="qwrap">
-          <section className="px panel qpane in" data-scroll-anchor="(max-width: 899px)">
+          <section className={`px panel qpane in${answered && !ok ? " hit" : ""}`} data-scroll-anchor="(max-width: 899px)">
             <p className="qnum">{UI.qOf(idx + 1, total)}</p>
             <p className="statement" ref={stRef} tabIndex={-1}>
               {q.statement}
             </p>
             <div className="choices">
-              <Choice v={true} q={q} picked={picked} answered={answered} onPick={quiz.answer} />
-              <Choice v={false} q={q} picked={picked} answered={answered} onPick={quiz.answer} />
+              <Choice v={true} q={q} picked={picked} answered={answered} onPick={pick} />
+              <Choice v={false} q={q} picked={picked} answered={answered} onPick={pick} />
             </div>
           </section>
 

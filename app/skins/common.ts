@@ -40,8 +40,10 @@ export function useKeys(quiz: QuizApi) {
         const v = k === "1" || k === "п" ? true : k === "2" || k === "н" ? false : null;
         if (v !== null) {
           e.preventDefault();
-          buzz(v === z.q.correct ? 18 : [28, 45, 28]);
-          z.answer(v);
+          // через кнопку — щоб клавіатура давала ті самі ефекти, що й натиск
+          const btn = document.querySelector<HTMLButtonElement>(`[data-verdict="${v}"]`);
+          if (btn) btn.click();
+          else z.answer(v);
         }
       } else if (z.screen === "reveal" && e.key === "Enter" && t?.tagName !== "BUTTON" && t?.tagName !== "A") {
         e.preventDefault();
