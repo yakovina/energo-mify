@@ -39,9 +39,23 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: "#d7ddf2" };
 
+// Шрифти, якими справді набрано тест, — завантажуємо одразу з HTML, а не після CSS,
+// щоб текст не з'являвся спершу системним шрифтом і не «перестрибував».
+const FONTS = [
+  "/fonts/hm/open-sans-v29-latin_cyrillic-ext-regular.woff2",
+  "/fonts/hm/open-sans-v29-latin_cyrillic-ext-500.woff2",
+  "/fonts/hm/lora-v24-latin_cyrillic-ext-500.woff2",
+  "/fonts/hm/lora-v24-latin_cyrillic-ext-700.woff2",
+];
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="uk">
+      <head>
+        {FONTS.map((f) => (
+          <link key={f} rel="preload" href={asset(f)} as="font" type="font/woff2" crossOrigin="anonymous" />
+        ))}
+      </head>
       <body>{children}</body>
     </html>
   );

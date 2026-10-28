@@ -26,9 +26,11 @@
   --grass: #b8ca4a;
   --forest: #4d6135;
 
-  --b: 3px; /* товщина «пікселя» рамки */
-  --sd: 6px; /* зсув тіні панелі */
-  --pad: 20px;
+  --shade: #bfc7e7; /* тінь панелей — світліша за хмари, щоб не важчала */
+
+  --b: 2px; /* товщина «пікселя» рамки */
+  --sd: 4px; /* зсув тіні панелі */
+  --pad: 22px;
 
   position: relative;
   min-height: 100vh;
@@ -39,8 +41,8 @@
   color: var(--ink);
   background-color: var(--sky);
   background-image:
-    linear-gradient(rgba(35, 43, 74, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(35, 43, 74, 0.035) 1px, transparent 1px);
+    linear-gradient(rgba(35, 43, 74, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(35, 43, 74, 0.025) 1px, transparent 1px);
   background-size: 16px 16px;
   font-size: 15px;
   line-height: 1.55;
@@ -48,9 +50,8 @@
 
 @media (min-width: 900px) {
   .pixel {
-    --b: 4px;
-    --sd: 8px;
-    --pad: 36px;
+    --sd: 5px;
+    --pad: 40px;
     font-size: 16px;
   }
 }
@@ -61,8 +62,8 @@
 }
 
 .pixel :focus-visible {
-  outline: 3px dashed var(--navy);
-  outline-offset: 5px;
+  outline: 2px dashed var(--navy);
+  outline-offset: 4px;
 }
 
 .pixel [tabindex="-1"]:focus {
@@ -93,10 +94,10 @@
     0 var(--b) 0 0 var(--navy),
     calc(-1 * var(--b)) 0 0 0 var(--navy),
     var(--b) 0 0 0 var(--navy),
-    var(--sd) calc(var(--sd) - var(--b)) 0 0 var(--cloud),
-    var(--sd) calc(var(--sd) + var(--b)) 0 0 var(--cloud),
-    calc(var(--sd) - var(--b)) var(--sd) 0 0 var(--cloud),
-    calc(var(--sd) + var(--b)) var(--sd) 0 0 var(--cloud);
+    var(--sd) calc(var(--sd) - var(--b)) 0 0 var(--shade),
+    var(--sd) calc(var(--sd) + var(--b)) 0 0 var(--shade),
+    calc(var(--sd) - var(--b)) var(--sd) 0 0 var(--shade),
+    calc(var(--sd) + var(--b)) var(--sd) 0 0 var(--shade);
 }
 
 /* ——— небо ——— */
@@ -212,7 +213,7 @@
 
 .pixel .brandSub {
   padding-left: 12px;
-  border-left: 2px solid var(--cloud);
+  border-left: 1px solid var(--cloud);
   font-family: "Lora", serif;
   font-weight: 700;
   font-size: 14px;
@@ -362,8 +363,7 @@
     0 var(--b) 0 0 var(--navy),
     calc(-1 * var(--b)) 0 0 0 var(--navy),
     var(--b) 0 0 0 var(--navy),
-    inset calc(-1 * var(--b)) calc(-1 * var(--b)) 0 0 var(--blue-d),
-    inset var(--b) var(--b) 0 0 var(--blue-l);
+    inset 0 -3px 0 0 var(--blue-d);
 }
 
 .pixel .btn.primary:hover {
@@ -378,7 +378,7 @@
     0 var(--b) 0 0 var(--navy),
     calc(-1 * var(--b)) 0 0 0 var(--navy),
     var(--b) 0 0 0 var(--navy),
-    inset calc(-1 * var(--b)) calc(-1 * var(--b)) 0 0 var(--cloud-2);
+    inset 0 -3px 0 0 var(--cloud-2);
 }
 
 .pixel .btn.ghost:hover {
@@ -477,7 +477,7 @@
 .pixel .share {
   margin-top: 28px;
   padding-top: 18px;
-  border-top: 2px dashed var(--cloud);
+  border-top: 1px solid var(--cloud-2);
 }
 
 .pixel .shareLabel {
@@ -613,11 +613,11 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  min-height: 60px;
+  min-height: 56px;
   padding: 0 12px;
   font-family: "Lora", serif;
   font-weight: 700;
-  font-size: 19px;
+  font-size: 18px;
   color: var(--navy);
   transition: transform 0.14s ease, opacity 0.3s ease;
 }
@@ -629,8 +629,7 @@
     0 var(--b) 0 0 var(--navy),
     calc(-1 * var(--b)) 0 0 0 var(--navy),
     var(--b) 0 0 0 var(--navy),
-    inset calc(-1 * var(--b)) calc(-1 * var(--b)) 0 0 var(--amber),
-    inset var(--b) var(--b) 0 0 rgba(255, 255, 255, 0.5);
+    inset 0 -3px 0 0 var(--amber);
 }
 
 .pixel .choice.no {
@@ -640,8 +639,7 @@
     0 var(--b) 0 0 var(--navy),
     calc(-1 * var(--b)) 0 0 0 var(--navy),
     var(--b) 0 0 0 var(--navy),
-    inset calc(-1 * var(--b)) calc(-1 * var(--b)) 0 0 #8f99cf,
-    inset var(--b) var(--b) 0 0 rgba(255, 255, 255, 0.4);
+    inset 0 -3px 0 0 #939dd0;
 }
 
 @media (hover: hover) {
@@ -673,7 +671,7 @@
     0 var(--b) 0 0 var(--navy),
     calc(-1 * var(--b)) 0 0 0 var(--navy),
     var(--b) 0 0 0 var(--navy),
-    inset calc(-1 * var(--b)) calc(-1 * var(--b)) 0 0 #6e2a0f;
+    inset 0 -3px 0 0 #6e2a0f;
   animation: pxOff 0.5s linear;
 }
 
@@ -692,15 +690,15 @@
 
 @media (min-width: 900px) {
   .pixel .choice {
-    min-height: 68px;
-    font-size: 21px;
+    min-height: 62px;
+    font-size: 19px;
   }
 }
 
 /* ——— пояснення ——— */
 
 .pixel .answer {
-  padding-top: calc(var(--pad) + 8px);
+  padding-top: calc(var(--pad) + 4px);
   scroll-margin-top: 24px;
 }
 
@@ -710,7 +708,7 @@
   left: 0;
   right: 0;
   top: 0;
-  height: 8px;
+  height: 4px;
   background: var(--band, var(--yellow));
 }
 
@@ -773,11 +771,6 @@
   font-size: 13px;
   font-weight: 500;
   color: var(--navy);
-  box-shadow:
-    0 -2px 0 0 var(--navy),
-    0 2px 0 0 var(--navy),
-    -2px 0 0 0 var(--navy),
-    2px 0 0 0 var(--navy);
 }
 
 .pixel .tag.yes {
@@ -833,7 +826,7 @@
   align-items: end;
   gap: 16px;
   padding-bottom: 18px;
-  border-bottom: 2px dashed var(--cloud);
+  border-bottom: 1px solid var(--cloud-2);
 }
 
 .pixel .kicker {
@@ -1089,12 +1082,10 @@
 
 @keyframes pxCellIn {
   from {
-    transform: scale(0.4);
-    filter: brightness(0.5);
+    transform: scale(0.6);
   }
   to {
     transform: none;
-    filter: none;
   }
 }
 
