@@ -86,7 +86,17 @@
   background: var(--card);
   padding: var(--pad);
   margin: var(--b);
-  filter: drop-shadow(var(--sd) var(--sd) 0 var(--cloud));
+  /* рамка + жорстка тінь тими самими «сходинками» — через box-shadow, без filter:
+     filter змушує перемальовувати всю панель на кожному кадрі анімації кнопок */
+  box-shadow:
+    0 calc(-1 * var(--b)) 0 0 var(--navy),
+    0 var(--b) 0 0 var(--navy),
+    calc(-1 * var(--b)) 0 0 0 var(--navy),
+    var(--b) 0 0 0 var(--navy),
+    var(--sd) calc(var(--sd) - var(--b)) 0 0 var(--cloud),
+    var(--sd) calc(var(--sd) + var(--b)) 0 0 var(--cloud),
+    calc(var(--sd) - var(--b)) var(--sd) 0 0 var(--cloud),
+    calc(var(--sd) + var(--b)) var(--sd) 0 0 var(--cloud);
 }
 
 /* ——— небо ——— */
@@ -645,10 +655,6 @@
   transition-duration: 0.05s;
 }
 
-/* натиск: кнопка сплющується, потім реакція */
-.pixel .choice.squash {
-  animation: pxSquash 0.22s ease;
-}
 
 .pixel .choice:disabled {
   cursor: default;
@@ -1002,18 +1008,6 @@
   }
   50% {
     opacity: 0.35;
-  }
-}
-
-@keyframes pxSquash {
-  0% {
-    transform: none;
-  }
-  45% {
-    transform: scale(1.06, 0.86);
-  }
-  100% {
-    transform: scale(1.03, 0.94);
   }
 }
 

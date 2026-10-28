@@ -5,7 +5,7 @@
 // тінню, пагорби ілюстраторки внизу сторінки. Прогрес — батарейка на вісім
 // поділок: правильна відповідь заряджає поділку жовтим, хибна — іржавим.
 // Після відповіді: влучно — у кутку картки світить лампочка, мимо — свічка.
-// Рух — «аркадний»: картка падає й пружинить, кнопка сплющується під пальцем,
+// Рух — «аркадний»: картка падає й пружинить, кнопка сплющується під пальцем (без паузи),
 // влучно — іскри-пікселі й «+1», мимо — кнопка «вимикається», картка струшується.
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -342,23 +342,14 @@ function Sheet({ quiz }: { quiz: QuizApi }) {
   const cardRef = useRef<HTMLElement>(null);
   const lock = useRef(false);
 
-  // натиск: кнопка сплющується, коротка пауза-«удар» (70 мс) — і лише тоді реакція
+  // реакція миттєва: сплющення кнопки — на :active у CSS, далі відскок правильної
   const pick = (v: Verdict, btn: HTMLElement) => {
     if (lock.current || answered) return;
     lock.current = true;
     const hit = v === q.correct;
     buzz(hit ? 18 : [28, 45, 28]);
-    btn.classList.remove("squash");
-    void btn.offsetWidth;
-    btn.classList.add("squash");
-    window.setTimeout(
-      () => {
-        btn.classList.remove("squash");
-        if (hit) burst(btn);
-        quiz.answer(v);
-      },
-      reducedMotion() ? 0 : 70,
-    );
+    if (hit) burst(btn);
+    quiz.answer(v);
   };
 
   // після відповіді — у тому ж кадрі гортаємо до картки
