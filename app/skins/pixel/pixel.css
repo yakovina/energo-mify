@@ -1,0 +1,1093 @@
+/* Скін «Піксель». Палітра — з ілюстрації: бузкове небо й хмари, синій вітряка,
+   жовте сонце й бурштин градирень, іржа, трава. Жодних радіусів: кути
+   «сходинкові» (рамка з box-shadow на чотири боки лишає пікселі на кутах
+   порожніми), тінь — жорсткий зсув без розмиття. */
+
+.pixel {
+  --sky: #d7ddf2;
+  --cloud: #aab3dd;
+  --cloud-2: #c3cae9;
+  --blue: #5f74c4;
+  --blue-d: #4458a8;
+  --blue-l: #8396d6;
+  --navy: #232b4a;
+  --slate: #3a3f5c;
+  --card: #f7f8fd;
+  --ink: #232b4a;
+  --ink-2: #4b5170;
+  --yellow: #f8e840;
+  --amber: #fcc63d;
+  --orange: #cc8619;
+  --rust: #923a16;
+  --rust-l: #b5531f;
+  --grass: #b8ca4a;
+  --forest: #4d6135;
+
+  --b: 3px; /* товщина «пікселя» рамки */
+  --sd: 6px; /* зсув тіні панелі */
+  --pad: 20px;
+
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  color: var(--ink);
+  background-color: var(--sky);
+  background-image:
+    linear-gradient(rgba(35, 43, 74, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(35, 43, 74, 0.035) 1px, transparent 1px);
+  background-size: 16px 16px;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+@media (min-width: 900px) {
+  .pixel {
+    --b: 4px;
+    --sd: 8px;
+    --pad: 36px;
+    font-size: 16px;
+  }
+}
+
+.pixel ::selection {
+  background: var(--yellow);
+  color: var(--navy);
+}
+
+.pixel :focus-visible {
+  outline: 3px dashed var(--navy);
+  outline-offset: 5px;
+}
+
+.pixel [tabindex="-1"]:focus {
+  outline: none;
+}
+
+/* ——— піксельна рамка ——— */
+
+.pixel .px {
+  position: relative;
+  border: 0;
+  border-radius: 0;
+  box-shadow:
+    0 calc(-1 * var(--b)) 0 0 var(--navy),
+    0 var(--b) 0 0 var(--navy),
+    calc(-1 * var(--b)) 0 0 0 var(--navy),
+    var(--b) 0 0 0 var(--navy);
+}
+
+.pixel .panel {
+  background: var(--card);
+  padding: var(--pad);
+  margin: var(--b);
+  filter: drop-shadow(var(--sd) var(--sd) 0 var(--cloud));
+}
+
+/* ——— небо ——— */
+
+.pixel .sky {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.pixel .sun {
+  position: absolute;
+  top: 64px;
+  right: -8px;
+  width: 64px;
+}
+
+.pixel .cloud {
+  position: absolute;
+  width: 180px;
+}
+
+.pixel .cloud.c1 {
+  top: 300px;
+  left: -70px;
+}
+
+.pixel .cloud.c2 {
+  top: 520px;
+  right: -90px;
+  width: 220px;
+}
+
+@media (min-width: 900px) {
+  .pixel .sun {
+    top: 72px;
+    right: 7vw;
+    width: 120px;
+  }
+  .pixel .cloud.c1 {
+    top: 180px;
+    left: max(-60px, calc(50vw - 360px - 330px));
+    width: 260px;
+  }
+  .pixel .cloud.c2 {
+    top: 440px;
+    right: max(-60px, calc(50vw - 360px - 340px));
+    width: 300px;
+  }
+}
+
+/* ——— пагорби ——— */
+
+.pixel .hills {
+  position: relative;
+  z-index: 1;
+  height: 64px;
+  margin-top: 8px;
+  background: url("/art/hills-day.webp") repeat-x left bottom / auto 100%;
+  flex: none;
+}
+
+.pixel .hills.night {
+  background-image: url("/art/hills-night.webp");
+}
+
+@media (min-width: 900px) {
+  .pixel .hills {
+    height: 110px;
+  }
+}
+
+/* ——— колонка й шапка ——— */
+
+.pixel .col {
+  position: relative;
+  z-index: 1;
+  flex: 1 0 auto;
+  width: min(100% - 32px, 720px);
+  margin: 0 auto;
+  padding-bottom: 28px;
+}
+
+.pixel .bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 64px;
+  margin-bottom: 12px;
+}
+
+@media (min-width: 900px) {
+  .pixel .bar {
+    min-height: 84px;
+    margin-bottom: 16px;
+  }
+}
+
+.pixel .brandRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.pixel .brand img {
+  height: 26px;
+  width: auto;
+}
+
+.pixel .brandSub {
+  padding-left: 12px;
+  border-left: 2px solid var(--cloud);
+  font-family: "Lora", serif;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+@media (max-width: 420px) {
+  .pixel.sheet .brandSub {
+    display: none;
+  }
+}
+
+@media (min-width: 900px) {
+  .pixel .brand img {
+    height: 30px;
+  }
+  .pixel .brandSub {
+    font-size: 16px;
+  }
+}
+
+.pixel .siteLink {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink-2);
+  font-weight: 500;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.pixel .siteLink:hover {
+  color: var(--navy);
+}
+
+@media (min-width: 900px) {
+  .pixel .siteLink {
+    display: inline-flex;
+  }
+}
+
+/* ——— батарейка ——— */
+
+.pixel .battery {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+}
+
+.pixel .cells {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  background: var(--navy);
+}
+
+.pixel .cell {
+  width: 10px;
+  height: 18px;
+  background: var(--slate);
+}
+
+.pixel .cell.ok {
+  background: var(--yellow);
+}
+
+.pixel .cell.miss {
+  background: var(--rust-l);
+}
+
+.pixel .cell.now {
+  background: var(--card);
+  animation: pxBlink 1s steps(2, jump-none) infinite;
+}
+
+.pixel .nub {
+  width: 4px;
+  height: 10px;
+  background: var(--navy);
+}
+
+@media (min-width: 900px) {
+  .pixel .cells {
+    gap: 3px;
+    padding: 4px;
+  }
+  .pixel .cell {
+    width: 13px;
+    height: 22px;
+  }
+  .pixel .nub {
+    width: 5px;
+    height: 12px;
+  }
+}
+
+.pixel .battery.big .cells {
+  gap: 4px;
+  padding: 5px;
+}
+
+.pixel .battery.big .cell {
+  width: 18px;
+  height: 34px;
+  animation: pxCharge 0.25s steps(2, jump-none) both;
+}
+
+.pixel .battery.big .nub {
+  width: 7px;
+  height: 16px;
+}
+
+@media (min-width: 900px) {
+  .pixel .battery.big .cell {
+    width: 22px;
+    height: 40px;
+  }
+}
+
+/* ——— кнопки ——— */
+
+.pixel .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 0 22px;
+  margin: var(--b);
+  font-weight: 500;
+  font-size: 16px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.08s steps(1);
+}
+
+.pixel .btn.primary {
+  background: var(--blue);
+  color: #fff;
+  box-shadow:
+    0 calc(-1 * var(--b)) 0 0 var(--navy),
+    0 var(--b) 0 0 var(--navy),
+    calc(-1 * var(--b)) 0 0 0 var(--navy),
+    var(--b) 0 0 0 var(--navy),
+    inset calc(-1 * var(--b)) calc(-1 * var(--b)) 0 0 var(--blue-d),
+    inset var(--b) var(--b) 0 0 var(--blue-l);
+}
+
+.pixel .btn.primary:hover {
+  background: #6a7fcd;
+}
+
+.pixel .btn.ghost {
+  background: var(--card);
+  color: var(--navy);
+  box-shadow:
+    0 calc(-1 * var(--b)) 0 0 var(--navy),
+    0 var(--b) 0 0 var(--navy),
+    calc(-1 * var(--b)) 0 0 0 var(--navy),
+    var(--b) 0 0 0 var(--navy),
+    inset calc(-1 * var(--b)) calc(-1 * var(--b)) 0 0 var(--cloud-2);
+}
+
+.pixel .btn.ghost:hover {
+  background: #fff;
+}
+
+.pixel .btn:active {
+  transform: translateY(2px);
+}
+
+.pixel .btn .arrow {
+  flex: none;
+}
+
+/* ——— старт ——— */
+
+.pixel .hero {
+  padding-top: 0;
+}
+
+.pixel .cover {
+  margin: 0 calc(-1 * var(--pad)) var(--pad);
+  border-bottom: var(--b) solid var(--navy);
+  background: var(--cloud);
+}
+
+.pixel .cover img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+
+.pixel .title {
+  margin: 0;
+  font-family: "Lora", serif;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--navy);
+}
+
+.pixel .lead {
+  margin: 12px 0 0;
+  font-size: 16px;
+}
+
+.pixel .meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 0;
+  margin: 12px 0 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+.pixel .meta .dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin: 0 10px 1px;
+  background: var(--orange);
+  vertical-align: middle;
+}
+
+.pixel .hero .btn {
+  width: calc(100% - 2 * var(--b));
+}
+
+@media (min-width: 900px) {
+  .pixel .title {
+    font-size: 40px;
+  }
+  .pixel .lead {
+    font-size: 17px;
+    max-width: 560px;
+  }
+  .pixel .hero .btn {
+    width: auto;
+    min-width: 260px;
+  }
+}
+
+/* ——— поширення ——— */
+
+.pixel .share {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 2px dashed var(--cloud);
+}
+
+.pixel .shareLabel {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+.pixel .shareGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: var(--b);
+}
+
+.pixel .shareGrid.four {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* на вузькому телефоні три кнопки в ряд не вміщаються: FB і TG поруч, «Копіювати» — на всю ширину */
+@media (max-width: 459px) {
+  .pixel .shareGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .pixel .shareGrid:not(.four) .copy {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 900px) {
+  .pixel .shareGrid.four {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.pixel .sbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 42px;
+  padding: 0 8px;
+  border: 0;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow:
+    0 -2px 0 0 var(--navy),
+    0 2px 0 0 var(--navy),
+    -2px 0 0 0 var(--navy),
+    2px 0 0 0 var(--navy);
+}
+
+.pixel .sbtn svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.pixel .sbtn.fb {
+  background: var(--blue);
+  color: #fff;
+}
+
+.pixel .sbtn.tg {
+  background: var(--cloud);
+  color: var(--navy);
+}
+
+.pixel .sbtn.copy {
+  background: var(--yellow);
+  color: var(--navy);
+}
+
+.pixel .sbtn.more {
+  background: var(--card);
+  color: var(--navy);
+}
+
+.pixel .sbtn:hover {
+  filter: brightness(1.06);
+}
+
+.pixel .sbtn:active {
+  transform: translateY(2px);
+}
+
+/* ——— твердження ——— */
+
+.pixel .qwrap {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.pixel .qpane {
+  scroll-margin-top: 12px;
+}
+
+.pixel .qnum {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+.pixel .statement {
+  margin: 0;
+  font-family: "Lora", serif;
+  font-weight: 500;
+  font-size: 20px;
+  line-height: 1.4;
+  color: var(--navy);
+}
+
+@media (min-width: 900px) {
+  .pixel .statement {
+    font-size: 23px;
+  }
+}
+
+.pixel .choices {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 24px;
+  padding: var(--b);
+}
+
+.pixel .choice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 60px;
+  padding: 0 12px;
+  font-family: "Lora", serif;
+  font-weight: 700;
+  font-size: 19px;
+  color: var(--navy);
+  transition: transform 0.08s steps(1);
+}
+
+.pixel .choice.yes {
+  background: var(--yellow);
+  box-shadow:
+    0 calc(-1 * var(--b)) 0 0 var(--navy),
+    0 var(--b) 0 0 var(--navy),
+    calc(-1 * var(--b)) 0 0 0 var(--navy),
+    var(--b) 0 0 0 var(--navy),
+    inset calc(-1 * var(--b)) calc(-1 * var(--b)) 0 0 var(--amber);
+}
+
+.pixel .choice.no {
+  background: var(--cloud);
+  box-shadow:
+    0 calc(-1 * var(--b)) 0 0 var(--navy),
+    0 var(--b) 0 0 var(--navy),
+    calc(-1 * var(--b)) 0 0 0 var(--navy),
+    var(--b) 0 0 0 var(--navy),
+    inset calc(-1 * var(--b)) calc(-1 * var(--b)) 0 0 #8f99cf;
+}
+
+@media (hover: hover) {
+  .pixel .choice:not(:disabled):hover {
+    transform: translateY(-3px);
+  }
+}
+
+.pixel .choice:not(:disabled):active {
+  transform: translateY(2px);
+}
+
+.pixel .choice:disabled {
+  cursor: default;
+}
+
+/* після відповіді: правильна лишається яскравою з ✓, хибний вибір — іржа з ✕ */
+.pixel .choice:disabled:not(.isRight):not(.isWrong) {
+  opacity: 0.4;
+}
+
+.pixel .choice.isWrong {
+  background: var(--rust);
+  color: #fff;
+  box-shadow:
+    0 calc(-1 * var(--b)) 0 0 var(--navy),
+    0 var(--b) 0 0 var(--navy),
+    calc(-1 * var(--b)) 0 0 0 var(--navy),
+    var(--b) 0 0 0 var(--navy),
+    inset calc(-1 * var(--b)) calc(-1 * var(--b)) 0 0 #6e2a0f;
+  animation: pxShake 0.32s steps(4, jump-none);
+}
+
+.pixel .choice.isRight.isPicked {
+  animation: pxFlash 0.45s steps(3, jump-none);
+}
+
+.pixel .choice .mark {
+  display: inline-flex;
+}
+
+@media (min-width: 900px) {
+  .pixel .choice {
+    min-height: 68px;
+    font-size: 21px;
+  }
+}
+
+/* ——— пояснення ——— */
+
+.pixel .answer {
+  padding-top: calc(var(--pad) + 8px);
+  scroll-margin-top: 24px;
+}
+
+.pixel .answer::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 8px;
+  background: var(--band, var(--yellow));
+}
+
+.pixel .answer.miss {
+  --band: var(--rust-l);
+}
+
+.pixel .answer .corner {
+  position: absolute;
+  pointer-events: none;
+}
+
+.pixel .answer .corner.bulb {
+  right: -22px;
+  top: -70px;
+  width: 150px;
+  animation: pxFlicker 0.9s steps(1) 0.15s both;
+}
+
+.pixel .answer .corner.candle {
+  right: 4px;
+  top: -40px;
+  width: 44px;
+  animation: pxCandle 1.6s steps(2, jump-none) infinite;
+  transform-origin: 50% 100%;
+}
+
+@media (min-width: 900px) {
+  .pixel .answer .corner.bulb {
+    right: -44px;
+    top: -96px;
+    width: 210px;
+  }
+  .pixel .answer .corner.candle {
+    right: 0;
+    top: -54px;
+    width: 58px;
+  }
+}
+
+.pixel .verdict {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  padding-right: 72px;
+}
+
+.pixel .verdict b {
+  font-family: "Lora", serif;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.pixel .tag {
+  display: inline-block;
+  padding: 3px 10px 4px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--navy);
+  box-shadow:
+    0 -2px 0 0 var(--navy),
+    0 2px 0 0 var(--navy),
+    -2px 0 0 0 var(--navy),
+    2px 0 0 0 var(--navy);
+}
+
+.pixel .tag.yes {
+  background: var(--yellow);
+}
+
+.pixel .tag.no {
+  background: var(--cloud);
+}
+
+.pixel .expl {
+  margin: 14px 0 0;
+}
+
+.pixel .sources {
+  margin: 14px 0 0;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.pixel .sources a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--cloud);
+}
+
+.pixel .sources a:hover {
+  color: var(--navy);
+  text-decoration-color: currentColor;
+}
+
+.pixel .answer .btn {
+  margin-top: 22px;
+  width: calc(100% - 2 * var(--b));
+}
+
+@media (min-width: 900px) {
+  .pixel .verdict b {
+    font-size: 25px;
+  }
+  .pixel .answer .btn {
+    width: auto;
+  }
+}
+
+/* ——— результат ——— */
+
+.pixel .resTop {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 16px;
+  padding-bottom: 18px;
+  border-bottom: 2px dashed var(--cloud);
+}
+
+.pixel .kicker {
+  margin: 0 0 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+.pixel .charge {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+}
+
+.pixel .score {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+.pixel .score b {
+  font-family: "Lora", serif;
+  font-weight: 700;
+  font-size: 34px;
+  line-height: 1;
+  color: var(--navy);
+}
+
+.pixel .score b.range {
+  font-size: 24px;
+}
+
+.pixel .ltitle {
+  margin: 16px 0 0;
+  font-family: "Lora", serif;
+  font-weight: 700;
+  font-size: 27px;
+  line-height: 1.15;
+  color: var(--navy);
+}
+
+.pixel .lvlArt {
+  width: 120px;
+  height: auto;
+}
+
+/* широкі картинки (лампочка, батарейки) на телефоні — окремим рядком під званням */
+@media (max-width: 599px) {
+  .pixel.lvl-observer .resTop,
+  .pixel.lvl-analyst .resTop {
+    grid-template-columns: 1fr;
+  }
+  .pixel.lvl-observer .lvlArt {
+    width: min(100%, 220px);
+    justify-self: end;
+  }
+  .pixel.lvl-analyst .lvlArt {
+    width: min(100%, 280px);
+    justify-self: end;
+  }
+  .pixel.lvl-hostage .lvlArt {
+    width: 64px;
+  }
+}
+
+@media (min-width: 600px) {
+  .pixel.lvl-hostage .lvlArt {
+    width: 90px;
+  }
+  .pixel.lvl-observer .lvlArt {
+    width: 230px;
+  }
+  .pixel.lvl-analyst .lvlArt {
+    width: 270px;
+  }
+}
+
+@media (min-width: 900px) {
+  .pixel .ltitle {
+    font-size: 36px;
+  }
+  .pixel.lvl-hostage .lvlArt {
+    width: 110px;
+  }
+}
+
+.pixel .ldesc {
+  margin: 18px 0 0;
+}
+
+.pixel .resPane > .btn {
+  margin-top: 22px;
+  width: calc(100% - 2 * var(--b));
+}
+
+@media (min-width: 900px) {
+  .pixel .resPane > .btn {
+    width: auto;
+    min-width: 220px;
+  }
+}
+
+.pixel.nf .resPane {
+  text-align: center;
+}
+
+.pixel .nfArt {
+  width: 70px;
+  margin: 0 auto 8px;
+}
+
+.pixel.nf .ltitle {
+  margin: 0;
+  font-size: 24px;
+}
+
+/* ——— рух ——— */
+
+.pixel .in {
+  animation: pxRise 0.3s steps(4, jump-none) both;
+}
+
+.pixel .answer.in {
+  animation-delay: 0.05s;
+}
+
+.pixel .sun .ray {
+  animation: pxBlink 1.6s steps(2, jump-none) infinite;
+}
+
+.pixel .sun .ray:nth-of-type(2n) {
+  animation-delay: 0.8s;
+}
+
+.pixel .cloud {
+  animation: pxDrift 18s steps(10, jump-none) infinite alternate;
+}
+
+.pixel .cloud.c2 {
+  animation-duration: 24s;
+  animation-direction: alternate-reverse;
+}
+
+/* лише зсув, без прозорості: якщо браузер притримає анімацію (фонова вкладка,
+   вбудований браузер соцмережі), зміст однаково видно */
+@keyframes pxRise {
+  from {
+    transform: translateY(12px);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes pxBlink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0.25;
+  }
+}
+
+@keyframes pxShake {
+  0%,
+  100% {
+    transform: none;
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-3px);
+  }
+}
+
+@keyframes pxFlash {
+  0%,
+  100% {
+    filter: none;
+  }
+  50% {
+    filter: brightness(1.15) saturate(1.2);
+  }
+}
+
+/* лампочка «вмикається»: кілька блимань, потім горить */
+@keyframes pxFlicker {
+  0% {
+    opacity: 0.3;
+  }
+  15% {
+    opacity: 1;
+  }
+  30% {
+    opacity: 0.2;
+  }
+  45% {
+    opacity: 1;
+  }
+  55% {
+    opacity: 0.4;
+  }
+  70%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes pxCandle {
+  0%,
+  100% {
+    transform: none;
+  }
+  50% {
+    transform: scaleY(1.03);
+  }
+}
+
+@keyframes pxDrift {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(30px);
+  }
+}
+
+@keyframes pxCharge {
+  from {
+    filter: brightness(0.45);
+  }
+  to {
+    filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pixel *,
+  .pixel *::before {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ——— старт на десктопі: обкладинка ліворуч, текст праворуч, усе в першому екрані ——— */
+
+@media (min-width: 900px) {
+  .pixel.intro .col {
+    width: min(100% - 64px, 1120px);
+  }
+  .pixel.intro .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(360px, 1fr);
+    padding: 0;
+  }
+  .pixel.intro .cover {
+    margin: 0;
+    border-bottom: 0;
+    border-right: var(--b) solid var(--navy);
+  }
+  .pixel.intro .cover img {
+    height: 100%;
+    min-height: 100%;
+  }
+  .pixel.intro .heroText {
+    align-self: center;
+    padding: 32px 36px;
+  }
+  .pixel.intro .title {
+    font-size: 36px;
+  }
+  .pixel.intro .hero .btn {
+    width: calc(100% - 2 * var(--b));
+  }
+  .pixel.intro .shareGrid.four {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  /* сонце вже є на обкладинці */
+  .pixel.intro .sun {
+    display: none;
+  }
+}

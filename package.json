@@ -1,0 +1,29 @@
+{
+  "name": "energo-mify",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build --turbopack && node scripts/fix-basepath.mjs",
+    "build:partner": "NEXT_PUBLIC_BASE_PATH=/partner/energo-mify NEXT_PUBLIC_SITE_URL=https://hmarochos.kiev.ua/partner/energo-mify npm run build",
+    "deploy": "bash scripts/deploy.sh",
+    "og": "node scripts/render-og.mjs",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "next": "15.5.3"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@tailwindcss/postcss": "^4",
+    "tailwindcss": "^4",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.3",
+    "@eslint/eslintrc": "^3"
+  }
+}

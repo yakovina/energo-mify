@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>OG</title>
+<!-- OG 1200×630 у стилі «Піксель». Рендерить scripts/render-og.mjs:
+     og.html → public/og-test.png (назва ліворуч, обкладинка праворуч);
+     og.html?l=<slug> → public/og-<slug>.png (батарейка, бали й звання ліворуч, ілюстрація рівня праворуч). -->
+<style>
+@font-face { font-family: "Open Sans"; src: url("../public/fonts/hm/open-sans-v29-latin_cyrillic-ext-500.woff2") format("woff2"); font-weight: 500; }
+@font-face { font-family: "Lora"; src: url("../public/fonts/hm/lora-v24-latin_cyrillic-ext-700.woff2") format("woff2"); font-weight: 700; }
+:root {
+  --sky: #d7ddf2; --cloud: #aab3dd; --blue: #5f74c4; --blue-d: #4458a8; --blue-l: #8396d6;
+  --navy: #232b4a; --slate: #3a3f5c; --card: #f7f8fd; --ink-2: #4b5170;
+  --yellow: #f8e840; --orange: #cc8619; --rust-l: #b5531f; --b: 5px;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; width: 1200px; height: 630px; overflow: hidden; position: relative;
+  color: var(--navy); font-family: "Open Sans", sans-serif;
+  background-color: var(--sky);
+  background-image: linear-gradient(rgba(35,43,74,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(35,43,74,.04) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+.px { box-shadow: 0 calc(-1*var(--b)) 0 0 var(--navy), 0 var(--b) 0 0 var(--navy), calc(-1*var(--b)) 0 0 0 var(--navy), var(--b) 0 0 0 var(--navy); }
+.hills { position: absolute; left: 0; right: 0; bottom: 0; height: 96px; background: url("../public/art/hills-day.webp") repeat-x left bottom / auto 100%; }
+body.night .hills { background-image: url("../public/art/hills-night.webp"); }
+.head { position: absolute; left: 64px; top: 40px; display: flex; align-items: center; gap: 18px; }
+.head img { height: 38px; }
+.head b { padding-left: 18px; border-left: 3px solid var(--cloud); font-family: "Lora", serif; font-size: 24px; }
+
+/* старт */
+.start .text { position: absolute; left: 64px; top: 120px; width: 520px; }
+h1 { margin: 0; font-family: "Lora", serif; font-weight: 700; font-size: 62px; line-height: 1.06; letter-spacing: -0.01em; }
+.lead { margin: 24px 0 0; font-size: 25px; line-height: 1.45; color: var(--ink-2); }
+.btn { display: inline-flex; align-items: center; gap: 16px; margin-top: 34px; height: 70px; padding: 0 34px; font-weight: 500; font-size: 26px; color: #fff; background: var(--blue);
+  box-shadow: 0 calc(-1*var(--b)) 0 0 var(--navy), 0 var(--b) 0 0 var(--navy), calc(-1*var(--b)) 0 0 0 var(--navy), var(--b) 0 0 0 var(--navy), inset -5px -5px 0 0 var(--blue-d), inset 5px 5px 0 0 var(--blue-l); }
+.cover { position: absolute; right: 64px; top: 64px; width: 520px; filter: drop-shadow(10px 10px 0 var(--cloud)); }
+.cover img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+
+/* рівень */
+.lvl { display: none; }
+body.level .start { display: none; }
+body.level .lvl { display: block; }
+.lvl .text { position: absolute; left: 64px; top: 128px; width: 640px; }
+.kicker { margin: 0; font-size: 24px; color: var(--ink-2); }
+.charge { display: flex; align-items: center; gap: 26px; margin-top: 30px; }
+.battery { display: flex; align-items: center; }
+.cells { display: flex; gap: 6px; padding: 7px; background: var(--navy); }
+.cell { width: 30px; height: 56px; background: var(--slate); }
+.cell.ok { background: var(--yellow); }
+.nub { width: 10px; height: 24px; background: var(--navy); }
+.range { font-family: "Lora", serif; font-weight: 700; font-size: 40px; }
+.lvl h1 { margin-top: 30px; font-size: 64px; }
+.art { position: absolute; right: 70px; bottom: 120px; }
+</style>
+</head>
+<body>
+  <div class="head"><img src="../public/hmarochos_logo_new.svg" alt=""><b>Міфи про енергетику</b></div>
+
+  <div class="start">
+    <div class="text">
+      <h1>Міфи про українську енергетику</h1>
+      <p class="lead">Вісім тверджень. Відрізніть правду від міфу.</p>
+      <div class="btn">Пройти тест
+        <svg viewBox="0 0 9 8" width="24" height="22" shape-rendering="crispEdges"><path d="M5 0h1v1H5zM5 1h2v1H5zM5 2h3v1H5zM0 3h9v2H0zM5 5h3v1H5zM5 6h2v1H5zM5 7h1v1H5z" fill="currentColor"/></svg>
+      </div>
+    </div>
+    <div class="cover"><div class="px"><img src="../public/art/cover.webp" alt=""></div></div>
+  </div>
+
+  <div class="lvl">
+    <div class="text">
+      <p class="kicker">Мій результат у тесті Хмарочоса</p>
+      <div class="charge">
+        <div class="battery"><div class="cells" id="cells"></div><span class="nub"></span></div>
+        <span class="range" id="range"></span>
+      </div>
+      <h1 id="title"></h1>
+    </div>
+    <img class="art" id="art" alt="">
+  </div>
+
+  <div class="hills"></div>
+
+<script>
+  const LEVELS = {
+    hostage: { title: "Заручник інфопростору", range: "0–3 бали", max: 3, art: "candle", w: 150, night: true },
+    observer: { title: "Уважний спостерігач", range: "4–6 балів", max: 6, art: "bulb", w: 400 },
+    analyst: { title: "Енергетичний аналітик", range: "7–8 балів", max: 8, art: "battery", w: 440 },
+  };
+  const l = LEVELS[new URLSearchParams(location.search).get("l")];
+  if (l) {
+    document.body.classList.add("level");
+    if (l.night) document.body.classList.add("night");
+    document.getElementById("title").textContent = l.title;
+    document.getElementById("range").textContent = l.range;
+    document.getElementById("cells").innerHTML = Array.from({ length: 8 }, (_, i) => `<span class="cell${i < l.max ? " ok" : ""}"></span>`).join("");
+    const a = document.getElementById("art");
+    a.src = `../public/art/${l.art}.webp`;
+    a.style.width = l.w + "px";
+  }
+</script>
+</body>
+</html>
