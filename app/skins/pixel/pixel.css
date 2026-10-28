@@ -290,7 +290,7 @@
 }
 
 .pixel .cell.pop {
-  animation: pxCellPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: pxCellPop 0.45s cubic-bezier(0.3, 1.25, 0.5, 1);
 }
 
 .pixel .nub {
@@ -322,7 +322,7 @@
 .pixel .battery.big .cell {
   width: 18px;
   height: 34px;
-  animation: pxCellIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation: pxCellIn 0.5s cubic-bezier(0.3, 1.25, 0.5, 1) both;
 }
 
 .pixel .battery.big .nub {
@@ -392,7 +392,7 @@
 }
 
 .pixel .btn:active {
-  transform: translateY(2px) scale(1.02, 0.94);
+  transform: translateY(1px) scale(1.01, 0.97);
   transition-duration: 0.05s;
 }
 
@@ -646,12 +646,12 @@
 
 @media (hover: hover) {
   .pixel .choice:not(:disabled):hover {
-    transform: translateY(-3px) rotate(-1deg);
+    transform: translateY(-2px);
   }
 }
 
 .pixel .choice:not(:disabled):active {
-  transform: scale(1.04, 0.9);
+  transform: scale(1.02, 0.95);
   transition-duration: 0.05s;
 }
 
@@ -678,7 +678,7 @@
 }
 
 .pixel .choice.isRight.isPicked {
-  animation: pxJump 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: pxJump 0.5s cubic-bezier(0.3, 1.25, 0.5, 1);
 }
 
 /* мимо — картка твердження струшується */
@@ -728,7 +728,7 @@
   top: -70px;
   width: 150px;
   transform-origin: 70% 0;
-  animation: pxBulbIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.12s both;
+  animation: pxBulbIn 0.6s cubic-bezier(0.3, 1.25, 0.5, 1) 0.12s both;
 }
 
 .pixel .answer .corner.candle {
@@ -957,11 +957,11 @@
 
 /* поява: картка падає згори й пружинить; відповідь «вистрибує» */
 .pixel .in {
-  animation: pxDrop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation: pxDrop 0.45s cubic-bezier(0.3, 1.25, 0.5, 1) both;
 }
 
 .pixel .answer.in {
-  animation: pxPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation: pxPop 0.45s cubic-bezier(0.3, 1.25, 0.5, 1) both;
 }
 
 .pixel .sun .ray {
@@ -985,7 +985,7 @@
    вбудований браузер соцмережі), зміст однаково видно */
 @keyframes pxDrop {
   from {
-    transform: translateY(-26px) scale(0.98);
+    transform: translateY(-12px);
   }
   to {
     transform: none;
@@ -994,7 +994,7 @@
 
 @keyframes pxPop {
   from {
-    transform: scale(0.92);
+    transform: translateY(8px) scale(0.98);
   }
   to {
     transform: none;
@@ -1013,26 +1013,24 @@
 
 @keyframes pxJump {
   0% {
-    transform: scale(1.06, 0.88);
+    transform: scale(1.02, 0.95);
   }
   45% {
-    transform: translateY(-9px) scale(0.97, 1.06);
+    transform: translateY(-4px);
   }
   100% {
     transform: none;
   }
 }
 
-/* хибна кнопка «вимикається»: двічі гасне */
+/* хибна кнопка «вимикається»: раз м’яко гасне */
 @keyframes pxOff {
   0%,
-  30%,
   100% {
     filter: none;
   }
-  15%,
-  45% {
-    filter: brightness(0.3);
+  35% {
+    filter: brightness(0.6);
   }
 }
 
@@ -1042,19 +1040,19 @@
     transform: none;
   }
   25% {
-    transform: translate(-5px, 1px);
+    transform: translateX(-3px);
   }
   50% {
-    transform: translate(5px, -1px);
+    transform: translateX(3px);
   }
   75% {
-    transform: translate(-2px, 0);
+    transform: translateX(-1px);
   }
 }
 
 @keyframes pxBulbIn {
   from {
-    transform: translateY(-18px) rotate(-14deg) scale(0.7);
+    transform: translateY(-8px) rotate(-5deg) scale(0.9);
   }
   to {
     transform: none;
@@ -1064,10 +1062,10 @@
 @keyframes pxCandle {
   0%,
   100% {
-    transform: rotate(-2deg);
+    transform: rotate(-1deg);
   }
   50% {
-    transform: rotate(2deg) scaleY(1.03);
+    transform: rotate(1deg);
   }
 }
 
@@ -1082,7 +1080,7 @@
 
 @keyframes pxCellPop {
   from {
-    transform: scale(1.8);
+    transform: scale(1.35);
   }
   to {
     transform: none;
@@ -1104,8 +1102,8 @@
 .pxSpark {
   position: fixed;
   z-index: 50;
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   pointer-events: none;
   box-shadow: 0 0 0 1px rgba(35, 43, 74, 0.25);
 }
@@ -1116,7 +1114,7 @@
   pointer-events: none;
   font-family: "Lora", serif;
   font-weight: 700;
-  font-size: 24px;
+  font-size: 19px;
   line-height: 1;
   color: #232b4a;
   text-shadow: 2px 2px 0 #f8e840;

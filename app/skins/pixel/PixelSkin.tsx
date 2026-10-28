@@ -275,7 +275,7 @@ function burst(btn: HTMLElement) {
   const cx = r.left + r.width / 2;
   const cy = r.top + r.height / 2;
   const colors = ["#f8e840", "#fcc63d", "#cc8619", "#ffffff"];
-  const n = 16;
+  const n = 10;
   for (let k = 0; k < n; k++) {
     const p = document.createElement("span");
     p.className = "pxSpark";
@@ -284,13 +284,13 @@ function burst(btn: HTMLElement) {
     p.style.top = `${cy}px`;
     document.body.append(p);
     const a = (Math.PI * 2 * k) / n + Math.random() * 0.4;
-    const d = 56 + Math.random() * 60;
+    const d = 28 + Math.random() * 30;
     p.animate(
       [
         { transform: "translate(-50%, -50%)", opacity: 1 },
-        { transform: `translate(calc(-50% + ${Math.cos(a) * d}px), calc(-50% + ${Math.sin(a) * d - 24}px))`, opacity: 0 },
+        { transform: `translate(calc(-50% + ${Math.cos(a) * d}px), calc(-50% + ${Math.sin(a) * d - 10}px))`, opacity: 0 },
       ],
-      { duration: 600 + Math.random() * 250, easing: "cubic-bezier(.2,.8,.2,1)" },
+      { duration: 480 + Math.random() * 160, easing: "cubic-bezier(.2,.8,.2,1)" },
     ).onfinish = () => p.remove();
   }
   const plus = document.createElement("span");
@@ -301,11 +301,11 @@ function burst(btn: HTMLElement) {
   document.body.append(plus);
   plus.animate(
     [
-      { transform: "translate(-50%, 0) scale(.6)", opacity: 0 },
-      { transform: "translate(-50%, -14px) scale(1.15)", opacity: 1, offset: 0.25 },
-      { transform: "translate(-50%, -44px) scale(1)", opacity: 0 },
+      { transform: "translate(-50%, 0)", opacity: 0 },
+      { transform: "translate(-50%, -10px)", opacity: 1, offset: 0.25 },
+      { transform: "translate(-50%, -28px)", opacity: 0 },
     ],
-    { duration: 950, easing: "ease-out" },
+    { duration: 800, easing: "ease-out" },
   ).onfinish = () => plus.remove();
 }
 
