@@ -901,15 +901,43 @@
   height: auto;
 }
 
+/* «Уважний спостерігач»: лампочка на шнурі, що спускається з верхньої лінії картки.
+   --up — відстань від верху блоку до лінії рамки, --lcord — видимий шнур над цоколем. */
+.pixel .lvlHang {
+  --up: calc(var(--pad) + 8px);
+  --lcord: 0px;
+  position: relative;
+  display: block;
+  align-self: start;
+  padding-top: var(--lcord);
+  transform-origin: 50% calc(-1 * var(--up));
+  animation: pxSwing 1.6s ease-out both;
+}
+
+.pixel .lvlHang::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(-1 * var(--up));
+  width: 6px;
+  height: calc(var(--up) + var(--lcord) + 2px);
+  transform: translateX(-50%);
+  background: #232323;
+}
+
+.pixel .lvlHang img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 /* широкі картинки (лампочка, батарейки) на телефоні — окремим рядком під званням */
 @media (max-width: 599px) {
-  .pixel.lvl-observer .resTop,
   .pixel.lvl-analyst .resTop {
     grid-template-columns: 1fr;
   }
   .pixel.lvl-observer .lvlArt {
-    width: min(100%, 220px);
-    justify-self: end;
+    width: 64px;
   }
   .pixel.lvl-analyst .lvlArt {
     width: min(100%, 280px);
@@ -925,7 +953,7 @@
     width: 90px;
   }
   .pixel.lvl-observer .lvlArt {
-    width: 230px;
+    width: 120px;
   }
   .pixel.lvl-analyst .lvlArt {
     width: 270px;

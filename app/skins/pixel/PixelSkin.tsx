@@ -508,8 +508,16 @@ function ResultBody({ level, history, onRestart }: { level: Level; history?: boo
               </div>
               <h1 className="ltitle">{level.title}</h1>
             </div>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img className="lvlArt" src={asset(level.art)} alt="" />
+            {level.slug === "observer" ? (
+              // лампочка висить на шнурі з верхньої лінії картки — як у відповідях
+              <span className="lvlArt lvlHang">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={asset("/art/bulb-lamp.webp")} alt="" />
+              </span>
+            ) : (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img className="lvlArt" src={asset(level.art)} alt="" />
+            )}
           </div>
           <p className="ldesc">{level.description}</p>
           {history ? (
