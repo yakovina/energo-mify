@@ -579,7 +579,7 @@ export default function PixelSkin({ quiz }: { quiz: QuizApi }) {
   const { screen, level, history } = quiz;
   useKeys(quiz);
   useEffect(() => {
-    for (const a of ["bulb-lamp", "candle", "bulb", "battery", "hills-day", "hills-night"]) preload(asset(`/art/${a}.webp`));
+    for (const a of ["bulb-lamp", "candle", "battery", "hills-day", "hills-night"]) preload(asset(`/art/${a}.webp`));
   }, []);
 
   if (screen === "intro") {
