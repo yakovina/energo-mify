@@ -424,7 +424,7 @@ function Sheet({ quiz }: { quiz: QuizApi }) {
                       й звисає в кут картки відповіді; текст її обтікає (hangSpace) */}
                   <span className="hang" aria-hidden>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={asset("/art/bulb-hang.webp")} alt="" decoding="async" />
+                    <img src={asset("/art/bulb-lamp.webp")} alt="" decoding="async" />
                   </span>
                   <span className="hangSpace" aria-hidden />
                 </>
@@ -571,7 +571,7 @@ export default function PixelSkin({ quiz }: { quiz: QuizApi }) {
   const { screen, level, history } = quiz;
   useKeys(quiz);
   useEffect(() => {
-    for (const a of ["bulb-hang", "candle", "bulb", "battery", "hills-day", "hills-night"]) preload(asset(`/art/${a}.webp`));
+    for (const a of ["bulb-lamp", "candle", "bulb", "battery", "hills-day", "hills-night"]) preload(asset(`/art/${a}.webp`));
   }, []);
 
   if (screen === "intro") {

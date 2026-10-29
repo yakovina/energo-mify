@@ -717,9 +717,9 @@
 /* влучно: лампочка на шнурі. Шнур виходить з нижньої лінії картки твердження
    (вона на 28 px проміжку + 10 px кадру вище), лампочка звисає в правий кут картки
    відповіді й легко гойдається. --hw — ширина лампочки, --cord — довжина шнура;
-   1.83 — пропорція малюнка (522×955), шнур — над центром цоколя (55 % ширини). */
+   1.69 — пропорція малюнка (369×623), шнур — над центром цоколя. */
 .pixel .answer {
-  --hw: 64px;
+  --hw: 80px;
   --cord: 34px;
 }
 
@@ -731,7 +731,7 @@
   width: var(--hw);
   padding-top: var(--cord);
   pointer-events: none;
-  transform-origin: 55% 0;
+  transform-origin: 50% 0;
   animation: pxSwing 1.6s ease-out both;
 }
 
@@ -739,7 +739,7 @@
   content: "";
   position: absolute;
   top: 0;
-  left: 55%;
+  left: 50%;
   width: 4px;
   height: calc(var(--cord) + 2px);
   transform: translateX(-50%);
@@ -756,7 +756,7 @@
 .pixel .hangSpace {
   float: right;
   width: calc(var(--hw) + 12px);
-  height: calc(var(--cord) - 40px + var(--hw) * 1.83 - var(--pad) - 2px);
+  height: calc(var(--cord) - 40px + var(--hw) * 1.69 - var(--pad) - 2px);
 }
 
 .pixel .answer.ok .vtitle {
@@ -812,7 +812,7 @@
     padding-right: 120px;
   }
   .pixel .answer {
-    --hw: 84px;
+    --hw: 108px;
     --cord: 40px;
   }
   .pixel .hang {
