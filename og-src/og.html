@@ -4,55 +4,61 @@
 <meta charset="utf-8">
 <title>OG</title>
 <!-- OG 1200×630 у стилі «Мережа». Рендерить scripts/render-og.mjs:
-     og.html → public/og-test.png — велика обкладинка ілюстраторки й плашка з назвою;
+     og.html → public/og-test.png — обкладинка ілюстраторки й плашка з назвою та запитанням-викликом;
      og.html?s=<0..8> → public/og-s<N>.png — точні бали; ?l=<slug> → діапазон рівня (старі посилання).
-     Принцип: мало елементів і великі — прев'ю показують дрібно. Обкладинка — у рідній
-     сітці 120×80, збільшена рівно в 7 разів, без розмиття. -->
+     Мета — щоб картинку хотілося переслати: велике «Я — <звання>», бали як ігровий значок,
+     виклик другу «А ти відрізниш правду від міфу?» і великий світний арт рівня. -->
 <style>
 @font-face { font-family: "Open Sans"; src: url("../public/fonts/hm/open-sans-v29-latin_cyrillic-ext-700.woff2") format("woff2"); font-weight: 700; }
 @font-face { font-family: "Lora"; src: url("../public/fonts/hm/lora-v24-latin_cyrillic-ext-700.woff2") format("woff2"); font-weight: 700; }
 @font-face { font-family: "Lora"; src: url("../public/fonts/hm/lora-v24-latin_cyrillic-ext-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; }
-:root { --bg-2: #e6e9f7; --cloud: #aab3dd; --line: #b4bce2; --line-2: #8396d6; --text: #232b4a; --mute: #6a7299; --amber: #f8e840; --amber-2: #fcc63d; --grass: #b8ca4a; --forest: #4d6135; }
+:root { --bg-2: #e6e9f7; --cloud: #aab3dd; --line: #b4bce2; --line-2: #8396d6; --text: #232b4a; --mute: #5d6590; --amber: #f8e840; --amber-2: #fcc63d; --grass: #b8ca4a; --forest: #4d6135; }
 * { box-sizing: border-box; }
 body { margin: 0; width: 1200px; height: 630px; overflow: hidden; position: relative; color: var(--text); font-family: "Open Sans", sans-serif;
   background: url("../public/art/px/sky.png") repeat-x left top / 32px 800px, #e2e6f6; image-rendering: pixelated; }
 .px { image-rendering: pixelated; display: block; }
 .ground { position: absolute; left: 0; right: 0; bottom: 0; height: 72px; background: url("../public/art/px/hills-day.png") repeat-x left bottom / auto 100%; image-rendering: pixelated; }
 body.night .ground { background-image: url("../public/art/px/hills-night.png"); }
-/* плашка: світла, тонка лінія, жорстка піксельна тінь — як на сайті */
 .card { position: absolute; background: rgba(247,248,253,.97); border: 2px solid var(--line); box-shadow: 10px 10px 0 var(--cloud); }
-.logo { height: 46px; display: block; }
-
-/* ——— старт: обкладинка велика праворуч, плашка з назвою заходить на неї ——— */
-.start .cover { position: absolute; right: 0; bottom: 0; width: 720px; height: 480px; }
-.start .card { left: 48px; top: 80px; width: 470px; padding: 36px 40px 42px; }
-.start h1 { margin: 26px 0 0; font: 700 60px/1.03 "Lora", serif; letter-spacing: -.015em; }
-.cta { display: inline-flex; align-items: center; gap: 22px; margin-top: 30px; height: 76px; padding: 0 30px 6px; background: var(--amber); font-weight: 700; font-size: 27px;
+.logo { height: 44px; display: block; }
+/* піксельна кнопка/значок — рамка 3 px і фаска знизу, як на сайті */
+.pxbtn { display: inline-flex; align-items: center; gap: 18px; height: 72px; padding: 0 28px 6px; background: var(--amber); font-weight: 700; font-size: 26px;
   box-shadow: inset 0 0 0 3px var(--text), inset 0 -10px 0 0 var(--amber-2), inset 0 -10px 0 3px var(--text); }
+.hook { font: italic 400 32px/1.3 "Lora", serif; color: var(--mute); }
 
-/* ——— результат: великі бали й звання на плашці, праворуч великий арт рівня ——— */
+/* ——— старт ——— */
+.start .cover { position: absolute; right: 0; bottom: 0; width: 720px; height: 480px; }
+.start .card { left: 48px; top: 64px; width: 500px; padding: 34px 40px 40px; }
+.start h1 { margin: 24px 0 0; font: 700 58px/1.03 "Lora", serif; letter-spacing: -.015em; }
+.start .hook { margin: 16px 0 0; }
+.start .pxbtn { margin-top: 26px; }
+
+/* ——— результат ——— */
 .lvl { display: none; }
 body.level .start { display: none; }
 body.level .lvl { display: block; }
-.lvl .card { left: 56px; top: 64px; width: 640px; padding: 36px 48px 44px; }
-/* шапка плашки — як на сайті: лого й назва тесту через тонку риску */
-.brand { display: flex; align-items: center; gap: 18px; }
-.brand span { padding-left: 18px; border-left: 2px solid var(--line-2); font: 700 26px "Lora", serif; }
-.lvl .score { margin-top: 30px; }
-.score { display: flex; align-items: baseline; gap: 18px; margin-top: 4px; }
-.score b { font: 700 170px/.86 "Lora", serif; letter-spacing: -.04em; padding: 0 8px; background: linear-gradient(transparent 70%, var(--grass) 70% 86%, transparent 86%); }
-.score span { font: italic 400 34px/1.15 "Lora", serif; color: var(--mute); }
-.lvl h1 { margin: 22px 0 0; font: 700 62px/1.04 "Lora", serif; letter-spacing: -.01em; }
+.lvl .card { left: 48px; top: 56px; width: 660px; padding: 34px 44px 40px; }
+.lvl .top { display: flex; align-items: center; justify-content: space-between; }
+/* бали — як ігровий значок */
+.badge { display: inline-flex; align-items: baseline; gap: 10px; height: 76px; padding: 6px 24px 10px; background: var(--grass);
+  box-shadow: inset 0 0 0 3px var(--text), inset 0 -10px 0 0 #8aa23a, inset 0 -10px 0 3px var(--text); }
+.badge b { font: 700 52px/1 "Lora", serif; }
+.badge span { font: 700 24px "Open Sans"; }
+.lvl h1 { margin: 26px 0 0; font: 700 70px/1.02 "Lora", serif; letter-spacing: -.015em; }
+.lvl h1 .me { display: block; font: italic 400 40px/1.1 "Lora", serif; color: var(--mute); margin-bottom: 4px; }
+.lvl .hook { margin: 22px 0 0; color: var(--text); }
+/* великий арт рівня з ореолом */
 .art { position: absolute; display: grid; place-items: center; }
 .art img { position: relative; display: block; }
-.art::before { content: ""; position: absolute; left: 50%; top: 50%; width: 520px; height: 520px; transform: translate(-50%, -50%); background: radial-gradient(closest-side, rgba(248,232,64,.55), rgba(248,232,64,0)); }
-.art.warm::before { background: radial-gradient(closest-side, rgba(252,150,50,.5), rgba(252,150,50,0)); }
-/* лампочка висить на шнурі від верхнього краю картинки */
-.art.bulb { right: 110px; top: 0; padding-top: 70px; }
-.art.bulb::after { content: ""; position: absolute; left: 50%; top: 0; width: 6px; height: 76px; transform: translateX(-50%); background: #232323; }
+.art::before { content: ""; position: absolute; left: 50%; top: 50%; width: 560px; height: 560px; transform: translate(-50%, -50%); background: radial-gradient(closest-side, rgba(248,232,64,.6), rgba(248,232,64,0)); }
+.art.warm::before { background: radial-gradient(closest-side, rgba(252,150,50,.55), rgba(252,150,50,0)); }
+.art.bulb { right: 90px; top: 0; padding-top: 64px; }
+.art.bulb::after { content: ""; position: absolute; left: 50%; top: 0; width: 6px; height: 70px; transform: translateX(-50%); background: #232323; }
 .art.bulb::before { top: 62%; }
-.art.candle { right: 150px; bottom: 50px; }
-.art.battery { right: 40px; bottom: 120px; }
+.art.candle { right: 140px; bottom: 50px; }
+.art.battery { right: 30px; bottom: 140px; }
+/* іскри навколо арту — пікселі */
+.spark { position: absolute; width: 12px; height: 12px; background: var(--amber); box-shadow: 0 0 0 3px rgba(252,198,61,.5); }
 </style>
 </head>
 <body>
@@ -61,25 +67,30 @@ body.level .lvl { display: block; }
     <div class="card">
       <img class="logo" src="../public/hmarochos_logo_new.svg" alt="">
       <h1>Міфи про українську енергетику</h1>
-      <div class="cta">Пройти тест <svg viewBox="0 0 9 8" width="26" height="23" shape-rendering="crispEdges"><path d="M5 0h1v1H5zM5 1h2v1H5zM5 2h3v1H5zM0 3h9v2H0zM5 5h3v1H5zM5 6h2v1H5zM5 7h1v1H5z" fill="currentColor"/></svg></div>
+      <p class="hook">8 тверджень. Відрізниш правду від міфу?</p>
+      <div class="pxbtn">Пройти тест <svg viewBox="0 0 9 8" width="26" height="23" shape-rendering="crispEdges"><path d="M5 0h1v1H5zM5 1h2v1H5zM5 2h3v1H5zM0 3h9v2H0zM5 5h3v1H5zM5 6h2v1H5zM5 7h1v1H5z" fill="currentColor"/></svg></div>
     </div>
   </div>
 
   <div class="lvl">
     <div class="ground"></div>
     <div class="art" id="art"><img id="artImg" alt=""></div>
+    <div id="sparks"></div>
     <div class="card">
-      <div class="brand"><img class="logo" src="../public/hmarochos_logo_new.svg" alt=""><span>Міфи про енергетику</span></div>
-      <div class="score"><b id="score"></b><span>з 8<br>правильних</span></div>
-      <h1 id="title"></h1>
+      <div class="top">
+        <img class="logo" src="../public/hmarochos_logo_new.svg" alt="">
+        <div class="badge"><b id="score"></b><span>з 8</span></div>
+      </div>
+      <h1><span class="me">Я —</span><span id="title"></span></h1>
+      <p class="hook">А ти відрізниш правду від міфу?</p>
     </div>
   </div>
 
 <script>
   const LEVELS = {
-    hostage: { title: "Заручник інфопростору", range: "0–3", max: 3, art: "candle", w: 170, warm: true },
-    observer: { title: "Уважний спостерігач", range: "4–6", max: 6, art: "bulb", w: 200 },
-    analyst: { title: "Енергетичний аналітик", range: "7–8", max: 8, art: "battery", w: 420 },
+    hostage: { title: "Заручник інфопростору", range: "0–3", max: 3, art: "candle", w: 180, warm: true },
+    observer: { title: "Уважний спостерігач", range: "4–6", max: 6, art: "bulb", w: 210 },
+    analyst: { title: "Енергетичний аналітик", range: "7–8", max: 8, art: "battery", w: 430 },
   };
   // ?s=<бали> — точна кількість; ?l=<рівень> — діапазон рівня
   const qs = new URLSearchParams(location.search);
@@ -96,6 +107,9 @@ body.level .lvl { display: block; }
     const img = document.getElementById("artImg");
     img.src = `../public/art/${l.art === "bulb" ? "bulb-lamp" : l.art}.webp`;
     img.style.width = l.w + "px";
+    // кілька піксельних іскор навколо арту
+    const pts = { bulb: [[930, 120], [1110, 210], [880, 360], [1130, 430]], candle: [[870, 200], [1080, 150], [1120, 330]], battery: [[800, 190], [1150, 200], [860, 420]] }[l.art];
+    document.getElementById("sparks").innerHTML = pts.map(([x, y]) => `<i class="spark" style="left:${x}px;top:${y}px"></i>`).join("");
   } else {
     document.querySelector(".lvl").remove();
   }

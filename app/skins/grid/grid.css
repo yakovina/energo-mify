@@ -379,7 +379,7 @@
 }
 
 .nm .hero .cta {
-  margin-top: 30px;
+  margin-top: 40px;
   width: 100%;
 }
 
@@ -1069,7 +1069,7 @@ html:has(.nm) {
 }
 
 .nm .ver .cta {
-  margin-top: 20px;
+  margin-top: 34px;
 }
 
 /* лампочка висить на шнурі, прив'язаному до верхнього краю плашки */
