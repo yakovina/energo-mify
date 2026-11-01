@@ -246,31 +246,11 @@
   }
 }
 
-/* ——— арт-експонат ——— */
+/* ——— ілюстрація ——— */
 
-/* рама з піксельними кутами: лінія 2 px, кути зрізані сходинкою 4 px, тінь 4 px */
+/* без рамки й тла: просто піксельна картинка ілюстраторки */
 .nm .plate {
-  --st: polygon(0 4px, 4px 4px, 4px 0, calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px));
-  position: relative;
   margin: 0;
-  padding: 10px;
-  background: var(--text);
-  clip-path: var(--st);
-  filter: drop-shadow(4px 4px 0 var(--cloud));
-}
-
-.nm .plate::after {
-  content: "";
-  position: absolute;
-  inset: 2px;
-  background: var(--bg-2);
-  clip-path: var(--st);
-  z-index: 0;
-}
-
-.nm .plate img {
-  position: relative;
-  z-index: 1;
 }
 
 .nm .plate img {
@@ -279,42 +259,6 @@
   height: auto;
   image-rendering: pixelated;
 }
-
-/* лампочка, свічка, батарейка — окремо, посеред темряви з ореолом */
-.nm .plate.solo {
-  display: grid;
-  place-items: center;
-  aspect-ratio: 3 / 2;
-  padding: 24px;
-}
-
-/* лампочка, свічка, батарейка — у «нічному віконці» кольору найтемнішого синього з малюнка */
-.nm .plate.solo::after {
-  background:
-    linear-gradient(rgba(170, 179, 221, 0.06) 1px, transparent 1px) 0 0 / 8px 8px,
-    linear-gradient(90deg, rgba(170, 179, 221, 0.06) 1px, transparent 1px) 0 0 / 8px 8px,
-    radial-gradient(closest-side, #3a4478, var(--night));
-}
-
-.nm .plate.solo img {
-  width: auto;
-  height: 72%;
-}
-
-.nm .plate.solo.lv-analyst img {
-  width: 86%;
-  height: auto;
-}
-
-.nm .plate.amber img {
-  filter: drop-shadow(0 0 22px rgba(248, 232, 64, 0.45));
-}
-
-.nm .plate.warm img {
-  filter: drop-shadow(0 0 26px rgba(252, 160, 61, 0.5));
-}
-
-
 
 /* ——— кнопки ——— */
 
@@ -635,7 +579,6 @@
 .nm .verArt {
   width: 56px;
   height: auto;
-  image-rendering: pixelated;
 }
 
 .nm .ver.ok .verArt {
@@ -911,7 +854,6 @@ html:has(.nm) {
 .nm .free img {
   display: block;
   height: auto;
-  image-rendering: pixelated;
   filter: drop-shadow(0 0 14px rgba(248, 232, 64, 0.85));
 }
 

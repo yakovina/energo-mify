@@ -40,11 +40,13 @@ const UI = {
   home: "На початок",
 };
 
+// обкладинка — у рідній сітці 120×80 (збігається з малюнком піксель у піксель);
+// лампочка, свічка й батарейка — оригінальні файли ілюстраторки без перетворень
 const ART = {
   cover: "/art/px/cover.png",
-  bulb: "/art/px/bulb-lamp.png",
-  candle: "/art/px/candle.png",
-  battery: "/art/px/battery.png",
+  bulb: "/art/bulb-lamp.webp",
+  candle: "/art/candle.webp",
+  battery: "/art/battery.webp",
 };
 const LEVEL_ART: Record<Level["slug"], string> = { hostage: ART.candle, observer: ART.bulb, analyst: ART.battery };
 
@@ -92,10 +94,10 @@ function Grid({ history, now, label }: { history: boolean[]; now?: number; label
   );
 }
 
-/** Арт як експонат: тонка рамка, рідна сітка 120×80 без розмиття. */
-function Plate({ src, alt = "", glow, className = "" }: { src: string; alt?: string; glow?: "warm" | "amber"; className?: string }) {
+/** Ілюстрація без рамки, у рідній сітці 120×80 без розмиття. */
+function Plate({ src, alt = "", className = "" }: { src: string; alt?: string; className?: string }) {
   return (
-    <figure className={`plate ${glow ?? ""} ${className}`}>
+    <figure className={`plate ${className}`}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={asset(src)} alt={alt} decoding="async" />
     </figure>
