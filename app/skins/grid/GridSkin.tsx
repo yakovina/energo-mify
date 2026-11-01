@@ -391,13 +391,14 @@ function ResultBody({ level, history, fixed, onRestart }: { level: Level; histor
             )}
             {onRestart ? (
               <button
-                className="ghost"
+                className="cta"
                 onClick={() => {
                   buzz(8);
                   onRestart();
                 }}
               >
                 {UI.again}
+                <Arrow />
               </button>
             ) : (
               <a className="cta" href={asset("/")}>

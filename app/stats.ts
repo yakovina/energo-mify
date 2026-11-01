@@ -7,11 +7,25 @@
 // З localhost нічого не шлемо, щоб розробка не псувала цифри; з ?test в адресі
 // запис позначається host=test, і зведення його не рахує.
 
-// Порожній FORM — статистика вимкнена. Щоб увімкнути, потрібна Google Form з полями
-// FIELDS нижче (як у «Коді міста»): action — її formResponse, entries — id полів.
+// Форма «Міфи про енергетику — статистика» (створена docs/stats-setup.gs 03.11.2026),
+// пише в таблицю https://docs.google.com/spreadsheets/d/1aVn3tzbI7LuGtY2-udyNOYW5LxVmlVkjX-qO8Q38ud0
 export const FORM: { action: string; entries: Record<string, string> } = {
-  action: "",
-  entries: {},
+  action: "https://docs.google.com/forms/d/e/1FAIpQLSdivhSshfPjtI7IWHlzbxRVB01HzHj8_X332ExUNKLc1R0T-A/formResponse",
+  entries: {
+    run_id: "entry.1242403678",
+    event: "entry.517765289",
+    score: "entry.214458380",
+    level: "entry.1976936867",
+    q1: "entry.1257931991",
+    q2: "entry.1150748755",
+    q3: "entry.1178882524",
+    q4: "entry.64310488",
+    q5: "entry.2078752587",
+    q6: "entry.1331393339",
+    q7: "entry.1002462192",
+    q8: "entry.556484324",
+    host: "entry.1918808699",
+  },
 };
 
 export interface AnswerStat {
