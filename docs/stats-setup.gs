@@ -109,7 +109,9 @@ function setupStats_(ss) {
   // колонки аркуша відповідей: A позначка часу, далі FIELDS по порядку (B, C, D…)
   var col = {};
   FIELDS.forEach(function (f, i) { col[f] = String.fromCharCode(66 + i); });
-  var R = function (f) { return src + col[f] + '2:' + col[f]; };
+  // цілі колонки (C:C), а не C2:C: форма вставляє нові рядки, і Таблиці зсували б C2 → C5…
+  // Заголовок у першому рядку жодній умові не відповідає, тож рахунку не заважає.
+  var R = function (f) { return src + col[f] + ':' + col[f]; };
   var HOST = '$B$3'; // фільтр за сайтом — клітинка B3 на аркуші stats
   // + записи з host=test (перевірки підключення) у зведення не потрапляють
   var H = R('host') + ',' + HOST + ',' + R('host') + ',"<>test"';
