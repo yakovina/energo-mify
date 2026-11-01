@@ -140,7 +140,7 @@ function setupStats_(ss) {
   row('Міфи про українську енергетику — статистика');
   var rLast = row('Остання відповідь (зведення оновлюється саме)', '=IFERROR(MAX(' + src + 'A:A),"")');
   row('');
-  head('Налаштування', 'Значення');
+  head('Налаштування', '');
   var rSite = row('Рахувати проходження з сайту (* — з усіх)', keepSite);
   var rTest = row('Рахувати перевірочні проходження (адреса з ?test)', keepTest);
   row('');
@@ -162,7 +162,7 @@ function setupStats_(ss) {
   row('');
 
   // ---------- рівні ----------
-  var rLvHead = head('Рівні', 'Людей', 'Від тих, хто дійшов', 'Бали');
+  var rLvHead = head('Рівні', 'Людей', 'Частка', 'Бали');
   var rLv0 = rows.length + 1;
   LEVELS.forEach(function (l) {
     var r = rows.length + 1;
@@ -172,7 +172,7 @@ function setupStats_(ss) {
   row('');
 
   // ---------- бали ----------
-  var rScHead = head('Бали', 'Людей', 'Від тих, хто дійшов');
+  var rScHead = head('Бали', 'Людей', 'Частка');
   var rSc0 = rows.length + 1;
   for (var s = 0; s <= 8; s++) {
     var r = rows.length + 1;
@@ -182,7 +182,7 @@ function setupStats_(ss) {
   row('');
 
   // ---------- твердження ----------
-  var rQHead = head('Твердження', 'Відповіли правильно', 'Шкала', 'Обрали «Правда»', 'Обрали «Неправда»', 'Відповідей');
+  var rQHead = head('Твердження', 'Правильно', 'Шкала', '«Правда»', '«Неправда»', 'Відповідей');
   var rQ0 = rows.length + 1;
   QUESTIONS.forEach(function (q, i) {
     var f = 'q' + (i + 1), r = rows.length + 1;
@@ -195,22 +195,25 @@ function setupStats_(ss) {
   pcts.push('B' + rQ0 + ':B' + (rQ0 + QUESTIONS.length - 1));
   pcts.push('D' + rQ0 + ':E' + (rQ0 + QUESTIONS.length - 1));
   row('');
-  row('Частки — від тих, хто дійшов до результату. Найоманливіший міф — твердження з найкоротшою зеленою шкалою.');
+  row('Частки рівнів, балів і тверджень — від тих, хто дійшов до результату. Найоманливіший міф — твердження з найкоротшою зеленою шкалою.');
   row('Перевірочні проходження записуються з сайтом «test», тож щоб їх бачити, лиште сайт «*».');
 
   sh.getRange(1, 1, rows.length, 6).setValues(rows);
 
   // ---------- оформлення ----------
   sh.setHiddenGridlines(true);
-  sh.setColumnWidth(1, 380); sh.setColumnWidth(2, 175); sh.setColumnWidth(3, 170); sh.setColumnWidths(4, 2, 165); sh.setColumnWidth(6, 120);
+  // вузькі колонки, як у першій версії: довгі заголовки переносяться
+  sh.setColumnWidth(1, 330); sh.setColumnWidths(2, 5, 110);
   sh.getRange(1, 1, rows.length, 6).setFontFamily('Arial').setFontSize(11).setVerticalAlignment('middle');
   sh.getRange('A1').setFontSize(18).setFontWeight('bold');
   sh.getRange(rLast, 1, 1, 2).setFontColor('#666666');
   sh.getRange('B' + rLast).setNumberFormat('dd.mm.yyyy hh:mm').setHorizontalAlignment('left');
   heads.forEach(function (r) {
-    sh.getRange(r, 1, 1, 6).setFontWeight('bold').setBackground('#232b4a').setFontColor('#ffffff');
+    sh.getRange(r, 1, 1, 6).setFontWeight('bold').setBackground('#232b4a').setFontColor('#ffffff').setWrap(true);
     sh.setRowHeight(r, 30);
   });
+  // довгі назви тверджень і примітки переносяться в межах колонки A
+  sh.getRange(rQ0, 1, QUESTIONS.length, 1).setWrap(true);
   // налаштування — жовті клітинки з випадними списками
   sh.getRange('B' + rSite + ':B' + rTest).setBackground('#fff2a8').setFontWeight('bold');
   sh.getRange('B' + rSite).setDataValidation(SpreadsheetApp.newDataValidation()
