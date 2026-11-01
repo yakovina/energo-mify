@@ -35,10 +35,13 @@ body.night .ground { background-image: url("../public/art/px/hills-night.png"); 
 body.level .start { display: none; }
 body.level .lvl { display: block; }
 .lvl .card { left: 56px; top: 64px; width: 640px; padding: 36px 48px 44px; }
-.lvl .who { margin: 26px 0 0; font: italic 400 26px/1.3 "Lora", serif; color: var(--mute); }
+/* шапка плашки — як на сайті: лого й назва тесту через тонку риску */
+.brand { display: flex; align-items: center; gap: 18px; }
+.brand span { padding-left: 18px; border-left: 2px solid var(--line-2); font: 700 26px "Lora", serif; }
+.lvl .score { margin-top: 30px; }
 .score { display: flex; align-items: baseline; gap: 18px; margin-top: 4px; }
 .score b { font: 700 170px/.86 "Lora", serif; letter-spacing: -.04em; padding: 0 8px; background: linear-gradient(transparent 70%, var(--grass) 70% 86%, transparent 86%); }
-.score span { font: italic 400 38px "Lora", serif; color: var(--mute); }
+.score span { font: italic 400 34px/1.15 "Lora", serif; color: var(--mute); }
 .lvl h1 { margin: 22px 0 0; font: 700 62px/1.04 "Lora", serif; letter-spacing: -.01em; }
 .art { position: absolute; display: grid; place-items: center; }
 .art img { position: relative; display: block; }
@@ -66,9 +69,8 @@ body.level .lvl { display: block; }
     <div class="ground"></div>
     <div class="art" id="art"><img id="artImg" alt=""></div>
     <div class="card">
-      <img class="logo" src="../public/hmarochos_logo_new.svg" alt="">
-      <p class="who">Мій результат у тесті Хмарочоса</p>
-      <div class="score"><b id="score"></b><span>з 8</span></div>
+      <div class="brand"><img class="logo" src="../public/hmarochos_logo_new.svg" alt=""><span>Міфи про енергетику</span></div>
+      <div class="score"><b id="score"></b><span>з 8<br>правильних</span></div>
       <h1 id="title"></h1>
     </div>
   </div>
