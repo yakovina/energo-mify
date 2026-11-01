@@ -50,6 +50,19 @@ const ART = {
 };
 const LEVEL_ART: Record<Level["slug"], string> = { hostage: ART.candle, observer: ART.bulb, analyst: ART.battery };
 
+/** Кожне твердження ілюструє одна з картинок ілюстраторки — за темою.
+ *  Так у тесті видно всі вісім малюнків, а не лише обкладинку. */
+const Q_ART: Record<number, { src: string; kind: "scene" | "obj" }> = {
+  1: { src: ART.cover, kind: "scene" }, // експорт — уся енергосистема
+  2: { src: "/art/bulb.webp", kind: "obj" }, // рахунки — лампочка на гірлянді
+  3: { src: "/art/plant.webp", kind: "obj" }, // захист ТЕС — градирні
+  4: { src: ART.cover, kind: "scene" }, // синхронізація мережі
+  5: { src: ART.battery, kind: "obj" }, // промислові батареї
+  6: { src: "/art/windmill.webp", kind: "obj" }, // вітрові станції
+  7: { src: "/art/bulb.webp", kind: "obj" }, // розподіл живлення між регіонами
+  8: { src: ART.candle, kind: "obj" }, // графіки відключень
+};
+
 /** Піксельна стрілка в сітці 9×8 — як у малюнку. */
 const Arrow = () => (
   <svg className="arrow" viewBox="0 0 9 8" width="18" height="16" shapeRendering="crispEdges" aria-hidden>
@@ -119,9 +132,9 @@ function Plate({ src, alt = "", className = "" }: { src: string; alt?: string; c
 }
 
 /** Лампочка, свічка, батарейка — вільно, без рамки й тла: стоять збоку й світяться. */
-function Free({ src, warm, className = "" }: { src: string; warm?: boolean; className?: string }) {
+function Free({ src, warm, hang, className = "" }: { src: string; warm?: boolean; hang?: boolean; className?: string }) {
   return (
-    <figure className={`free${warm ? " warm" : ""} ${className}`} aria-hidden>
+    <figure className={`free${warm ? " warm" : ""}${hang ? " hang" : ""} ${className}`} aria-hidden>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={asset(src)} alt="" decoding="async" />
     </figure>
@@ -236,6 +249,7 @@ function Sheet({ quiz }: { quiz: QuizApi }) {
   const { screen, q, idx, total, picked, history } = quiz;
   const answered = screen === "reveal";
   const ok = picked === q.correct;
+  const qa = Q_ART[q.id] ?? Q_ART[1];
   const stRef = useRef<HTMLParagraphElement>(null);
   const verRef = useRef<HTMLElement>(null);
   const lock = useRef(false);
@@ -289,8 +303,7 @@ function Sheet({ quiz }: { quiz: QuizApi }) {
             </div>
             {answered && (
               <section className={`ver rise ${ok ? "ok" : "miss"}`} ref={verRef} tabIndex={-1} aria-live="polite">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img className="verArt" src={asset(ok ? ART.bulb : ART.candle)} alt="" decoding="async" />
+                <Free src={ok ? ART.bulb : ART.candle} warm={!ok} hang={ok} className={`verArt ${ok ? "lv-observer" : "lv-hostage"}`} />
                 <div>
                   <b className="vt">{ok ? UI.right : UI.wrong}</b>
                   <p className="expl">{q.explanation}</p>
@@ -310,9 +323,9 @@ function Sheet({ quiz }: { quiz: QuizApi }) {
               </section>
             )}
           </div>
-          {/* на широкому екрані праворуч — експонат: обкладинка, а після відповіді лампочка чи свічка */}
-          <aside className="qside" aria-hidden>
-            {answered ? <Free src={ok ? ART.bulb : ART.candle} warm={!ok} className={ok ? "lv-observer" : "lv-hostage"} /> : <Plate src={ART.cover} />}
+          {/* ілюстрація твердження: на телефоні — над номером, на десктопі — праворуч */}
+          <aside className={`qside ${qa.kind}`} aria-hidden>
+            {qa.kind === "scene" ? <Plate src={qa.src} /> : <Free src={qa.src} />}
           </aside>
         </div>
       </div>
@@ -374,7 +387,7 @@ function ResultBody({ level, history, onRestart }: { level: Level; history?: boo
             <h1 className="ltitle">{level.title}</h1>
             </div>
             {/* на телефоні арт — збоку від балів і звання */}
-            <Free src={LEVEL_ART[level.slug]} warm={level.slug === "hostage"} className={`lv-${level.slug} mobileOnly`} />
+            <Free src={LEVEL_ART[level.slug]} warm={level.slug === "hostage"} hang={level.slug === "observer"} className={`lv-${level.slug} mobileOnly`} />
             </div>
             <p className="ldesc">{level.description}</p>
             {history ? (
@@ -400,7 +413,7 @@ function ResultBody({ level, history, onRestart }: { level: Level; history?: boo
             )}
           </div>
           <aside className="rside">
-            <Free src={LEVEL_ART[level.slug]} warm={level.slug === "hostage"} className={`lv-${level.slug}`} />
+            <Free src={LEVEL_ART[level.slug]} warm={level.slug === "hostage"} hang={level.slug === "observer"} className={`lv-${level.slug}`} />
           </aside>
         </div>
       </div>

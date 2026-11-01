@@ -414,9 +414,7 @@
   padding-top: 26px;
 }
 
-.nm .qside {
-  display: none;
-}
+
 
 @media (min-width: 900px) {
   .nm .qgrid {
@@ -576,19 +574,6 @@
   outline: none;
 }
 
-.nm .verArt {
-  width: 56px;
-  height: auto;
-}
-
-.nm .ver.ok .verArt {
-  filter: drop-shadow(0 0 10px rgba(248, 232, 64, 0.9));
-}
-
-.nm .ver.miss .verArt {
-  filter: drop-shadow(0 0 10px rgba(252, 140, 40, 0.7));
-}
-
 .nm .vt {
   font: 700 26px/1.15 "Lora", serif;
 }
@@ -634,9 +619,7 @@
   .nm .ver {
     grid-template-columns: 1fr;
   }
-  .nm .verArt {
-    display: none;
-  }
+
   .nm .ver .cta {
     width: auto;
     justify-self: start;
@@ -945,7 +928,7 @@ html:has(.nm) {
 }
 
 .nm .ground:has(img) {
-  margin-top: 150px;
+  margin-top: 170px;
 }
 
 /* на нічних пагорбах («Заручник») — сцена в сутінках */
@@ -958,12 +941,140 @@ html:has(.nm) {
     bottom: 34px;
   }
   .nm .ground .mill {
-    width: 220px;
+    width: 180px;
   }
   .nm .ground .plant {
     width: 210px;
   }
   .nm .ground:has(img) {
-    margin-top: 220px;
+    margin-top: 260px;
+  }
+}
+
+/* ——— ілюстрація твердження ——— */
+
+.nm .qside {
+  display: flex;
+  justify-content: flex-start;
+  order: -1;
+}
+
+.nm .qside.scene .plate {
+  width: min(100%, 300px);
+}
+
+.nm .qside.obj .free img {
+  width: auto;
+  height: 120px;
+  filter: none;
+}
+
+@media (min-width: 900px) {
+  .nm .qside {
+    order: 0;
+    justify-content: center;
+    align-items: center;
+    min-height: 380px;
+  }
+  .nm .qside.scene .plate {
+    width: 100%;
+  }
+  .nm .qside.obj .free img {
+    height: 300px;
+    max-width: 100%;
+    object-fit: contain;
+  }
+}
+
+/* ——— висить на шнурі: шнур угору від цоколя, легке гойдання ——— */
+
+.nm .free.hang {
+  --cord: 36px;
+  position: relative;
+  padding-top: var(--cord);
+  transform-origin: 50% 0;
+  animation: nmSwing 2.2s ease-out both;
+}
+
+.nm .free.hang::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 3px;
+  height: calc(var(--cord) + 4px);
+  transform: translateX(-50%);
+  background: #232323;
+}
+
+@keyframes nmSwing {
+  0% {
+    transform: rotate(-10deg);
+  }
+  30% {
+    transform: rotate(6deg);
+  }
+  55% {
+    transform: rotate(-3deg);
+  }
+  78% {
+    transform: rotate(1.2deg);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+/* у результаті шнур спускається з самого верху блоку */
+.nm .rside .free.hang {
+  --cord: 90px;
+  align-self: start;
+  margin-top: -40px;
+}
+
+.nm .rtop .free.hang {
+  --cord: 30px;
+  align-self: start;
+}
+
+/* ——— вердикт: маленька лампочка (висить) або свічка — праворуч, текст обтікає ——— */
+
+.nm .ver {
+  display: block;
+}
+
+.nm .ver .free.verArt {
+  float: right;
+  margin: 0 0 8px 16px;
+  display: block;
+}
+
+.nm .ver .free.verArt img {
+  width: 44px;
+}
+
+.nm .ver .free.verArt.lv-hostage img {
+  width: 34px;
+}
+
+.nm .ver .free.verArt.hang {
+  --cord: 26px;
+  margin-top: -26px;
+}
+
+.nm .ver .cta {
+  clear: both;
+  margin-top: 20px;
+}
+
+@media (min-width: 900px) {
+  .nm .ver .free.verArt {
+    display: block;
+  }
+  .nm .ver .free.verArt img {
+    width: 56px;
+  }
+  .nm .ver .free.verArt.lv-hostage img {
+    width: 42px;
   }
 }
