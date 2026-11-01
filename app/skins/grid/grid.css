@@ -821,6 +821,7 @@ html:has(.nm) {
 }
 
 .nm .ground {
+  position: relative;
   flex: none;
   height: 48px;
   background: url("/art/px/hills-day.png") repeat-x left bottom / auto 100%;
@@ -923,4 +924,46 @@ html:has(.nm) {
 
 .nm .nfBox .free {
   margin-bottom: 20px;
+}
+
+/* вітряк і градирні ілюстраторки стоять на пагорбах: низ малюнка — трохи нижче верху смуги */
+.nm .ground img {
+  position: absolute;
+  bottom: 24px;
+  height: auto;
+  pointer-events: none;
+}
+
+.nm .ground .mill {
+  left: max(-18px, calc(50% - 560px - 60px));
+  width: 120px;
+}
+
+.nm .ground .plant {
+  right: max(0px, calc(50% - 560px - 40px));
+  width: 118px;
+}
+
+.nm .ground:has(img) {
+  margin-top: 150px;
+}
+
+/* на нічних пагорбах («Заручник») — сцена в сутінках */
+.nm .ground.night img {
+  filter: brightness(0.55) saturate(0.7);
+}
+
+@media (min-width: 900px) {
+  .nm .ground img {
+    bottom: 34px;
+  }
+  .nm .ground .mill {
+    width: 220px;
+  }
+  .nm .ground .plant {
+    width: 210px;
+  }
+  .nm .ground:has(img) {
+    margin-top: 220px;
+  }
 }

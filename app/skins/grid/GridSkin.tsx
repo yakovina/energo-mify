@@ -57,8 +57,22 @@ const Arrow = () => (
   </svg>
 );
 
-/** Пагорби ілюстраторки внизу сторінки — земля, на якій стоїть мережа. */
-const Ground = ({ night }: { night?: boolean }) => <div className={`ground${night ? " night" : ""}`} aria-hidden />;
+/** Пагорби ілюстраторки внизу сторінки, а на них — її вітряк і градирні з димом.
+ *  scene=false — лише пагорби (на старті обкладинка вже показує і вітряк, і градирні). */
+function Ground({ night, scene = true }: { night?: boolean; scene?: boolean }) {
+  return (
+    <div className={`ground${night ? " night" : ""}`} aria-hidden>
+      {scene && (
+        <>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="mill" src={asset("/art/windmill.webp")} alt="" decoding="async" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="plant" src={asset("/art/plant.webp")} alt="" decoding="async" />
+        </>
+      )}
+    </div>
+  );
+}
 
 function Head() {
   return (
@@ -467,7 +481,7 @@ export default function GridSkin({ quiz }: { quiz: QuizApi }) {
           </div>
           <Grid history={[]} label="Мережа · 0/8" />
         </div>
-        <Ground />
+        <Ground scene={false} />
       </main>
     );
   }
