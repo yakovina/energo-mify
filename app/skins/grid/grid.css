@@ -144,6 +144,7 @@
   top: 34px;
   height: 5px;
   overflow: hidden;
+  container-type: inline-size;
 }
 
 .nm .grid .line::before {
@@ -197,6 +198,13 @@
 
 .nm .node.now {
   border-color: var(--blue-d);
+}
+
+.nm .node.now::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: var(--amber);
   animation: nmBlink 1.4s ease-in-out infinite;
 }
 
@@ -209,6 +217,7 @@
   position: absolute;
   top: 0;
   left: 0;
+  will-change: transform;
   width: 64px;
   height: 5px;
   /* імпульс із піксельних рисок, що густішають до голови */
@@ -217,18 +226,24 @@
   pointer-events: none;
 }
 
+/* імпульс біжить лише трансформацією (без перерахунку розкладки щокадру);
+   100cqw — ширина доріжки (вона — контейнер) */
 @keyframes nmRun {
   from {
-    left: -70px;
+    transform: translateX(-70px);
   }
   to {
-    left: 100%;
+    transform: translateX(100cqw);
   }
 }
 
 @keyframes nmBlink {
+  0%,
+  100% {
+    opacity: 0;
+  }
   50% {
-    background: var(--amber);
+    opacity: 1;
   }
 }
 
@@ -835,14 +850,40 @@ html:has(.nm) {
   place-items: center;
 }
 
-.nm .free img {
-  display: block;
-  height: auto;
-  filter: drop-shadow(0 0 14px rgba(248, 232, 64, 0.85));
+.nm .free {
+  position: relative;
+  isolation: isolate;
 }
 
-.nm .free.warm img {
-  filter: drop-shadow(0 0 14px rgba(252, 150, 50, 0.75));
+.nm .free img {
+  position: relative;
+  z-index: 1;
+  display: block;
+  height: auto;
+}
+
+/* світіння — м'яке коло позаду малюнка, а не filter: його не треба перемальовувати,
+   коли лампочка гойдається */
+.nm .free::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 18%;
+  width: 120%;
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  background: radial-gradient(closest-side, rgba(248, 232, 64, 0.55), rgba(248, 232, 64, 0) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.nm .free.warm::after {
+  background: radial-gradient(closest-side, rgba(252, 150, 50, 0.45), rgba(252, 150, 50, 0) 100%);
+}
+
+.nm .free.lv-analyst::after {
+  width: 90%;
+  bottom: 0;
 }
 
 .nm .free.lv-observer img {
@@ -919,12 +960,12 @@ html:has(.nm) {
 
 .nm .ground .mill {
   left: max(-18px, calc(50% - 560px - 60px));
-  width: 120px;
+  width: 92px;
 }
 
 .nm .ground .plant {
   right: max(0px, calc(50% - 560px - 40px));
-  width: 118px;
+  width: 100px;
 }
 
 
@@ -954,6 +995,7 @@ html:has(.nm) {
   position: relative;
   padding-top: var(--cord);
   transform-origin: 50% 0;
+  will-change: transform;
   animation: nmSwing 2.2s ease-out both;
 }
 
@@ -1144,7 +1186,7 @@ html:has(.nm) {
 
 .nm .ground.scene {
   z-index: 1;
-  margin-top: -110px;
+  margin-top: -56px;
   height: calc(48px + 110px);
   background-size: auto 48px;
 }
@@ -1173,5 +1215,114 @@ html:has(.nm) {
 @media (min-width: 900px) {
   .nm .ver.miss {
     margin-top: 96px;
+  }
+}
+
+/* ——— струм: відрізки лінії між підстанціями ———
+   правильна відповідь — по відрізку до нової підстанції «біжить» струм (смуга росте зліва
+   направо), і підстанція спалахує, коли він доходить; хибна — відрізок «коротить»:
+   кілька іржавих спалахів, і він лишається розірваним */
+
+.nm .seg {
+  position: absolute;
+  top: 35px;
+  height: 3px;
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+
+.nm .seg.on {
+  background: var(--grass);
+  box-shadow: 0 0 6px rgba(184, 202, 74, 0.9);
+}
+
+.nm .seg.on.fresh {
+  animation: nmFlow 0.55s cubic-bezier(0.5, 0, 0.3, 1) both;
+}
+
+.nm .seg.miss {
+  height: 3px;
+  background: repeating-linear-gradient(90deg, var(--rust) 0 6px, transparent 6px 12px);
+}
+
+.nm .seg.miss.fresh {
+  animation: nmShort 0.6s steps(1) both;
+}
+
+@keyframes nmFlow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes nmShort {
+  0%,
+  40%,
+  80% {
+    opacity: 1;
+  }
+  20%,
+  60% {
+    opacity: 0.15;
+  }
+}
+
+/* підстанція вмикається, коли струм дійшов */
+.nm .node.on.fresh {
+  animation-delay: 0.45s;
+}
+
+/* хибна: вузол «іскрить» */
+.nm .node.miss.fresh {
+  animation: nmSpark 0.6s ease-out both;
+}
+
+@keyframes nmSpark {
+  0% {
+    transform: translateX(-50%) scale(1.6);
+    box-shadow: 0 0 14px rgba(232, 90, 40, 0.9);
+  }
+  100% {
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+/* хибна відповідь: обраний рядок здригається */
+.nm .opt.bad {
+  animation: nmJolt 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+
+@keyframes nmJolt {
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(5px);
+  }
+  60% {
+    transform: translateX(-3px);
+  }
+  80% {
+    transform: translateX(2px);
+  }
+}
+
+/* правильна: обраний рядок коротко «заряджається» — смуга світла пробігає зліва направо */
+.nm .opt.good {
+  background-image: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+  background-size: 40% 100%;
+  background-repeat: no-repeat;
+  animation: nmCharge 0.7s ease-out both;
+}
+
+@keyframes nmCharge {
+  from {
+    background-position: -60% 0;
+  }
+  to {
+    background-position: 160% 0;
   }
 }

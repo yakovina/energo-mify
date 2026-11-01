@@ -93,7 +93,7 @@ function Head() {
 }
 
 /** Лінія мережі з восьми підстанцій. history — пройдені твердження; now — поточне. */
-function Grid({ history, now, label }: { history: boolean[]; now?: number; label?: string }) {
+function Grid({ history, now, label, fresh }: { history: boolean[]; now?: number; label?: string; fresh?: boolean }) {
   const on = history.filter(Boolean).length;
   return (
     <div className="grid" role="img" aria-label={`Під напругою ${on} з ${TOTAL} підстанцій`}>
@@ -103,9 +103,20 @@ function Grid({ history, now, label }: { history: boolean[]; now?: number; label
       <span className="line" aria-hidden>
         <span className="pulse" />
       </span>
+      {/* відрізки між підстанціями: струм іде до кожної ввімкненої, біля хибної — розрив */}
+      {history.map((h, i) =>
+        i === 0 ? null : (
+          <span
+            key={`s${i}`}
+            className={`seg ${h ? "on" : "miss"}${i === history.length - 1 && fresh ? " fresh" : ""}`}
+            style={{ left: `${((i - 1) / (TOTAL - 1)) * 100}%`, width: `${100 / (TOTAL - 1)}%` }}
+            aria-hidden
+          />
+        ),
+      )}
       {Array.from({ length: TOTAL }, (_, i) => {
         const st = i < history.length ? (history[i] ? "on" : "miss") : i === now ? "now" : "";
-        return <i key={i} className={`node ${st}${i === history.length - 1 ? " fresh" : ""}`} style={{ left: `${(i / (TOTAL - 1)) * 100}%` }} />;
+        return <i key={i} className={`node ${st}${i === history.length - 1 && fresh ? " fresh" : ""}`} style={{ left: `${(i / (TOTAL - 1)) * 100}%` }} />;
       })}
     </div>
   );
@@ -276,7 +287,7 @@ function Sheet({ quiz }: { quiz: QuizApi }) {
     <main className="nm sheet">
       <div className="col">
         <Head />
-        <Grid history={history} now={answered ? undefined : idx} />
+        <Grid history={history} now={answered ? undefined : idx} fresh={answered} />
         <div className="qgrid">
           <div className="qmain" key={q.id}>
             <p className="num rise" data-scroll-anchor="(max-width: 899px)">
@@ -440,7 +451,7 @@ export default function GridSkin({ quiz }: { quiz: QuizApi }) {
   const { screen, level, history } = quiz;
   useKeys(quiz);
   useEffect(() => {
-    for (const a of [ART.bulb, ART.candle, ART.battery]) preload(asset(a));
+    for (const a of [ART.bulb, ART.candle, ART.battery, "/art/windmill.webp", "/art/plant.webp"]) preload(asset(a));
   }, []);
 
   if (screen === "intro") {
