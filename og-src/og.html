@@ -3,120 +3,99 @@
 <head>
 <meta charset="utf-8">
 <title>OG</title>
-<!-- OG 1200×630 у стилі «Мережа» (кольори ілюстрації). Рендерить scripts/render-og.mjs:
-     og.html → public/og-test.png (назва ліворуч, обкладинка праворуч);
-     og.html?l=<slug> → public/og-<slug>.png (бали, звання, лінія мережі; арт рівня праворуч з ореолом).
-     Арт — у рідній сітці 120×80 з public/art/px, збільшений без розмиття. -->
+<!-- OG 1200×630 у стилі «Мережа». Рендерить scripts/render-og.mjs:
+     og.html → public/og-test.png — велика обкладинка ілюстраторки й плашка з назвою;
+     og.html?s=<0..8> → public/og-s<N>.png — точні бали; ?l=<slug> → діапазон рівня (старі посилання).
+     Принцип: мало елементів і великі — прев'ю показують дрібно. Обкладинка — у рідній
+     сітці 120×80, збільшена рівно в 7 разів, без розмиття. -->
 <style>
-@font-face { font-family: "Open Sans"; src: url("../public/fonts/hm/open-sans-v29-latin_cyrillic-ext-500.woff2") format("woff2"); font-weight: 500; }
 @font-face { font-family: "Open Sans"; src: url("../public/fonts/hm/open-sans-v29-latin_cyrillic-ext-700.woff2") format("woff2"); font-weight: 700; }
 @font-face { font-family: "Lora"; src: url("../public/fonts/hm/lora-v24-latin_cyrillic-ext-700.woff2") format("woff2"); font-weight: 700; }
 @font-face { font-family: "Lora"; src: url("../public/fonts/hm/lora-v24-latin_cyrillic-ext-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; }
-:root { --bg: #d7ddf2; --bg-2: #e6e9f7; --cloud: #aab3dd; --line: #b4bce2; --line-2: #8396d6; --text: #232b4a; --mute: #6a7299; --blue-d: #4458a8; --amber: #f8e840; --amber-2: #fcc63d; --orange: #cc8619; --night: #232b4a; }
+:root { --bg-2: #e6e9f7; --cloud: #aab3dd; --line: #b4bce2; --line-2: #8396d6; --text: #232b4a; --mute: #6a7299; --amber: #f8e840; --amber-2: #fcc63d; --grass: #b8ca4a; --forest: #4d6135; }
 * { box-sizing: border-box; }
 body { margin: 0; width: 1200px; height: 630px; overflow: hidden; position: relative; color: var(--text); font-family: "Open Sans", sans-serif;
   background: url("../public/art/px/sky.png") repeat-x left top / 32px 800px, #e2e6f6; image-rendering: pixelated; }
-.ground { position: absolute; left: 0; right: 0; bottom: 0; height: 64px; background: url("../public/art/px/hills-day.png") repeat-x left bottom / auto 100%; image-rendering: pixelated; }
-body.night .ground { background-image: url("../public/art/px/hills-night.png"); }
-.head { position: absolute; left: 72px; right: 72px; top: 46px; display: flex; align-items: center; justify-content: space-between; }
-.brand { display: flex; align-items: center; gap: 16px; font: 700 24px "Lora", serif; }
-.brand img { height: 46px; }
-.brand span { padding-left: 16px; border-left: 2px solid var(--line-2); }
-.cap { font-size: 18px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--blue-d); }
-.cap::before { content: ""; display: inline-block; width: 12px; height: 12px; margin-right: 14px; background: var(--amber); box-shadow: 0 0 0 2px var(--orange); vertical-align: 1px; }
 .px { image-rendering: pixelated; display: block; }
+.ground { position: absolute; left: 0; right: 0; bottom: 0; height: 72px; background: url("../public/art/px/hills-day.png") repeat-x left bottom / auto 100%; image-rendering: pixelated; }
+body.night .ground { background-image: url("../public/art/px/hills-night.png"); }
+/* плашка: світла, тонка лінія, жорстка піксельна тінь — як на сайті */
+.card { position: absolute; background: rgba(247,248,253,.97); border: 2px solid var(--line); box-shadow: 10px 10px 0 var(--cloud); }
+.logo { height: 46px; display: block; }
 
-/* старт */
-.start .text { position: absolute; left: 72px; top: 150px; width: 500px; }
-.start h1 { margin: 16px 0 0; font: 700 70px/1.02 "Lora", serif; letter-spacing: -.015em; }
-.cta { display: inline-flex; align-items: center; gap: 22px; margin-top: 34px; height: 78px; padding: 0 32px 6px; background: var(--amber); color: var(--text); font-weight: 700; font-size: 26px; box-shadow: inset 0 0 0 3px var(--text), inset 0 -10px 0 0 var(--amber-2), inset 0 -10px 0 3px var(--text); }
-.plate { position: absolute; }
-.start .plate { right: 72px; top: 126px; width: 540px; }
-.start .plate img { width: 100%; }
+/* ——— старт: обкладинка велика праворуч, плашка з назвою заходить на неї ——— */
+.start .cover { position: absolute; right: 0; bottom: 0; width: 720px; height: 480px; }
+.start .card { left: 48px; top: 80px; width: 470px; padding: 36px 40px 42px; }
+.start h1 { margin: 26px 0 0; font: 700 60px/1.03 "Lora", serif; letter-spacing: -.015em; }
+.cta { display: inline-flex; align-items: center; gap: 22px; margin-top: 30px; height: 76px; padding: 0 30px 6px; background: var(--amber); font-weight: 700; font-size: 27px;
+  box-shadow: inset 0 0 0 3px var(--text), inset 0 -10px 0 0 var(--amber-2), inset 0 -10px 0 3px var(--text); }
 
-/* лінія мережі */
-.grid { position: absolute; left: 72px; right: 72px; top: 100px; height: 20px; }
-.grid::before { content: ""; position: absolute; left: 0; right: 0; top: 9px; height: 2px; background: var(--line-2); }
-.grid i { position: absolute; top: 1px; width: 18px; height: 18px; transform: translateX(-50%); background: var(--bg-2); border: 3px solid var(--line-2); }
-.grid i.on { background: #b8ca4a; border-color: #4d6135; box-shadow: 0 0 16px rgba(184,202,74,.9); }
-.grid .pulse { position: absolute; top: 7px; width: 120px; height: 6px; background: linear-gradient(90deg, transparent 0 16px, var(--amber) 16px 24px, transparent 24px 44px, var(--amber) 44px 60px, transparent 60px 68px, var(--orange) 68px 92px, var(--amber) 92px 120px); }
-
-/* рівень: плашка як на сайті — світла, тонка лінія, піксельна тінь; арт усередині праворуч */
+/* ——— результат: великі бали й звання на плашці, праворуч великий арт рівня ——— */
 .lvl { display: none; }
-.card { position: absolute; left: 150px; right: 150px; top: 132px; height: 300px; background: rgba(247,248,253,.95); border: 2px solid var(--line); box-shadow: 8px 8px 0 var(--cloud); }
-.card .text { position: absolute; left: 52px; top: 40px; width: 560px; }
-.card .art { position: absolute; right: 60px; top: 0; bottom: 0; display: grid; place-items: center; }
-.card .art img { position: relative; image-rendering: auto; }
-.card .art::before { content: ""; position: absolute; left: 50%; top: 50%; width: 300px; height: 300px; transform: translate(-50%, -50%); background: radial-gradient(closest-side, rgba(248,232,64,.5), rgba(248,232,64,0)); }
-.card .art.warm::before { background: radial-gradient(closest-side, rgba(252,150,50,.45), rgba(252,150,50,0)); }
-/* лампочка висить на шнурі від верхнього краю плашки */
-.card .art.hang { place-items: start center; padding-top: 44px; }
-.card .art.hang::after { content: ""; position: absolute; left: 50%; top: 0; width: 4px; height: 48px; transform: translateX(-50%); background: #232323; }
-.mill, .plant { position: absolute; bottom: 40px; image-rendering: auto; }
-.mill { left: 10px; width: 170px; }
-.plant { right: 20px; width: 170px; }
 body.level .start { display: none; }
 body.level .lvl { display: block; }
-
-.score { display: flex; align-items: baseline; gap: 18px; }
-.score b { font: 700 104px/.9 "Lora", serif; color: var(--text); letter-spacing: -.03em; padding: 0 6px; background: linear-gradient(transparent 70%, #b8ca4a 70% 88%, transparent 88%); }
-.score span { font: italic 400 30px "Lora", serif; color: var(--mute); }
-.lvl h1 { margin: 26px 0 0; font: 700 60px/1.04 "Lora", serif; letter-spacing: -.01em; }
-
-
-
-
+.lvl .card { left: 56px; top: 64px; width: 640px; padding: 36px 48px 44px; }
+.lvl .who { margin: 26px 0 0; font: italic 400 26px/1.3 "Lora", serif; color: var(--mute); }
+.score { display: flex; align-items: baseline; gap: 18px; margin-top: 4px; }
+.score b { font: 700 170px/.86 "Lora", serif; letter-spacing: -.04em; padding: 0 8px; background: linear-gradient(transparent 70%, var(--grass) 70% 86%, transparent 86%); }
+.score span { font: italic 400 38px "Lora", serif; color: var(--mute); }
+.lvl h1 { margin: 22px 0 0; font: 700 62px/1.04 "Lora", serif; letter-spacing: -.01em; }
+.art { position: absolute; display: grid; place-items: center; }
+.art img { position: relative; display: block; }
+.art::before { content: ""; position: absolute; left: 50%; top: 50%; width: 520px; height: 520px; transform: translate(-50%, -50%); background: radial-gradient(closest-side, rgba(248,232,64,.55), rgba(248,232,64,0)); }
+.art.warm::before { background: radial-gradient(closest-side, rgba(252,150,50,.5), rgba(252,150,50,0)); }
+/* лампочка висить на шнурі від верхнього краю картинки */
+.art.bulb { right: 110px; top: 0; padding-top: 70px; }
+.art.bulb::after { content: ""; position: absolute; left: 50%; top: 0; width: 6px; height: 76px; transform: translateX(-50%); background: #232323; }
+.art.bulb::before { top: 62%; }
+.art.candle { right: 150px; bottom: 50px; }
+.art.battery { right: 40px; bottom: 120px; }
 </style>
 </head>
 <body>
-  <div class="head"><span class="brand"><img src="../public/hmarochos_logo_new.svg" alt=""><span>Міфи про енергетику</span></span></div>
-
   <div class="start">
-    <div class="text">
+    <img class="px cover" src="../public/art/px/cover.png" alt="">
+    <div class="card">
+      <img class="logo" src="../public/hmarochos_logo_new.svg" alt="">
       <h1>Міфи про українську енергетику</h1>
-      <div class="cta">Пройти тест <svg viewBox="0 0 22 10" width="34" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M0 5h20M16 1l4 4-4 4"/></svg></div>
+      <div class="cta">Пройти тест <svg viewBox="0 0 9 8" width="26" height="23" shape-rendering="crispEdges"><path d="M5 0h1v1H5zM5 1h2v1H5zM5 2h3v1H5zM0 3h9v2H0zM5 5h3v1H5zM5 6h2v1H5zM5 7h1v1H5z" fill="currentColor"/></svg></div>
     </div>
-    <div class="plate"><img class="px" src="../public/art/px/cover.png" alt=""></div>
   </div>
 
   <div class="lvl">
-    <img class="mill" src="../public/art/windmill.webp" alt="">
-    <img class="plant" src="../public/art/plant.webp" alt="">
+    <div class="ground"></div>
+    <div class="art" id="art"><img id="artImg" alt=""></div>
     <div class="card">
-      <div class="text">
-        <div class="score"><b id="range"></b><span>з 8</span></div>
-        <h1 id="title"></h1>
-      </div>
-      <div class="art" id="plate"><img id="art" alt=""></div>
+      <img class="logo" src="../public/hmarochos_logo_new.svg" alt="">
+      <p class="who">Мій результат у тесті Хмарочоса</p>
+      <div class="score"><b id="score"></b><span>з 8</span></div>
+      <h1 id="title"></h1>
     </div>
   </div>
 
-  <div class="grid" id="grid"></div>
-  <div class="ground"></div>
-
 <script>
   const LEVELS = {
-    hostage: { title: "Заручник інфопростору", range: "0–3", max: 3, art: "candle", w: 100, warm: true },
-    observer: { title: "Уважний спостерігач", range: "4–6", max: 6, art: "bulb-lamp", w: 120 },
-    analyst: { title: "Енергетичний аналітик", range: "7–8", max: 8, art: "battery", w: 260 },
+    hostage: { title: "Заручник інфопростору", range: "0–3", max: 3, art: "candle", w: 170, warm: true },
+    observer: { title: "Уважний спостерігач", range: "4–6", max: 6, art: "bulb", w: 200 },
+    analyst: { title: "Енергетичний аналітик", range: "7–8", max: 8, art: "battery", w: 420 },
   };
-  // ?s=<бали> — точна кількість балів; ?l=<рівень> — діапазон рівня
+  // ?s=<бали> — точна кількість; ?l=<рівень> — діапазон рівня
   const qs = new URLSearchParams(location.search);
   const sc = qs.has("s") ? Number(qs.get("s")) : null;
   const l = sc !== null ? Object.values(LEVELS).find((v) => sc <= v.max) : LEVELS[qs.get("l")];
-  const lit = l ? (sc ?? l.max) : 0;
-  document.getElementById("grid").innerHTML =
-    Array.from({ length: 8 }, (_, i) => `<i class="${i < lit ? "on" : ""}" style="left:${(i / 7) * 100}%"></i>`).join("") +
-    `<span class="pulse" style="left:${l ? Math.min(85, (lit / 7) * 100) - 12 : 30}%"></span>`;
   if (l) {
     document.body.classList.add("level");
+    if (l.warm) document.body.classList.add("night");
     document.getElementById("title").textContent = l.title;
-    document.getElementById("range").textContent = sc !== null ? String(sc) : l.range;
-    if (l.art === "bulb-lamp") document.getElementById("plate").classList.add("hang");
-    const a = document.getElementById("art");
-    a.src = `../public/art/${l.art}.webp`;
-    a.style.width = l.w + "px";
-    if (l.warm) { document.getElementById("plate").classList.add("warm"); document.body.classList.add("night"); document.querySelectorAll(".mill,.plant").forEach((e) => (e.style.filter = "brightness(.55) saturate(.7)")); }
+    document.getElementById("score").textContent = sc !== null ? String(sc) : l.range;
+    const art = document.getElementById("art");
+    art.classList.add(l.art);
+    if (l.warm) art.classList.add("warm");
+    const img = document.getElementById("artImg");
+    img.src = `../public/art/${l.art === "bulb" ? "bulb-lamp" : l.art}.webp`;
+    img.style.width = l.w + "px";
+  } else {
+    document.querySelector(".lvl").remove();
   }
 </script>
 </body>

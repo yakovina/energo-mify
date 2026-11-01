@@ -89,10 +89,11 @@ function Head() {
 }
 
 /** Лінія мережі з восьми підстанцій. history — пройдені твердження; now — поточне. */
-function Grid({ history, now, fresh }: { history: boolean[]; now?: number; fresh?: boolean }) {
+function Grid({ history, now, fresh, boot }: { history: boolean[]; now?: number; fresh?: boolean; boot?: boolean }) {
   const on = history.filter(Boolean).length;
   return (
-    <div className="grid" role="img" aria-label={`Правильних відповідей: ${on} з ${TOTAL}`}>
+    // boot — на результаті мережа «запускається»: відрізки й підстанції вмикаються по черзі зліва направо
+    <div className={`grid${boot ? " boot" : ""}`} role="img" aria-label={`Правильних відповідей: ${on} з ${TOTAL}`}>
       <span className="line" aria-hidden>
         <span className="pulse" />
       </span>
@@ -102,14 +103,14 @@ function Grid({ history, now, fresh }: { history: boolean[]; now?: number; fresh
           <span
             key={`s${i}`}
             className={`seg ${h ? "on" : "miss"}${i === history.length - 1 && fresh ? " fresh" : ""}`}
-            style={{ left: `${((i - 1) / (TOTAL - 1)) * 100}%`, width: `${100 / (TOTAL - 1)}%` }}
+            style={{ left: `${((i - 1) / (TOTAL - 1)) * 100}%`, width: `${100 / (TOTAL - 1)}%`, ["--i" as string]: i }}
             aria-hidden
           />
         ),
       )}
       {Array.from({ length: TOTAL }, (_, i) => {
         const st = i < history.length ? (history[i] ? "on" : "miss") : i === now ? "now" : "";
-        return <i key={i} className={`node ${st}${i === history.length - 1 && fresh ? " fresh" : ""}`} style={{ left: `${(i / (TOTAL - 1)) * 100}%` }} />;
+        return <i key={i} className={`node ${st}${i === history.length - 1 && fresh ? " fresh" : ""}`} style={{ left: `${(i / (TOTAL - 1)) * 100}%`, ["--i" as string]: i }} />;
       })}
     </div>
   );
@@ -347,25 +348,6 @@ function Sheet({ quiz }: { quiz: QuizApi }) {
 
 // ——— результат ———
 
-function CountUp({ to }: { to: number }) {
-  const [n, setN] = useState(0);
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || to === 0) {
-      setN(to);
-      return;
-    }
-    const t0 = performance.now();
-    let raf = 0;
-    const step = (now: number) => {
-      const p = Math.min(1, (now - t0) / 900);
-      setN(Math.round(to * (1 - Math.pow(1 - p, 3))));
-      if (p < 1) raf = requestAnimationFrame(step);
-    };
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, [to]);
-  return <>{n}</>;
-}
 
 function ResultBody({ level, history, fixed, onRestart }: { level: Level; history?: boolean[]; fixed?: number; onRestart?: () => void }) {
   const score = history ? history.filter(Boolean).length : fixed;
@@ -375,7 +357,7 @@ function ResultBody({ level, history, fixed, onRestart }: { level: Level; histor
     <main className="nm result">
       <div className="col">
         <Head />
-        <Grid history={shown} />
+        <Grid history={shown} boot />
         <div className="rgrid">
           <div className="rmain">
             <div className="rtop">
@@ -383,9 +365,7 @@ function ResultBody({ level, history, fixed, onRestart }: { level: Level; histor
             {!history && <p className="shared">{`${UI.sharedResult} «${intro.title}»`}</p>}
             {score !== undefined ? (
               <p className="score">
-                <b>
-                  <CountUp to={score} />
-                </b>
+                <b>{score}</b>
                 <span>
                   {UI.of(TOTAL)} {UI.live}
                 </span>

@@ -1499,3 +1499,49 @@ html:has(.nm) {
   font: italic 400 16px/1.4 "Lora", serif;
   color: var(--mute);
 }
+
+/* ——— перехід до результату ———
+   мережа запускається: підстанції й відрізки між ними вмикаються по черзі зліва направо
+   (крок 90 мс), а плашка результату тим часом м'яко проявляється й ледь збільшується */
+
+.nm .grid.boot .seg {
+  animation: nmFlow 0.18s var(--ease-run) calc(var(--i) * 90ms - 90ms) both;
+}
+
+.nm .grid.boot .seg.miss {
+  animation: nmBootDim 0.2s ease-out calc(var(--i) * 90ms) both;
+}
+
+.nm .grid.boot .node.on,
+.nm .grid.boot .node.miss {
+  animation: nmBootNode 0.4s ease-out calc(var(--i) * 90ms) both;
+}
+
+@keyframes nmBootNode {
+  0% {
+    transform: translateX(-50%) scale(0.5);
+  }
+  50% {
+    transform: translateX(-50%) scale(1.35);
+  }
+  100% {
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+@keyframes nmBootDim {
+  from {
+    opacity: 0;
+  }
+}
+
+.nm.result .rmain {
+  animation: nmCardIn 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) 0.1s both;
+}
+
+@keyframes nmCardIn {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+}
