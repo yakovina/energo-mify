@@ -3,7 +3,7 @@
  *
  * Як у попередніх тестах Хмарочоса: тест шле дані прямо в Google Form
  * (formResponse, без квот Apps Script), форма пише їх у Google-таблицю,
- * а аркуш «stats» рахує зведення формулами.
+ * а аркуш «Статистика» рахує зведення формулами.
  *
  * ЗАПУСК (один раз, ~2 хвилини):
  *   1. script.google.com → «Новий проєкт» → вставити цей файл замість коду.
@@ -105,118 +105,143 @@ function setupStats() {
 
 function setupStats_(ss) {
   PropertiesService.getScriptProperties().setProperty('SS_ID', ss.getId());
-  var src = "'" + responsesSheet_(ss).getName() + "'!";
-  // колонки аркуша відповідей: A позначка часу, далі FIELDS по порядку (B, C, D…)
+  var resp = responsesSheet_(ss);
+  // аркуш сирих відповідей — зрозуміла назва, закріплений заголовок
+  if (resp.getName() !== 'Відповіді') resp.setName('Відповіді');
+  resp.setFrozenRows(1);
+  var src = "'" + resp.getName() + "'!";
+  // колонки аркуша відповідей: A позначка часу, далі FIELDS по порядку (B, C, D…).
+  // Цілі колонки (C:C), а не C2:C: форма вставляє нові рядки, і Таблиці зсували б C2 → C5…
+  // Заголовок у першому рядку жодній умові не відповідає, тож рахунку не заважає.
   var col = {};
   FIELDS.forEach(function (f, i) { col[f] = String.fromCharCode(66 + i); });
-  // цілі колонки (C:C), а не C2:C: форма вставляє нові рядки, і Таблиці зсували б C2 → C5…
-  // Заголовок у першому рядку жодній умові не відповідає, тож рахунку не заважає.
   var R = function (f) { return src + col[f] + ':' + col[f]; };
-  var HOST = '$B$3'; // фільтр за сайтом — клітинка B3 на аркуші stats
-  // + записи з host=test (перевірки підключення) у зведення не потрапляють
-  var H = R('host') + ',' + HOST + ',' + R('host') + ',"<>test"';
+
+  var sh = ss.getSheetByName('stats') || ss.getSheetByName('Статистика') || ss.insertSheet('Статистика', 0);
+  if (sh.getName() !== 'Статистика') sh.setName('Статистика');
+  sh.getCharts().forEach(function (c) { sh.removeChart(c); });
+  sh.clear(); sh.clearNotes(); sh.clearConditionalFormatRules();
+  sh.getRange('A:F').clearDataValidations();
+
+  var rows = [], heads = [], pcts = [], fmts = [];
+  var head = function (a, b, c, d, e, f) { heads.push(rows.length + 1); rows.push([a, b || '', c || '', d || '', e || '', f || '']); return rows.length; };
+  var row = function (a, b, c, d, e, f) {
+    rows.push([a, b, c, d, e, f].map(function (x) { return x === undefined ? '' : x; })); return rows.length;
+  };
+
+  // ---------- шапка й налаштування ----------
+  row('Міфи про українську енергетику — статистика');
+  var rLast = row('Оновлюється сама з кожним проходженням. Остання відповідь:', '=IFERROR(MAX(' + src + 'A:A),"")');
+  row('');
+  head('Налаштування', 'Значення');
+  var rSite = row('Рахувати проходження з сайту (* — з усіх)', '*');
+  var rTest = row('Рахувати перевірочні проходження (адреса з ?test)', 'ні');
+  row('');
+  var SITE = '$B$' + rSite, TEST = '$B$' + rTest;
+  // фільтр: сайт + (перевірочні рахуємо лише якщо так обрано)
+  var H = R('host') + ',' + SITE + ',' + R('host') + ',IF(' + TEST + '="так","*","<>test")';
   var cnt = function (f, v) { return 'COUNTIFS(' + R(f) + ',"' + v + '",' + H + ')'; };
   var cnt2 = function (f, v, f2, v2) { return 'COUNTIFS(' + R(f) + ',"' + v + '",' + R(f2) + ',"' + v2 + '",' + H + ')'; };
   var pct = function (a, b) { return '=IFERROR(' + a + '/' + b + ',"")'; };
 
-  var sh = ss.getSheetByName('stats') || ss.insertSheet('stats', 0);
-  sh.getCharts().forEach(function (c) { sh.removeChart(c); });
-  sh.clear(); sh.clearNotes(); sh.clearConditionalFormatRules();
-  var rows = [], heads = [], pcts = [];
-  var head = function (a, b, c, d, e, f) { heads.push(rows.length + 1); rows.push([a, b || '', c || '', d || '', e || '', f || '']); return rows.length; };
-  var row = function (a, b, c, d, e, f) {
-    var v = [a, b, c, d, e, f].map(function (x) { return x === undefined ? '' : x; });
-    rows.push(v); return rows.length;
-  };
-  var B = function (r) { return 'B' + r; };
-
-  // ---------- 1. головне ----------
-  head('Міфи про українську енергетику — статистика');
-  row('Рахувати проходження з сайту (* — з усіх):');
-  row('Сайт', '*');
-  row('');
-  head('Головне', 'Людей', 'Від стартів');
+  // ---------- головне ----------
+  head('Головне', 'Людей', 'Частка');
   var rStart = row('Почали тест', '=' + cnt('event', 'start'));
-  var rFin = row('Дійшли до результату', '=' + cnt('event', 'finish'), pct(B(rStart + 1), B(rStart)));
-  row('Покинули на півдорозі', '=MAX(0,' + B(rStart) + '-' + B(rFin) + ')', pct(B(rFin + 1), B(rStart)));
-  pcts.push('C' + rFin + ':C' + (rFin + 1));
-  row('Середній бал (з 8)', '=IFERROR(ROUND(AVERAGEIFS(' + R('score') + ',' + R('event') + ',"finish",' + H + '),1),"—")');
-  row('Перевірочні проходження (адреса з ?test) — у цифри вище не входять',
-    '=COUNTIFS(' + R('event') + ',"start",' + R('host') + ',"test")');
+  var rFin = row('Дійшли до результату', '=' + cnt('event', 'finish'), pct('B' + (rStart + 1), 'B' + rStart));
+  var rDrop = row('Кинули на півдорозі', '=MAX(0,B' + rStart + '-B' + rFin + ')', pct('B' + (rFin + 1), 'B' + rStart));
+  pcts.push('C' + rFin + ':C' + rDrop);
+  var rAvg = row('Середній бал (з 8)', '=IFERROR(ROUND(AVERAGEIFS(' + R('score') + ',' + R('event') + ',"finish",' + H + '),1),"—")');
+  row('Перевірочних проходжень (?test) усього', '=COUNTIFS(' + R('event') + ',"start",' + R('host') + ',"test")');
   row('');
 
-  // ---------- 2. рівні ----------
+  // ---------- рівні ----------
   var rLvHead = head('Рівні', 'Людей', 'Від тих, хто дійшов', 'Бали');
   var rLv0 = rows.length + 1;
   LEVELS.forEach(function (l) {
     var r = rows.length + 1;
-    row(l[0], '=' + cnt2('event', 'finish', 'level', l[0]), pct(B(r), B(rFin)), l[1]);
+    row(l[0], '=' + cnt2('event', 'finish', 'level', l[0]), pct('B' + r, 'B' + rFin), l[1]);
   });
   pcts.push('C' + rLv0 + ':C' + (rLv0 + LEVELS.length - 1));
   row('');
 
-  // ---------- 3. бали ----------
+  // ---------- бали ----------
   var rScHead = head('Бали', 'Людей', 'Від тих, хто дійшов');
   var rSc0 = rows.length + 1;
   for (var s = 0; s <= 8; s++) {
     var r = rows.length + 1;
-    row(s + ' з 8', '=COUNTIFS(' + R('event') + ',"finish",' + R('score') + ',' + s + ',' + H + ')', pct(B(r), B(rFin)));
+    row(s + ' з 8', '=COUNTIFS(' + R('event') + ',"finish",' + R('score') + ',' + s + ',' + H + ')', pct('B' + r, 'B' + rFin));
   }
   pcts.push('C' + rSc0 + ':C' + (rSc0 + 8));
   row('');
 
-  // ---------- 4. питання ----------
-  var rQHead = head('Твердження', 'Відповіли правильно', 'Обрали «Правда»', 'Обрали «Неправда»');
+  // ---------- твердження ----------
+  var rQHead = head('Твердження', 'Відповіли правильно', 'Шкала', 'Обрали «Правда»', 'Обрали «Неправда»', 'Відповідей');
   var rQ0 = rows.length + 1;
   QUESTIONS.forEach(function (q, i) {
-    var f = 'q' + (i + 1);
+    var f = 'q' + (i + 1), r = rows.length + 1;
     var base = 'COUNTIFS(' + R('event') + ',"finish",' + R(f) + ',"<>",' + H + ')';
-    var share = function (letter) { return '=IFERROR(COUNTIFS(' + R('event') + ',"finish",' + R(f) + ',"' + letter + '",' + H + ')/' + base + ',"")'; };
-    row((i + 1) + '. ' + q[0] + ' (правильно: ' + (q[1] === 'П' ? 'правда' : 'неправда') + ')', share(q[1]), share('П'), share('Н'));
+    var share = function (v) { return '=IFERROR(COUNTIFS(' + R('event') + ',"finish",' + R(f) + ',"' + v + '",' + H + ')/' + base + ',"")'; };
+    row((i + 1) + '. ' + q[0] + ' — це ' + (q[1] === 'П' ? 'правда' : 'міф'), share(q[1]),
+      '=IF(B' + r + '="","",SPARKLINE(B' + r + ',{"charttype","bar";"max",1;"color1","#8aa23a"}))',
+      share('П'), share('Н'), '=' + base);
   });
-  pcts.push('B' + rQ0 + ':D' + (rQ0 + QUESTIONS.length - 1));
+  pcts.push('B' + rQ0 + ':B' + (rQ0 + QUESTIONS.length - 1));
+  pcts.push('D' + rQ0 + ':E' + (rQ0 + QUESTIONS.length - 1));
   row('');
-  row('Частки — від тих, хто дійшов до результату. Найоманливіше твердження — з найменшою часткою в колонці «Відповіли правильно».');
+  row('Частки — від тих, хто дійшов до результату. Найоманливіший міф — твердження з найкоротшою зеленою шкалою.');
+  row('Перевірочні проходження записуються з сайтом «test», тож щоб їх бачити, лиште сайт «*».');
 
   sh.getRange(1, 1, rows.length, 6).setValues(rows);
 
-  // оформлення
-  sh.setColumnWidth(1, 330); sh.setColumnWidths(2, 5, 110);
-  sh.getRange('A1').setFontSize(16).setFontWeight('bold');
-  sh.getRange('A2').setFontColor('#555555');
-  sh.getRange('B3').setBackground('#fff2cc').setFontWeight('bold');
-  heads.slice(1).forEach(function (r) {
-    sh.getRange(r, 1, 1, 6).setFontWeight('bold').setBackground('#d6e8eb');
+  // ---------- оформлення ----------
+  sh.setHiddenGridlines(true);
+  sh.setColumnWidth(1, 380); sh.setColumnWidth(2, 150); sh.setColumnWidth(3, 170); sh.setColumnWidths(4, 3, 140);
+  sh.getRange(1, 1, rows.length, 6).setFontFamily('Arial').setFontSize(11).setVerticalAlignment('middle');
+  sh.getRange('A1').setFontSize(18).setFontWeight('bold');
+  sh.getRange(rLast, 1, 1, 2).setFontColor('#666666');
+  sh.getRange('B' + rLast).setNumberFormat('dd.mm.yyyy hh:mm').setHorizontalAlignment('left');
+  heads.forEach(function (r) {
+    sh.getRange(r, 1, 1, 6).setFontWeight('bold').setBackground('#232b4a').setFontColor('#ffffff');
+    sh.setRowHeight(r, 30);
   });
+  // налаштування — жовті клітинки з випадними списками
+  sh.getRange('B' + rSite + ':B' + rTest).setBackground('#fff2a8').setFontWeight('bold');
+  sh.getRange('B' + rSite).setDataValidation(SpreadsheetApp.newDataValidation()
+    .requireValueInList(['*', '*github.io', '*hmarochos.kiev.ua'], true).setAllowInvalid(true).build());
+  sh.getRange('B' + rTest).setDataValidation(SpreadsheetApp.newDataValidation()
+    .requireValueInList(['ні', 'так'], true).build());
+  // головні цифри — великі
+  sh.getRange('B' + rStart + ':B' + rAvg).setFontSize(16).setFontWeight('bold');
+  sh.getRange('B' + rStart + ':C' + rAvg).setHorizontalAlignment('left');
   pcts.forEach(function (a) { sh.getRange(a).setNumberFormat('0%'); });
-  sh.getRange(rows.length, 1).setFontColor('#555555').setFontStyle('italic');
+  sh.getRange('B' + rLv0 + ':D' + (rQ0 + QUESTIONS.length - 1)).setHorizontalAlignment('left');
+  sh.getRange(rows.length - 1, 1, 2, 1).setFontColor('#666666').setFontStyle('italic');
   sh.setFrozenRows(0);
 
   // правильні відповіді — зеленим
   var rules = [];
   QUESTIONS.forEach(function (q, i) {
-    var colIdx = { 'П': 3, 'Н': 4 }[q[1]];
+    var colIdx = { 'П': 4, 'Н': 5 }[q[1]];
     rules.push(SpreadsheetApp.newConditionalFormatRule().whenFormulaSatisfied('=TRUE')
-      .setBackground('#d9ead3').setRanges([sh.getRange(rQ0 + i, colIdx)]).build());
+      .setBackground('#e7efc4').setRanges([sh.getRange(rQ0 + i, colIdx)]).build());
   });
   sh.setConditionalFormatRules(rules);
 
-  // графік рівнів
-  var chart = sh.newChart().asPieChart()
+  // графіки — праворуч від таблиць
+  sh.insertChart(sh.newChart().asPieChart()
     .addRange(sh.getRange(rLv0, 1, LEVELS.length, 2))
     .setPosition(rLvHead, 8, 0, 0)
     .setOption('title', 'Рівні')
+    .setOption('colors', ['#b5531f', '#f8e840', '#8aa23a'])
     .setOption('legend', { position: 'right' })
-    .build();
-  sh.insertChart(chart);
-  // графік балів
-  var chart2 = sh.newChart().asColumnChart()
+    .build());
+  sh.insertChart(sh.newChart().asColumnChart()
     .addRange(sh.getRange(rSc0, 1, 9, 2))
     .setPosition(rScHead, 8, 0, 0)
     .setOption('title', 'Розподіл балів')
+    .setOption('colors', ['#5f74c4'])
     .setOption('legend', { position: 'none' })
-    .build();
-  sh.insertChart(chart2);
+    .build());
 
   ss.setActiveSheet(sh);
   ss.moveActiveSheet(1);
@@ -244,7 +269,7 @@ function clearTestData() {
     }
   }
   FormApp.openByUrl(sh.getFormUrl()).deleteAllResponses();
-  ss.getSheetByName('stats').getRange('B3').setValue('*hmarochos.kiev.ua');
+  (ss.getSheetByName('Статистика') || ss.getSheetByName('stats')).getRange('B5').setValue('*hmarochos.kiev.ua');
   Logger.log('Видалено тестових записів: ' + hosts.length + '. Фільтр зведення: *hmarochos.kiev.ua');
 }
 
