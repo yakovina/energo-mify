@@ -14,4 +14,4 @@ export function resultShareUrl(slug: string): string {
 }
 
 /** Версія OG-картинок: міняємо, коли картинки перемальовано, щоб соцмережі взяли нові. */
-export const OG_VERSION = "3";
+export const OG_VERSION = "4";

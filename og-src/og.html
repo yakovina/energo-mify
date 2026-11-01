@@ -3,113 +3,103 @@
 <head>
 <meta charset="utf-8">
 <title>OG</title>
-<!-- OG 1200×630 у стилі «Піксель». Рендерить scripts/render-og.mjs:
+<!-- OG 1200×630 у стилі «Мережа» (кольори ілюстрації). Рендерить scripts/render-og.mjs:
      og.html → public/og-test.png (назва ліворуч, обкладинка праворуч);
-     og.html?l=<slug> → public/og-<slug>.png (картка з батарейкою, балами й званням, ілюстрація рівня праворуч).
-     Рамки, палітра й батарейка беруться прямо з pixel.css сайту, тож OG не розходиться з тестом.
-     Масштаб пікселя тут ×2: OG показують дрібно, сходинки мають читатися. -->
-<link rel="stylesheet" href="../app/skins/pixel/pixel.css">
+     og.html?l=<slug> → public/og-<slug>.png (бали, звання, лінія мережі; арт рівня праворуч з ореолом).
+     Арт — у рідній сітці 120×80 з public/art/px, збільшений без розмиття. -->
 <style>
 @font-face { font-family: "Open Sans"; src: url("../public/fonts/hm/open-sans-v29-latin_cyrillic-ext-500.woff2") format("woff2"); font-weight: 500; }
 @font-face { font-family: "Open Sans"; src: url("../public/fonts/hm/open-sans-v29-latin_cyrillic-ext-700.woff2") format("woff2"); font-weight: 700; }
 @font-face { font-family: "Lora"; src: url("../public/fonts/hm/lora-v24-latin_cyrillic-ext-700.woff2") format("woff2"); font-weight: 700; }
+@font-face { font-family: "Lora"; src: url("../public/fonts/hm/lora-v24-latin_cyrillic-ext-italic.woff2") format("woff2"); font-weight: 400; font-style: italic; }
+:root { --bg: #d7ddf2; --bg-2: #e6e9f7; --cloud: #aab3dd; --line: #b4bce2; --line-2: #8396d6; --text: #232b4a; --mute: #6a7299; --blue-d: #4458a8; --amber: #f8e840; --amber-2: #fcc63d; --orange: #cc8619; --night: #232b4a; }
 * { box-sizing: border-box; }
-body.pixel {
-  display: block; margin: 0; width: 1200px; height: 630px; min-height: 0; overflow: hidden; position: relative;
-  font-family: "Open Sans", sans-serif;
-  background-image: linear-gradient(rgba(35,43,74,.04) 2px, transparent 2px), linear-gradient(90deg, rgba(35,43,74,.04) 2px, transparent 2px);
-  background-size: 32px 32px;
-}
-/* картка: кадр ×2 і тінь на 8 px — як .panel на сайті */
-.og-card { position: relative; isolation: isolate; border: 20px solid transparent; }
-.og-card::before, .og-card::after { content: ""; position: absolute; inset: -20px; border: 20px solid transparent; pointer-events: none; }
-.og-card::before { z-index: -1; border-image: var(--fr-card) 10 fill / 20px; }
-.og-card::after { z-index: -2; transform: translate(8px, 8px); border-image: var(--fr-shade) 10 fill / 20px; }
-
-.og-hills { position: absolute; left: 0; right: 0; bottom: 0; height: 96px; background: url("../public/art/hills-day.webp") repeat-x left bottom / auto 100%; image-rendering: pixelated; }
-body.night .og-hills { background-image: url("../public/art/hills-night.webp"); }
-.og-head { position: absolute; left: 64px; top: 40px; display: flex; align-items: center; gap: 18px; }
-.og-head img { height: 38px; }
-.og-head b { padding-left: 18px; border-left: 3px solid var(--cloud); font-family: "Lora", serif; font-size: 24px; }
+body { margin: 0; width: 1200px; height: 630px; overflow: hidden; position: relative; color: var(--text); font-family: "Open Sans", sans-serif;
+  background: linear-gradient(rgba(35,43,74,.035) 2px, transparent 2px) 0 0 / 32px 32px, linear-gradient(90deg, rgba(35,43,74,.035) 2px, transparent 2px) 0 0 / 32px 32px, linear-gradient(var(--bg-2), var(--bg)); }
+.ground { position: absolute; left: 0; right: 0; bottom: 0; height: 64px; background: url("../public/art/px/hills-day.png") repeat-x left bottom / auto 100%; image-rendering: pixelated; }
+body.night .ground { background-image: url("../public/art/px/hills-night.png"); }
+.head { position: absolute; left: 72px; right: 72px; top: 46px; display: flex; align-items: center; justify-content: space-between; }
+.brand { display: flex; align-items: center; gap: 16px; font: 700 24px "Lora", serif; }
+.brand img { height: 34px; }
+.brand span { padding-left: 16px; border-left: 2px solid var(--line-2); }
+.cap { font-size: 18px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--blue-d); }
+.cap::before { content: ""; display: inline-block; width: 12px; height: 12px; margin-right: 14px; background: var(--amber); box-shadow: 0 0 0 2px var(--orange); vertical-align: 1px; }
+.px { image-rendering: pixelated; display: block; }
 
 /* старт */
-.og-start .og-text { position: absolute; left: 64px; top: 116px; width: 520px; }
-h1 { margin: 0; font-family: "Lora", serif; font-weight: 700; font-size: 62px; line-height: 1.06; letter-spacing: -0.01em; }
-.og-lead { margin: 22px 0 0; font-size: 25px; line-height: 1.45; color: var(--ink-2); }
-.og-go { display: inline-flex; align-items: center; gap: 16px; margin-top: 30px; height: 84px; padding: 0 22px 4px;
-  border: 20px solid transparent; border-image: var(--fr-blue) 10 fill / 20px; font-weight: 700; font-size: 26px; color: #fff; }
-.og-cover { position: absolute; right: 56px; top: 56px; width: 540px; }
-.og-cover .og-card { padding: 0; }
-.og-cover img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; margin: -6px; width: calc(100% + 12px);
-  clip-path: polygon(0 16px, 8px 16px, 8px 8px, 16px 8px, 16px 0, calc(100% - 16px) 0, calc(100% - 16px) 8px, calc(100% - 8px) 8px, calc(100% - 8px) 16px, 100% 16px,
-    100% calc(100% - 16px), calc(100% - 8px) calc(100% - 16px), calc(100% - 8px) calc(100% - 8px), calc(100% - 16px) calc(100% - 8px), calc(100% - 16px) 100%,
-    16px 100%, 16px calc(100% - 8px), 8px calc(100% - 8px), 8px calc(100% - 16px), 0 calc(100% - 16px)); }
+.start .text { position: absolute; left: 72px; top: 136px; width: 500px; }
+.start h1 { margin: 16px 0 0; font: 700 70px/1.02 "Lora", serif; letter-spacing: -.015em; }
+.cta { display: inline-flex; align-items: center; gap: 22px; margin-top: 34px; height: 78px; padding: 0 32px 6px; background: var(--amber); color: var(--text); font-weight: 700; font-size: 26px; box-shadow: inset 0 0 0 3px var(--text), inset 0 -10px 0 0 var(--amber-2), inset 0 -10px 0 3px var(--text); }
+.plate { position: absolute; padding: 14px; background: var(--bg-2); box-shadow: 0 0 0 3px var(--text), 8px 8px 0 3px var(--cloud); }
+.start .plate { right: 72px; top: 126px; width: 540px; }
+.start .plate img { width: 100%; }
+
+/* лінія мережі */
+.grid { position: absolute; left: 72px; right: 72px; bottom: 92px; height: 20px; }
+.grid::before { content: ""; position: absolute; left: 0; right: 0; top: 9px; height: 2px; background: var(--line-2); }
+.grid i { position: absolute; top: 1px; width: 18px; height: 18px; transform: translateX(-50%); background: var(--bg-2); border: 3px solid var(--line-2); }
+.grid i.on { background: var(--amber); border-color: var(--text); box-shadow: 0 0 18px rgba(248,232,64,.9); }
+.grid .pulse { position: absolute; top: 7px; width: 120px; height: 6px; background: linear-gradient(90deg, transparent 0 16px, var(--amber) 16px 24px, transparent 24px 44px, var(--amber) 44px 60px, transparent 60px 68px, var(--orange) 68px 92px, var(--amber) 92px 120px); }
 
 /* рівень */
-.og-lvl { display: none; }
-body.level .og-start { display: none; }
-body.level .og-lvl { display: block; }
-.og-lvl .og-card { position: absolute; left: 56px; top: 110px; width: 680px; padding: 26px 30px 30px; }
-.og-kicker { margin: 0; font-size: 22px; font-weight: 500; color: var(--ink-2); }
-.og-charge { display: flex; align-items: center; gap: 24px; margin-top: 22px; }
-.og-lvl .cells { gap: 8px; padding: 8px; box-shadow: 0 0 0 4px var(--navy); }
-.og-lvl .cell { width: 28px; height: 56px; box-shadow: inset 0 0 0 4px var(--cloud); }
-.og-lvl .cell.ok { box-shadow: none; }
-.og-lvl .nub { width: 10px; height: 26px; margin-left: 4px; }
-.og-range { font-family: "Lora", serif; font-weight: 700; font-size: 46px; line-height: 1; white-space: nowrap; }
-.og-lvl h1 { margin-top: 22px; font-size: 60px; }
-.og-art { position: absolute; image-rendering: pixelated; }
-/* лампочка висить на шнурі з верхнього краю картинки — як на сайті */
-.og-hang { position: absolute; top: 0; right: 150px; width: 210px; padding-top: 96px; }
-.og-hang::before { content: ""; position: absolute; top: 0; left: 50%; width: 10px; height: 100px; transform: translateX(-50%); background: #232323; }
-.og-hang img { display: block; width: 100%; image-rendering: pixelated; }
+.lvl { display: none; }
+body.level .start { display: none; }
+body.level .lvl { display: block; }
+.lvl .text { position: absolute; left: 72px; top: 124px; width: 640px; }
+.score { display: flex; align-items: baseline; gap: 18px; margin-top: 18px; }
+.score b { font: 700 104px/.9 "Lora", serif; color: var(--text); letter-spacing: -.03em; padding: 0 6px; background: linear-gradient(transparent 70%, var(--amber) 70% 88%, transparent 88%); }
+.score span { font: italic 400 30px "Lora", serif; color: var(--mute); }
+.lvl h1 { margin: 26px 0 0; font: 700 66px/1.04 "Lora", serif; letter-spacing: -.01em; }
+.lvl .plate { right: 80px; top: 112px; width: 390px; height: 350px; display: grid; place-items: center; background: radial-gradient(closest-side, #3a4478, var(--night)); }
+.lvl .plate::before { content: ""; position: absolute; inset: 0; background: radial-gradient(closest-side, rgba(248,232,64,.12), transparent); }
+.lvl .plate.warm::before { background: radial-gradient(closest-side, rgba(252,140,40,.14), transparent); }
+.lvl .plate img { position: relative; filter: drop-shadow(0 0 30px rgba(248,232,64,.5)); }
+.lvl .plate.warm img { filter: drop-shadow(0 0 34px rgba(252,160,61,.55)); }
 </style>
 </head>
-<body class="pixel">
-  <div class="og-head"><img src="../public/hmarochos_logo_new.svg" alt=""><b>Міфи про енергетику</b></div>
+<body>
+  <div class="head"><span class="brand"><img src="../public/hmarochos_logo_new.svg" alt=""><span>Міфи про енергетику</span></span></div>
 
-  <div class="og-start">
-    <div class="og-text">
+  <div class="start">
+    <div class="text">
+      <div class="cap">Тест · Енергетика</div>
       <h1>Міфи про українську енергетику</h1>
-      <p class="og-lead">Вісім тверджень. Відрізніть правду від міфу.</p>
-      <div class="og-go">Пройти тест
-        <svg viewBox="0 0 9 8" width="24" height="22" shape-rendering="crispEdges"><path d="M5 0h1v1H5zM5 1h2v1H5zM5 2h3v1H5zM0 3h9v2H0zM5 5h3v1H5zM5 6h2v1H5zM5 7h1v1H5z" fill="currentColor"/></svg>
-      </div>
+      <div class="cta">Пройти тест <svg viewBox="0 0 22 10" width="34" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M0 5h20M16 1l4 4-4 4"/></svg></div>
     </div>
-    <div class="og-cover"><div class="og-card"><img src="../public/art/cover.webp" alt=""></div></div>
+    <div class="plate"><img class="px" src="../public/art/px/cover.png" alt=""></div>
   </div>
 
-  <div class="og-lvl">
-    <div class="og-card">
-      <p class="og-kicker">Мій результат у тесті Хмарочоса</p>
-      <div class="og-charge">
-        <div class="battery"><div class="cells" id="cells"></div><span class="nub"></span></div>
-        <span class="og-range" id="range"></span>
-      </div>
+  <div class="lvl">
+    <div class="text">
+      <div class="cap">Мій результат у тесті Хмарочоса</div>
+      <div class="score"><b id="range"></b><span>з 8</span></div>
       <h1 id="title"></h1>
     </div>
-    <div id="art"></div>
+    <div class="plate" id="plate"><img class="px" id="art" alt=""></div>
   </div>
 
-  <div class="og-hills"></div>
+  <div class="grid" id="grid"></div>
+  <div class="ground"></div>
 
 <script>
   const LEVELS = {
-    hostage: { title: "Заручник інфопростору", range: "0–3 бали", max: 3, night: true,
-      art: '<img class="og-art" src="../public/art/candle.webp" style="width:150px;right:150px;bottom:118px" alt="">' },
-    observer: { title: "Уважний спостерігач", range: "4–6 балів", max: 6,
-      art: '<div class="og-hang"><img src="../public/art/bulb-lamp.webp" alt=""></div>' },
-    analyst: { title: "Енергетичний аналітик", range: "7–8 балів", max: 8,
-      art: '<img class="og-art" src="../public/art/battery.webp" style="width:360px;right:46px;bottom:150px" alt="">' },
+    hostage: { title: "Заручник інфопростору", range: "0–3", max: 3, art: "candle", w: 112, warm: true },
+    observer: { title: "Уважний спостерігач", range: "4–6", max: 6, art: "bulb-lamp", w: 150 },
+    analyst: { title: "Енергетичний аналітик", range: "7–8", max: 8, art: "battery", w: 340 },
   };
   const l = LEVELS[new URLSearchParams(location.search).get("l")];
+  const lit = l ? l.max : 0;
+  document.getElementById("grid").innerHTML =
+    Array.from({ length: 8 }, (_, i) => `<i class="${i < lit ? "on" : ""}" style="left:${(i / 7) * 100}%"></i>`).join("") +
+    `<span class="pulse" style="left:${l ? Math.min(85, (lit / 7) * 100) - 12 : 30}%"></span>`;
   if (l) {
     document.body.classList.add("level");
-    if (l.night) document.body.classList.add("night");
     document.getElementById("title").textContent = l.title;
     document.getElementById("range").textContent = l.range;
-    document.getElementById("cells").innerHTML = Array.from({ length: 8 }, (_, i) => `<span class="cell${i < l.max ? " ok" : ""}"></span>`).join("");
-    document.getElementById("art").innerHTML = l.art;
+    const a = document.getElementById("art");
+    a.src = `../public/art/px/${l.art}.png`;
+    a.style.width = l.w + "px";
+    if (l.warm) { document.getElementById("plate").classList.add("warm"); document.body.classList.add("night"); }
   }
 </script>
 </body>

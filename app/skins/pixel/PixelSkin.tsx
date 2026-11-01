@@ -58,67 +58,15 @@ const Cross = () => (
   </svg>
 );
 
-/** Сонце й хмари з обкладинки, намальовані тими самими «пікселями». */
-const SUN = [
-  "...xxx...",
-  ".xxxxxxx.",
-  ".xxoooxx.",
-  "xxoooooxx",
-  "xxoooooxx",
-  "xxoooooxx",
-  ".xxoooxx.",
-  ".xxxxxxx.",
-  "...xxx...",
-];
-function Sun({ cls }: { cls: string }) {
-  return (
-    <svg className={cls} viewBox="-3 -3 15 15" shapeRendering="crispEdges" aria-hidden>
-      {SUN.flatMap((row, y) =>
-        [...row].map((c, x) =>
-          c === "." ? null : <rect key={`${x}-${y}`} x={x} y={y} width="1" height="1" fill={c === "o" ? "#f8e840" : "#fcc63d"} />,
-        ),
-      )}
-      {[
-        [-2, -2],
-        [10, -2],
-        [-3, 5],
-        [11, 4],
-        [-1, 11],
-        [10, 11],
-        [4, -3],
-      ].map(([x, y]) => (
-        <rect key={`r${x}${y}`} className="ray" x={x} y={y} width="1" height="1" fill="#f8e840" />
-      ))}
-    </svg>
-  );
-}
-
-const CLOUD = [
-  ".......xxxx.........",
-  "..xxxxxxxxxxxx......",
-  ".xxxxxxxxxxxxxxxxx..",
-  "xxxxxxxxxxxxxxxxxxxx",
-  "..xxxxxxxxxxxxxxxx..",
-  "....yyyyyyy..yyyy...",
-];
-function Cloud({ cls }: { cls: string }) {
-  return (
-    <svg className={cls} viewBox="0 0 20 6" shapeRendering="crispEdges" aria-hidden>
-      {CLOUD.flatMap((row, y) =>
-        [...row].map((c, x) =>
-          c === "." ? null : <rect key={`${x}-${y}`} x={x} y={y} width="1.02" height="1.02" fill={c === "y" ? "#f8e840" : "#aab3dd"} />,
-        ),
-      )}
-    </svg>
-  );
-}
-
+/** Тло: шари ілюстраторки — вітряк ліворуч і градирні праворуч стоять на пагорбах
+ *  обабіч колонки. Лише на широких екранах, де поруч з колонкою є місце. */
 function Sky() {
   return (
     <div className="sky" aria-hidden>
-      <Sun cls="sun" />
-      <Cloud cls="cloud c1" />
-      <Cloud cls="cloud c2" />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img className="lay mill" src={asset("/art/windmill.webp")} alt="" decoding="async" />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img className="lay plant" src={asset("/art/plant.webp")} alt="" decoding="async" />
     </div>
   );
 }
@@ -622,7 +570,6 @@ export default function PixelSkin({ quiz }: { quiz: QuizApi }) {
                 {UI.start}
                 <Arrow />
               </button>
-              <Share url={`${SITE_URL}/`} text={TEST_SHARE_TEXT} label={UI.shareTest} />
             </div>
           </section>
         </div>

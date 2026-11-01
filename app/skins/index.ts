@@ -6,13 +6,14 @@
 //      кореневий клас — .<назва> (див. pixel.css, де все під .pixel);
 //   2. зареєструвати його в SKINS нижче й підключити CSS в app/layout.tsx;
 //   3. зібрати з NEXT_PUBLIC_SKIN=<назва> npm run build.
+import * as grid from "./grid";
 import * as pixel from "./pixel";
 
-const SKINS = { pixel } as const;
+const SKINS = { grid, pixel } as const;
 
 export type SkinName = keyof typeof SKINS;
 
-const wanted = (process.env.NEXT_PUBLIC_SKIN ?? "pixel") as SkinName;
+const wanted = (process.env.NEXT_PUBLIC_SKIN ?? "grid") as SkinName;
 
-export const skinName: SkinName = wanted in SKINS ? wanted : "pixel";
+export const skinName: SkinName = wanted in SKINS ? wanted : "grid";
 export const { Skin, ResultPage, NotFound } = SKINS[skinName];

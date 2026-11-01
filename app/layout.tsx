@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "./skins/pixel/pixel.css";
+import "./skins/grid/grid.css";
 import { OG_VERSION, SITE_URL, TEST_SHARE_TITLE } from "./share";
 import { asset } from "./bp";
 

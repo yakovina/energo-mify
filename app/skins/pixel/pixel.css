@@ -153,53 +153,45 @@
   z-index: 0;
 }
 
-.pixel .sun {
+/* шари ілюстраторки обабіч колонки, стоять на пагорбах (низ шару = верх смуги пагорбів) */
+.pixel .lay {
   position: absolute;
-  top: 64px;
-  right: -8px;
-  width: 64px;
+  bottom: calc(var(--hills-h) - 10px);
+  display: none;
+  height: auto;
 }
 
-.pixel .cloud {
-  position: absolute;
-  width: 180px;
+.pixel .lay.mill {
+  left: max(-40px, calc(50vw - 360px - 370px));
+  width: 270px;
 }
 
-.pixel .cloud.c1 {
-  top: 300px;
-  left: -70px;
+.pixel .lay.plant {
+  right: max(-20px, calc(50vw - 360px - 340px));
+  width: 290px;
 }
 
-.pixel .cloud.c2 {
-  top: 520px;
-  right: -90px;
-  width: 220px;
-}
-
-@media (min-width: 900px) {
-  .pixel .sun {
-    top: 72px;
-    right: 7vw;
-    width: 120px;
+@media (min-width: 1180px) {
+  .pixel .lay {
+    display: block;
   }
-  .pixel .cloud.c1 {
-    top: 180px;
-    left: max(-60px, calc(50vw - 360px - 330px));
-    width: 260px;
-  }
-  .pixel .cloud.c2 {
-    top: 440px;
-    right: max(-60px, calc(50vw - 360px - 340px));
-    width: 300px;
-  }
+}
+
+/* нічні пагорби — сцена теж у сутінках */
+.pixel:has(.hills.night) .lay {
+  filter: brightness(0.55) saturate(0.7);
 }
 
 /* ——— пагорби ——— */
 
+.pixel {
+  --hills-h: 48px;
+}
+
 .pixel .hills {
   position: relative;
   z-index: 1;
-  height: 64px;
+  height: var(--hills-h);
   margin-top: 8px;
   background: url("/art/hills-day.webp") repeat-x left bottom / auto 100%;
   flex: none;
@@ -210,8 +202,8 @@
 }
 
 @media (min-width: 900px) {
-  .pixel .hills {
-    height: 110px;
+  .pixel {
+    --hills-h: 72px;
   }
 }
 
@@ -1010,23 +1002,6 @@
   animation: pxPop 0.45s cubic-bezier(0.3, 1.25, 0.5, 1) both;
 }
 
-.pixel .sun .ray {
-  animation: pxPulse 1.8s ease-in-out infinite;
-}
-
-.pixel .sun .ray:nth-of-type(2n) {
-  animation-delay: 0.8s;
-}
-
-.pixel .cloud {
-  animation: pxDrift 9s ease-in-out infinite alternate;
-}
-
-.pixel .cloud.c2 {
-  animation-duration: 12s;
-  animation-direction: alternate-reverse;
-}
-
 /* лише рух, без прозорості: якщо браузер притримає анімацію (фонова вкладка,
    вбудований браузер соцмережі), зміст однаково видно */
 @keyframes pxDrop {
@@ -1217,8 +1192,20 @@
   .pixel.intro .shareGrid.four {
     grid-template-columns: repeat(2, 1fr);
   }
-  /* сонце вже є на обкладинці */
-  .pixel.intro .sun {
-    display: none;
+}
+
+/* на старті поруч стоїть обкладинка з тими самими вітряком і градирнями — шари не дублюємо */
+.pixel.intro .lay {
+  display: none;
+}
+
+/* старт на десктопі: картка посередині екрана між шапкою й пагорбами */
+@media (min-width: 900px) {
+  .pixel.intro .col {
+    display: flex;
+    flex-direction: column;
+  }
+  .pixel.intro .hero {
+    margin-block: auto;
   }
 }

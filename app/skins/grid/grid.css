@@ -1,0 +1,902 @@
+/* Скін «Мережа». Преміальний, у кольорах ілюстрації: бузкове небо, синій, жовте світло,
+   зелень пагорбів. Великий Lora, тонкі лінії 1 px, піксельні деталі на сітці 4 px. Енергетика — у графіці інтерфейсу: лінія мережі з
+   підстанціями й імпульс струму. Арт — у рідній сітці 120×80, image-rendering: pixelated.
+   Рух спокійний: поява зсувом без прозорості, вузол мережі «вмикається» світінням. */
+
+.nm {
+  /* палітра — з малюнка ілюстраторки */
+  --bg: #d7ddf2;
+  --bg-2: #e6e9f7;
+  --cloud: #aab3dd;
+  --line: #b4bce2;
+  --line-2: #8396d6;
+  --text: #232b4a;
+  --text-2: #3f4668;
+  --mute: #6a7299;
+  --blue: #5f74c4;
+  --blue-d: #4458a8;
+  --amber: #f8e840;
+  --amber-2: #fcc63d;
+  --orange: #cc8619;
+  --rust: #923a16;
+  --grass: #b8ca4a;
+  --forest: #4d6135;
+  --night: #232b4a;
+  --pad: 20px;
+
+  min-height: 100vh;
+  min-height: 100dvh;
+  color: var(--text);
+  /* небо з ледь помітною піксельною сіткою, як у малюнку */
+  background:
+    linear-gradient(rgba(35, 43, 74, 0.035) 1px, transparent 1px) 0 0 / 16px 16px,
+    linear-gradient(90deg, rgba(35, 43, 74, 0.035) 1px, transparent 1px) 0 0 / 16px 16px,
+    linear-gradient(var(--bg-2), var(--bg) 60%) fixed,
+    var(--bg);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+@media (min-width: 900px) {
+  .nm {
+    --pad: 48px;
+    font-size: 16px;
+  }
+}
+
+.nm ::selection {
+  background: var(--amber);
+  color: var(--text);
+}
+
+.nm :focus-visible {
+  outline: 2px solid var(--blue-d);
+  outline-offset: 4px;
+}
+
+.nm .col {
+  width: min(100% - 2 * var(--pad), 1120px);
+  margin: 0 auto;
+  padding-bottom: 48px;
+}
+
+.nm .cap {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blue-d);
+}
+
+/* піксельна позначка перед підписами — квадрат 6 px сонячного кольору */
+.nm .cap::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 10px;
+  vertical-align: 1px;
+  background: var(--amber);
+  box-shadow: 0 0 0 1px var(--orange);
+}
+
+/* ——— шапка ——— */
+
+.nm .head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 72px;
+}
+
+.nm .brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text);
+  text-decoration: none;
+  font: 700 15px "Lora", serif;
+}
+
+.nm .brand img {
+  height: 24px;
+  width: auto;
+}
+
+.nm .brand span {
+  padding-left: 12px;
+  border-left: 1px solid var(--line-2);
+}
+
+.nm .site {
+  display: none;
+  font-size: 13px;
+  color: var(--mute);
+  text-decoration: none;
+}
+
+.nm .site:hover {
+  color: var(--text);
+}
+
+@media (min-width: 900px) {
+  .nm .head {
+    height: 96px;
+  }
+  .nm .site {
+    display: inline;
+  }
+}
+
+/* ——— лінія мережі ——— */
+
+.nm .grid {
+  position: relative;
+  height: 40px;
+  margin: 4px 5px 0;
+}
+
+/* лінія 1 px і доріжка для імпульсу: імпульс обрізається її краями, вузли — ні */
+.nm .grid .line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 26px;
+  height: 5px;
+  overflow: hidden;
+}
+
+.nm .grid .line::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 2px;
+  height: 1px;
+  background: var(--line-2);
+}
+
+.nm .grid .gridLabel {
+  position: absolute;
+  left: -5px;
+  top: 0;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+
+.nm .grid .gridLabel b {
+  color: var(--orange);
+  font-size: 9px;
+  vertical-align: 1px;
+}
+
+/* підстанція — піксельний квадрат 10 px з рамкою 2 px */
+.nm .node {
+  position: absolute;
+  top: 23px;
+  width: 10px;
+  height: 10px;
+  transform: translateX(-50%);
+  background: var(--bg-2);
+  border: 2px solid var(--line-2);
+  z-index: 1;
+}
+
+.nm .node.on {
+  background: var(--amber);
+  border-color: var(--text);
+  box-shadow: 0 0 12px rgba(248, 232, 64, 0.9);
+}
+
+.nm .node.miss {
+  border-color: var(--rust);
+  background: #b5531f;
+}
+
+.nm .node.now {
+  border-color: var(--blue-d);
+  animation: nmBlink 1.4s ease-in-out infinite;
+}
+
+.nm .node.on.fresh {
+  animation: nmOn 0.7s ease-out both;
+}
+
+/* імпульс струму біжить уздовж лінії */
+.nm .grid .pulse {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 64px;
+  height: 5px;
+  /* імпульс із піксельних рисок, що густішають до голови */
+  background: linear-gradient(90deg, transparent 0 8px, var(--amber) 8px 12px, transparent 12px 24px, var(--amber) 24px 32px, transparent 32px 36px, var(--orange) 36px 48px, var(--amber) 48px 64px);
+  animation: nmRun 3.4s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes nmRun {
+  from {
+    left: -70px;
+  }
+  to {
+    left: 100%;
+  }
+}
+
+@keyframes nmBlink {
+  50% {
+    background: var(--amber);
+  }
+}
+
+@keyframes nmOn {
+  0% {
+    transform: translateX(-50%) scale(0.6);
+    box-shadow: 0 0 0 rgba(248, 232, 64, 0);
+  }
+  40% {
+    transform: translateX(-50%) scale(1.5);
+    box-shadow: 0 0 26px rgba(248, 232, 64, 0.9);
+  }
+  100% {
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+/* ——— арт-експонат ——— */
+
+/* рама з піксельними кутами: лінія 2 px, кути зрізані сходинкою 4 px, тінь 4 px */
+.nm .plate {
+  --st: polygon(0 4px, 4px 4px, 4px 0, calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px, 100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%, 4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px));
+  position: relative;
+  margin: 0;
+  padding: 10px;
+  background: var(--text);
+  clip-path: var(--st);
+  filter: drop-shadow(4px 4px 0 var(--cloud));
+}
+
+.nm .plate::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  background: var(--bg-2);
+  clip-path: var(--st);
+  z-index: 0;
+}
+
+.nm .plate img {
+  position: relative;
+  z-index: 1;
+}
+
+.nm .plate img {
+  display: block;
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+/* лампочка, свічка, батарейка — окремо, посеред темряви з ореолом */
+.nm .plate.solo {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 3 / 2;
+  padding: 24px;
+}
+
+/* лампочка, свічка, батарейка — у «нічному віконці» кольору найтемнішого синього з малюнка */
+.nm .plate.solo::after {
+  background:
+    linear-gradient(rgba(170, 179, 221, 0.06) 1px, transparent 1px) 0 0 / 8px 8px,
+    linear-gradient(90deg, rgba(170, 179, 221, 0.06) 1px, transparent 1px) 0 0 / 8px 8px,
+    radial-gradient(closest-side, #3a4478, var(--night));
+}
+
+.nm .plate.solo img {
+  width: auto;
+  height: 72%;
+}
+
+.nm .plate.solo.lv-analyst img {
+  width: 86%;
+  height: auto;
+}
+
+.nm .plate.amber img {
+  filter: drop-shadow(0 0 22px rgba(248, 232, 64, 0.45));
+}
+
+.nm .plate.warm img {
+  filter: drop-shadow(0 0 26px rgba(252, 160, 61, 0.5));
+}
+
+
+
+/* ——— кнопки ——— */
+
+.nm .cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 56px;
+  padding: 0 24px;
+  border: 0;
+  background: var(--amber);
+  color: var(--text);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  cursor: pointer;
+  /* піксельна кнопка: рамка 2 px, фаска 4 px знизу, зрізані кути */
+  box-shadow: inset 0 0 0 2px var(--text), inset 0 -6px 0 0 var(--amber-2), inset 0 -6px 0 2px var(--text);
+  clip-path: polygon(0 2px, 2px 2px, 2px 0, calc(100% - 2px) 0, calc(100% - 2px) 2px, 100% 2px, 100% calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) 100%, 2px 100%, 2px calc(100% - 2px), 0 calc(100% - 2px));
+  padding-bottom: 4px;
+  transition: background-color 0.15s, transform 0.12s;
+}
+
+.nm .cta:hover {
+  background: #fff27a;
+}
+
+.nm .cta:active {
+  transform: translateY(2px);
+  box-shadow: inset 0 0 0 2px var(--text), inset 0 -2px 0 0 var(--amber-2), inset 0 -2px 0 2px var(--text);
+}
+
+.nm .cta .arrow {
+  transition: transform 0.2s;
+}
+
+.nm .cta:hover .arrow {
+  transform: translateX(4px);
+}
+
+.nm .cta.wide {
+  width: 100%;
+}
+
+.nm .ghost {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  min-height: 52px;
+  border: 1px solid var(--line-2);
+  background: none;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.nm .ghost:hover {
+  border-color: var(--text);
+}
+
+/* ——— старт ——— */
+
+.nm .hero {
+  display: grid;
+  gap: 40px;
+  padding: 18px 0 40px;
+}
+
+.nm .title {
+  margin: 14px 0 0;
+  font: 700 38px/1.06 "Lora", serif;
+  letter-spacing: -0.015em;
+}
+
+.nm .heroPlate.mobileOnly {
+  margin-top: 24px;
+}
+
+.nm .heroPlate.deskOnly {
+  display: none;
+}
+
+.nm .lead {
+  margin: 22px 0 0;
+  color: var(--text-2);
+  max-width: 440px;
+}
+
+.nm .meta {
+  display: flex;
+  gap: 26px;
+  margin: 26px 0 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.nm .meta dt {
+  font: 700 22px/1.2 "Lora", serif;
+  color: var(--text);
+}
+
+.nm .meta dd {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--mute);
+}
+
+.nm .hero .cta {
+  margin-top: 30px;
+  width: 100%;
+}
+
+@media (min-width: 900px) {
+  .nm.intro .col {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 64px);
+    min-height: calc(100dvh - 64px);
+  }
+  .nm .hero {
+    flex: 1;
+    grid-template-columns: 0.85fr 1fr;
+    align-items: center;
+    gap: 64px;
+    padding: 0;
+  }
+  .nm .title {
+    font-size: clamp(44px, 4.4vw, 62px);
+  }
+  .nm .heroPlate.mobileOnly {
+    display: none;
+  }
+  .nm .heroPlate.deskOnly {
+    display: block;
+  }
+  .nm .hero .cta {
+    width: auto;
+    min-width: 230px;
+  }
+  .nm.intro .grid {
+    margin-bottom: 40px;
+  }
+}
+
+/* ——— твердження ——— */
+
+.nm .qgrid {
+  display: grid;
+  gap: 40px;
+  padding-top: 26px;
+}
+
+.nm .qside {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .nm .qgrid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
+    gap: 72px;
+    padding-top: 40px;
+  }
+  .nm .qside {
+    display: block;
+    position: sticky;
+    top: 40px;
+    align-self: start;
+  }
+}
+
+.nm .num {
+  margin: 0;
+  font: italic 400 15px "Lora", serif;
+  color: var(--mute);
+  scroll-margin-top: 16px;
+}
+
+.nm .num b {
+  margin-right: 8px;
+  font: 700 42px/1 "Lora", serif;
+  font-style: normal;
+  color: var(--text);
+}
+
+.nm .st {
+  margin: 16px 0 0;
+  font: 500 22px/1.4 "Lora", serif;
+  outline: none;
+  transition: color 0.3s;
+}
+
+.nm .st.dim {
+  color: var(--text-2);
+}
+
+@media (min-width: 900px) {
+  .nm .num b {
+    font-size: 54px;
+  }
+  .nm .st {
+    font-size: 28px;
+  }
+}
+
+.nm .opts {
+  margin-top: 30px;
+  border-top: 1px solid var(--line);
+}
+
+.nm .opt {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 64px;
+  padding: 0 4px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: none;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 18px;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.15s, padding 0.2s, background-color 0.15s;
+}
+
+/* жовта риска зліва — «струм» підходить до рядка під курсором */
+.nm .opt::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -1px;
+  bottom: -1px;
+  width: 3px;
+  background: var(--amber);
+  transform: scaleY(0);
+  transition: transform 0.2s;
+}
+
+.nm .opt .hint {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+
+.nm .opt:not([aria-disabled]):hover {
+  padding-left: 16px;
+  color: var(--blue-d);
+}
+
+.nm .opt:not([aria-disabled]):hover::before,
+.nm .opt:not([aria-disabled]):active::before {
+  transform: scaleY(1);
+}
+
+.nm .opt:not([aria-disabled]):active {
+  background: rgba(248, 232, 64, 0.35);
+}
+
+.nm .opt[aria-disabled] {
+  cursor: default;
+}
+
+.nm .opt.good {
+  background: rgba(248, 232, 64, 0.45);
+  padding-left: 16px;
+}
+
+.nm .opt.good .hint {
+  color: var(--text);
+}
+
+.nm .opt.good::before {
+  transform: scaleY(1);
+}
+
+.nm .opt.bad,
+.nm .opt.bad .hint {
+  color: var(--rust);
+}
+
+.nm .opt.bad {
+  padding-left: 16px;
+  background: rgba(181, 83, 31, 0.1);
+}
+
+.nm .opt.bad::before {
+  transform: scaleY(1);
+  background: var(--rust);
+}
+
+.nm .opt.truth .hint {
+  color: var(--forest);
+  font-size: 15px;
+}
+
+.nm .opt.off {
+  color: var(--mute);
+}
+
+/* вердикт */
+.nm .ver {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 18px;
+  margin-top: 30px;
+  outline: none;
+}
+
+.nm .verArt {
+  width: 56px;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+.nm .ver.ok .verArt {
+  filter: drop-shadow(0 0 10px rgba(248, 232, 64, 0.9));
+}
+
+.nm .ver.miss .verArt {
+  filter: drop-shadow(0 0 10px rgba(252, 140, 40, 0.7));
+}
+
+.nm .vt {
+  font: 700 26px/1.15 "Lora", serif;
+}
+
+.nm .ver.ok .vt {
+  color: var(--text);
+  background: linear-gradient(transparent 62%, var(--amber) 62% 92%, transparent 92%);
+}
+
+.nm .ver.miss .vt {
+  color: var(--rust);
+}
+
+.nm .expl {
+  margin: 10px 0 0;
+  color: var(--text-2);
+}
+
+.nm .sources {
+  margin: 12px 0 0;
+  font-size: 13px;
+  color: var(--mute);
+}
+
+.nm .sources a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--cloud);
+  text-underline-offset: 3px;
+}
+
+.nm .sources a:hover {
+  color: var(--text);
+  text-decoration-color: currentColor;
+}
+
+.nm .ver .cta {
+  grid-column: 1 / -1;
+  margin-top: 10px;
+}
+
+@media (min-width: 900px) {
+  .nm .ver {
+    grid-template-columns: 1fr;
+  }
+  .nm .verArt {
+    display: none;
+  }
+  .nm .ver .cta {
+    width: auto;
+    justify-self: start;
+    min-width: 280px;
+  }
+}
+
+/* ——— результат ——— */
+
+.nm .rgrid {
+  display: grid;
+  gap: 32px;
+  padding-top: 30px;
+}
+
+.nm .rside {
+  order: -1;
+}
+
+@media (min-width: 900px) {
+  .nm .rgrid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+    gap: 72px;
+    padding-top: 48px;
+  }
+  .nm .rside {
+    order: 0;
+    position: sticky;
+    top: 40px;
+    align-self: start;
+  }
+}
+
+.nm .score {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 14px 0 0;
+}
+
+.nm .score b {
+  font: 700 76px/0.9 "Lora", serif;
+  color: var(--text);
+  /* під цифрою — піксельна жовта смуга */
+  background: linear-gradient(transparent 70%, var(--amber) 70% 88%, transparent 88%);
+  padding: 0 4px;
+  letter-spacing: -0.03em;
+}
+
+.nm .score b.range {
+  font-size: 44px;
+}
+
+.nm .score span {
+  font: italic 400 16px "Lora", serif;
+  color: var(--mute);
+}
+
+.nm .ltitle {
+  margin: 18px 0 0;
+  font: 700 34px/1.1 "Lora", serif;
+  letter-spacing: -0.01em;
+}
+
+@media (min-width: 900px) {
+  .nm .score b {
+    font-size: 104px;
+  }
+  .nm .ltitle {
+    font-size: 48px;
+  }
+}
+
+.nm .ldesc {
+  margin: 18px 0 0;
+  padding-bottom: 26px;
+  border-bottom: 1px solid var(--line);
+  color: var(--text-2);
+}
+
+.nm .share {
+  margin-top: 24px;
+}
+
+.nm .shareRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.nm .sbtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  border: 1px solid var(--line-2);
+  background: none;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.nm .sbtn svg {
+  width: 17px;
+  height: 17px;
+}
+
+.nm .sbtn:hover {
+  border-color: var(--text);
+  background: var(--bg-2);
+}
+
+.nm .sbtn.done {
+  border-color: var(--forest);
+  color: var(--forest);
+}
+
+@media (min-width: 600px) {
+  .nm .shareRow {
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  }
+}
+
+.nm .rmain > .cta {
+  margin-top: 14px;
+  width: 100%;
+}
+
+.nm .nfBox {
+  max-width: 520px;
+  margin: 40px auto 0;
+  text-align: center;
+}
+
+.nm .nfBox .cta {
+  margin-top: 24px;
+}
+
+/* ——— рух ——— */
+
+/* поява — лише зсув, без прозорості: якщо браузер притримає анімацію, зміст однаково видно */
+.nm .rise {
+  animation: nmRise 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.nm .st.rise {
+  animation-delay: 0.05s;
+}
+
+@keyframes nmRise {
+  from {
+    transform: translateY(14px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nm *,
+  .nm *::before {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* тло під сторінкою — темне й при «перетягуванні» за край на телефоні */
+html:has(.nm) {
+  background: #d7ddf2;
+}
+
+/* ——— пагорби ілюстраторки внизу ——— */
+
+.nm {
+  display: flex;
+  flex-direction: column;
+}
+
+.nm .col {
+  flex: 1 0 auto;
+}
+
+.nm .ground {
+  flex: none;
+  height: 48px;
+  background: url("/art/px/hills-day.png") repeat-x left bottom / auto 100%;
+  image-rendering: pixelated;
+}
+
+.nm .ground.night {
+  background-image: url("/art/px/hills-night.png");
+}
+
+@media (min-width: 900px) {
+  .nm .ground {
+    height: 64px;
+  }
+}
+
+/* стрілка в кнопці — піксельна */
+.nm .cta .arrow {
+  width: 16px;
+  height: 14px;
+}
