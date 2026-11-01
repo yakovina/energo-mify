@@ -19,4 +19,4 @@ export function scoreShareUrl(score: number): string {
 }
 
 /** Версія OG-картинок: міняємо, коли картинки перемальовано, щоб соцмережі взяли нові. */
-export const OG_VERSION = "7";
+export const OG_VERSION = "8";

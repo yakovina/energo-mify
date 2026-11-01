@@ -102,8 +102,14 @@
 }
 
 .nm .brand img {
-  height: 24px;
+  height: 32px;
   width: auto;
+}
+
+@media (min-width: 900px) {
+  .nm .brand img {
+    height: 40px;
+  }
 }
 
 .nm .brand span {

@@ -31,7 +31,7 @@ const UI = {
   site: "hmarochos.kiev.ua",
   of: (t: number) => `з ${t}`,
   sharedResult: "Результат тесту",
-  live: "підстанцій під напругою",
+  live: "правильних відповідей",
   nf: "Тут світла немає — сторінку не знайдено",
   home: "На початок",
 };
@@ -92,7 +92,7 @@ function Head() {
 function Grid({ history, now, fresh }: { history: boolean[]; now?: number; fresh?: boolean }) {
   const on = history.filter(Boolean).length;
   return (
-    <div className="grid" role="img" aria-label={`Під напругою ${on} з ${TOTAL} підстанцій`}>
+    <div className="grid" role="img" aria-label={`Правильних відповідей: ${on} з ${TOTAL}`}>
       <span className="line" aria-hidden>
         <span className="pulse" />
       </span>
