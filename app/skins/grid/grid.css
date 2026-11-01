@@ -21,18 +21,16 @@
   --rust: #923a16;
   --grass: #b8ca4a;
   --forest: #4d6135;
+  --green: #8aa23a;
   --night: #232b4a;
   --pad: 20px;
 
   min-height: 100vh;
   min-height: 100dvh;
   color: var(--text);
-  /* небо з ледь помітною піксельною сіткою, як у малюнку */
-  background:
-    linear-gradient(rgba(35, 43, 74, 0.035) 1px, transparent 1px) 0 0 / 16px 16px,
-    linear-gradient(90deg, rgba(35, 43, 74, 0.035) 1px, transparent 1px) 0 0 / 16px 16px,
-    linear-gradient(var(--bg-2), var(--bg) 60%) fixed,
-    var(--bg);
+  /* піксельне небо: смуги кольорів неба з малюнка, переходи — дизеринг пікселями 4 px */
+  background: url("/art/px/sky.png") repeat-x left top / 32px 800px, #e2e6f6;
+  image-rendering: pixelated;
   font-size: 15px;
   line-height: 1.6;
 }
@@ -187,9 +185,9 @@
 }
 
 .nm .node.on {
-  background: var(--amber);
-  border-color: var(--text);
-  box-shadow: 0 0 12px rgba(248, 232, 64, 0.9);
+  background: var(--grass);
+  border-color: var(--forest);
+  box-shadow: 0 0 10px rgba(184, 202, 74, 0.9);
 }
 
 .nm .node.miss {
@@ -588,7 +586,7 @@
 }
 
 .nm .opt.good {
-  background: rgba(248, 232, 64, 0.45);
+  background: rgba(184, 202, 74, 0.45);
   padding-left: 16px;
 }
 
@@ -598,6 +596,7 @@
 
 .nm .opt.good::before {
   transform: scaleY(1);
+  background: var(--forest);
 }
 
 .nm .opt.bad,
@@ -652,8 +651,8 @@
 }
 
 .nm .ver.ok .vt {
-  color: var(--text);
-  background: linear-gradient(transparent 62%, var(--amber) 62% 92%, transparent 92%);
+  color: var(--forest);
+  background: linear-gradient(transparent 62%, rgba(184, 202, 74, 0.6) 62% 92%, transparent 92%);
 }
 
 .nm .ver.miss .vt {
@@ -739,7 +738,7 @@
   font: 700 76px/0.9 "Lora", serif;
   color: var(--text);
   /* під цифрою — піксельна жовта смуга */
-  background: linear-gradient(transparent 70%, var(--amber) 70% 88%, transparent 88%);
+  background: linear-gradient(transparent 70%, var(--grass) 70% 88%, transparent 88%);
   padding: 0 4px;
   letter-spacing: -0.03em;
 }
@@ -899,4 +898,87 @@ html:has(.nm) {
 .nm .cta .arrow {
   width: 16px;
   height: 14px;
+}
+
+/* ——— вільний арт: без рамки й тла, лише світіння ——— */
+
+.nm .free {
+  margin: 0;
+  display: grid;
+  place-items: center;
+}
+
+.nm .free img {
+  display: block;
+  height: auto;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 0 14px rgba(248, 232, 64, 0.85));
+}
+
+.nm .free.warm img {
+  filter: drop-shadow(0 0 14px rgba(252, 150, 50, 0.75));
+}
+
+.nm .free.lv-observer img {
+  width: 140px;
+}
+
+.nm .free.lv-hostage img {
+  width: 110px;
+}
+
+.nm .free.lv-analyst img {
+  width: 360px;
+  max-width: 100%;
+}
+
+/* результат: на телефоні арт збоку від балів, на десктопі — праворуч великим */
+.nm .rtop {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+}
+
+.nm .rtop .free.lv-observer img {
+  width: 72px;
+}
+
+.nm .rtop .free.lv-hostage img {
+  width: 56px;
+}
+
+.nm .rtop .free.lv-analyst img {
+  width: 120px;
+}
+
+.nm .rside {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .nm .mobileOnly {
+    display: none;
+  }
+  .nm .rtop {
+    display: block;
+  }
+  .nm .rside {
+    display: grid;
+    place-items: center;
+    min-height: 420px;
+  }
+  .nm .rside .free.lv-observer img {
+    width: 200px;
+  }
+  .nm .rside .free.lv-hostage img {
+    width: 150px;
+  }
+  .nm .qside .free {
+    min-height: 360px;
+  }
+}
+
+.nm .nfBox .free {
+  margin-bottom: 20px;
 }

@@ -102,6 +102,16 @@ function Plate({ src, alt = "", glow, className = "" }: { src: string; alt?: str
   );
 }
 
+/** Лампочка, свічка, батарейка — вільно, без рамки й тла: стоять збоку й світяться. */
+function Free({ src, warm, className = "" }: { src: string; warm?: boolean; className?: string }) {
+  return (
+    <figure className={`free${warm ? " warm" : ""} ${className}`} aria-hidden>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={asset(src)} alt="" decoding="async" />
+    </figure>
+  );
+}
+
 function Share({ url, text, label }: { url: string; text: string; label: string }) {
   const [copied, setCopied] = useState(false);
   const [native, setNative] = useState(false);
@@ -286,7 +296,7 @@ function Sheet({ quiz }: { quiz: QuizApi }) {
           </div>
           {/* на широкому екрані праворуч — експонат: обкладинка, а після відповіді лампочка чи свічка */}
           <aside className="qside" aria-hidden>
-            <Plate src={answered ? (ok ? ART.bulb : ART.candle) : ART.cover} glow={answered ? (ok ? "amber" : "warm") : undefined} className={answered ? "solo" : ""} />
+            {answered ? <Free src={ok ? ART.bulb : ART.candle} warm={!ok} className={ok ? "lv-observer" : "lv-hostage"} /> : <Plate src={ART.cover} />}
           </aside>
         </div>
       </div>
@@ -329,6 +339,8 @@ function ResultBody({ level, history, onRestart }: { level: Level; history?: boo
         <div className="rgrid">
           <div className="rmain rise">
             <p className="cap">{history ? UI.yourResult : `${UI.sharedResult} «${intro.title}»`}</p>
+            <div className="rtop">
+            <div>
             {score !== undefined ? (
               <p className="score">
                 <b>
@@ -344,6 +356,10 @@ function ResultBody({ level, history, onRestart }: { level: Level; history?: boo
               </p>
             )}
             <h1 className="ltitle">{level.title}</h1>
+            </div>
+            {/* на телефоні арт — збоку від балів і звання */}
+            <Free src={LEVEL_ART[level.slug]} warm={level.slug === "hostage"} className={`lv-${level.slug} mobileOnly`} />
+            </div>
             <p className="ldesc">{level.description}</p>
             {history ? (
               <Share url={resultShareUrl(level.slug)} text={level.shareText} label={UI.shareResult} />
@@ -368,7 +384,7 @@ function ResultBody({ level, history, onRestart }: { level: Level; history?: boo
             )}
           </div>
           <aside className="rside">
-            <Plate src={LEVEL_ART[level.slug]} glow={level.slug === "hostage" ? "warm" : "amber"} className={`solo lv-${level.slug}`} />
+            <Free src={LEVEL_ART[level.slug]} warm={level.slug === "hostage"} className={`lv-${level.slug}`} />
           </aside>
         </div>
       </div>
@@ -387,7 +403,7 @@ export function NotFound() {
       <div className="col">
         <Head />
         <div className="nfBox">
-          <Plate src={ART.candle} glow="warm" className="solo lv-hostage" />
+          <Free src={ART.candle} warm className="lv-hostage" />
           <h1 className="ltitle">{UI.nf}</h1>
           <a className="cta" href={asset("/")}>
             {UI.home}

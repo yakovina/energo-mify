@@ -15,7 +15,7 @@
 :root { --bg: #d7ddf2; --bg-2: #e6e9f7; --cloud: #aab3dd; --line: #b4bce2; --line-2: #8396d6; --text: #232b4a; --mute: #6a7299; --blue-d: #4458a8; --amber: #f8e840; --amber-2: #fcc63d; --orange: #cc8619; --night: #232b4a; }
 * { box-sizing: border-box; }
 body { margin: 0; width: 1200px; height: 630px; overflow: hidden; position: relative; color: var(--text); font-family: "Open Sans", sans-serif;
-  background: linear-gradient(rgba(35,43,74,.035) 2px, transparent 2px) 0 0 / 32px 32px, linear-gradient(90deg, rgba(35,43,74,.035) 2px, transparent 2px) 0 0 / 32px 32px, linear-gradient(var(--bg-2), var(--bg)); }
+  background: url("../public/art/px/sky.png") repeat-x left top / 32px 800px, #e2e6f6; image-rendering: pixelated; }
 .ground { position: absolute; left: 0; right: 0; bottom: 0; height: 64px; background: url("../public/art/px/hills-day.png") repeat-x left bottom / auto 100%; image-rendering: pixelated; }
 body.night .ground { background-image: url("../public/art/px/hills-night.png"); }
 .head { position: absolute; left: 72px; right: 72px; top: 46px; display: flex; align-items: center; justify-content: space-between; }
@@ -38,7 +38,7 @@ body.night .ground { background-image: url("../public/art/px/hills-night.png"); 
 .grid { position: absolute; left: 72px; right: 72px; bottom: 92px; height: 20px; }
 .grid::before { content: ""; position: absolute; left: 0; right: 0; top: 9px; height: 2px; background: var(--line-2); }
 .grid i { position: absolute; top: 1px; width: 18px; height: 18px; transform: translateX(-50%); background: var(--bg-2); border: 3px solid var(--line-2); }
-.grid i.on { background: var(--amber); border-color: var(--text); box-shadow: 0 0 18px rgba(248,232,64,.9); }
+.grid i.on { background: #b8ca4a; border-color: #4d6135; box-shadow: 0 0 16px rgba(184,202,74,.9); }
 .grid .pulse { position: absolute; top: 7px; width: 120px; height: 6px; background: linear-gradient(90deg, transparent 0 16px, var(--amber) 16px 24px, transparent 24px 44px, var(--amber) 44px 60px, transparent 60px 68px, var(--orange) 68px 92px, var(--amber) 92px 120px); }
 
 /* рівень */
@@ -47,14 +47,14 @@ body.level .start { display: none; }
 body.level .lvl { display: block; }
 .lvl .text { position: absolute; left: 72px; top: 124px; width: 640px; }
 .score { display: flex; align-items: baseline; gap: 18px; margin-top: 18px; }
-.score b { font: 700 104px/.9 "Lora", serif; color: var(--text); letter-spacing: -.03em; padding: 0 6px; background: linear-gradient(transparent 70%, var(--amber) 70% 88%, transparent 88%); }
+.score b { font: 700 104px/.9 "Lora", serif; color: var(--text); letter-spacing: -.03em; padding: 0 6px; background: linear-gradient(transparent 70%, #b8ca4a 70% 88%, transparent 88%); }
 .score span { font: italic 400 30px "Lora", serif; color: var(--mute); }
 .lvl h1 { margin: 26px 0 0; font: 700 66px/1.04 "Lora", serif; letter-spacing: -.01em; }
-.lvl .plate { right: 80px; top: 112px; width: 390px; height: 350px; display: grid; place-items: center; background: radial-gradient(closest-side, #3a4478, var(--night)); }
-.lvl .plate::before { content: ""; position: absolute; inset: 0; background: radial-gradient(closest-side, rgba(248,232,64,.12), transparent); }
-.lvl .plate.warm::before { background: radial-gradient(closest-side, rgba(252,140,40,.14), transparent); }
-.lvl .plate img { position: relative; filter: drop-shadow(0 0 30px rgba(248,232,64,.5)); }
-.lvl .plate.warm img { filter: drop-shadow(0 0 34px rgba(252,160,61,.55)); }
+.lvl .plate { right: 80px; top: 112px; width: 390px; height: 350px; display: grid; place-items: center; background: none; box-shadow: none; }
+
+
+.lvl .plate img { position: relative; filter: drop-shadow(0 0 22px rgba(248,232,64,.9)); }
+.lvl .plate.warm img { filter: drop-shadow(0 0 22px rgba(252,150,50,.8)); }
 </style>
 </head>
 <body>
