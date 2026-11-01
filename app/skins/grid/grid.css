@@ -133,10 +133,11 @@
 
 /* ——— лінія мережі ——— */
 
+/* лінія мережі без підпису: прогрес видно з підстанцій */
 .nm .grid {
   position: relative;
-  height: 52px;
-  margin: 8px 5px 0;
+  height: 36px;
+  margin: 16px 5px 0;
 }
 
 /* лінія 1 px і доріжка для імпульсу: імпульс обрізається її краями, вузли — ні */
@@ -144,7 +145,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: 34px;
+  top: 18px;
   height: 5px;
   overflow: hidden;
   container-type: inline-size;
@@ -160,26 +161,10 @@
   background: var(--line-2);
 }
 
-.nm .grid .gridLabel {
-  position: absolute;
-  left: -5px;
-  top: 0;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--mute);
-}
-
-.nm .grid .gridLabel b {
-  color: var(--orange);
-  font-size: 9px;
-  vertical-align: 1px;
-}
-
 /* підстанція — піксельний квадрат 10 px з рамкою 2 px */
 .nm .node {
   position: absolute;
-  top: 31px;
+  top: 15px;
   width: 10px;
   height: 10px;
   transform: translateX(-50%);
@@ -1228,7 +1213,7 @@ html:has(.nm) {
 
 .nm .seg {
   position: absolute;
-  top: 35px;
+  top: 19px;
   height: 3px;
   transform-origin: 0 50%;
   pointer-events: none;

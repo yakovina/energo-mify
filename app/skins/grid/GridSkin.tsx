@@ -89,13 +89,10 @@ function Head() {
 }
 
 /** Лінія мережі з восьми підстанцій. history — пройдені твердження; now — поточне. */
-function Grid({ history, now, label, fresh }: { history: boolean[]; now?: number; label?: string; fresh?: boolean }) {
+function Grid({ history, now, fresh }: { history: boolean[]; now?: number; fresh?: boolean }) {
   const on = history.filter(Boolean).length;
   return (
     <div className="grid" role="img" aria-label={`Під напругою ${on} з ${TOTAL} підстанцій`}>
-      <span className="gridLabel" aria-hidden>
-        <b>●</b> {label ?? `Мережа · ${on}/${TOTAL}`}
-      </span>
       <span className="line" aria-hidden>
         <span className="pulse" />
       </span>
@@ -378,7 +375,7 @@ function ResultBody({ level, history, fixed, onRestart }: { level: Level; histor
     <main className="nm result">
       <div className="col">
         <Head />
-        <Grid history={shown} label={score !== undefined ? `Мережа · ${score}/${TOTAL}` : level.range} />
+        <Grid history={shown} />
         <div className="rgrid">
           <div className="rmain rise">
             <div className="rtop">
@@ -506,7 +503,7 @@ export default function GridSkin({ quiz }: { quiz: QuizApi }) {
             </div>
             <Plate src={ART.cover} alt={COVER_ALT} className="heroPlate deskOnly" />
           </div>
-          <Grid history={[]} label="Мережа · 0/8" />
+          <Grid history={[]} />
         </div>
         <Ground scene={false} />
       </main>
