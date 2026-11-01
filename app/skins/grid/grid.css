@@ -1545,3 +1545,160 @@ html:has(.nm) {
     transform: scale(0.985);
   }
 }
+
+/* ——— плашка твердження: номер, твердження, запитання й варіанти — одна зрозуміла форма ———
+   варіанти — дві великі кнопки з піксельним перемикачем зліва; після відповіді в перемикачі
+   ✓ (правильна) або ✕ (ваш хибний вибір) */
+
+.nm .qcard {
+  position: relative;
+  padding: 20px 18px 22px;
+  background: rgba(247, 248, 253, 0.94);
+  border: 1px solid var(--line);
+  box-shadow: 4px 4px 0 var(--cloud);
+  scroll-margin-top: 12px;
+}
+
+@media (min-width: 900px) {
+  .nm .qcard {
+    padding: 30px 32px 32px;
+  }
+}
+
+.nm .qcard .num {
+  margin: 0;
+  font: italic 400 16px/1.3 "Lora", serif;
+  color: var(--mute);
+}
+
+.nm .qcard .st {
+  margin-top: 10px;
+}
+
+.nm .ask {
+  margin: 22px 0 0;
+  font: 700 15px/1.3 "Open Sans", sans-serif;
+  color: var(--blue-d);
+}
+
+.nm .qcard .opts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+  border-top: 0;
+}
+
+.nm .qcard .opt {
+  justify-content: flex-start;
+  gap: 12px;
+  min-height: 64px;
+  padding: 10px 14px;
+  border: 2px solid var(--text);
+  background: #fff;
+  box-shadow: 4px 4px 0 var(--cloud);
+  font-size: 17px;
+  transition: transform 0.12s, box-shadow 0.12s, background-color 0.15s, opacity 0.2s;
+}
+
+.nm .qcard .opt::before {
+  display: none;
+}
+
+.nm .qcard .opt:not([aria-disabled]):hover {
+  padding-left: 14px;
+  color: var(--text);
+  background: #fffbd1;
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 var(--cloud);
+}
+
+.nm .qcard .opt:not([aria-disabled]):active {
+  background: #fff6a3;
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0 var(--cloud);
+}
+
+.nm .qcard .opt .box {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--text);
+  background: #fff;
+  color: #fff;
+}
+
+.nm .qcard .opt:not([aria-disabled]):hover .box {
+  background: var(--amber);
+  border-color: var(--text);
+}
+
+.nm .qcard .opt .lbl {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.15;
+}
+
+.nm .qcard .opt .lbl small {
+  margin-top: 3px;
+  font: 500 12px "Open Sans", sans-serif;
+  color: var(--mute);
+}
+
+/* стани після відповіді */
+.nm .qcard .opt.good {
+  padding: 10px 14px;
+  background: #e7efc4;
+  border-color: var(--forest);
+}
+
+.nm .qcard .opt.good .box,
+.nm .qcard .opt.truth .box {
+  background: var(--forest);
+  border-color: var(--forest);
+}
+
+.nm .qcard .opt.bad {
+  padding: 10px 14px;
+  background: #f6dccf;
+  border-color: var(--rust);
+  color: var(--rust);
+}
+
+.nm .qcard .opt.bad .box {
+  background: var(--rust);
+  border-color: var(--rust);
+}
+
+.nm .qcard .opt.truth {
+  border-color: var(--forest);
+}
+
+.nm .qcard .opt.off {
+  opacity: 0.5;
+}
+
+/* після відповіді запитання вже не потрібне */
+.nm .qcard:has(.opt[aria-disabled]) .ask {
+  color: var(--mute);
+  font-weight: 500;
+}
+
+/* вердикт стоїть під плашкою твердження */
+.nm .qcard + .ver {
+  margin-top: 30px;
+}
+
+/* над плашкою з хибною відповіддю — місце для свічки, щоб вона не заходила на кнопки */
+.nm .qcard + .ver.miss {
+  margin-top: 78px;
+}
+
+@media (min-width: 900px) {
+  .nm .qcard + .ver.miss {
+    margin-top: 96px;
+  }
+}

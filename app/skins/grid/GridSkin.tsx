@@ -21,7 +21,9 @@ const UI = {
   finish: "Мій результат",
   right: "Так і є!",
   wrong: "Насправді ні",
-  picked: "Ваш вибір",
+  picked: "ваш вибір",
+  qOf: (n: number, t: number) => `Твердження ${n} з ${t}`,
+  ask: "Це правда чи міф?",
   sources: "Джерела:",
   again: "Пройти ще раз",
   take: "Пройти тест",
@@ -46,6 +48,18 @@ const ART = {
 };
 const LEVEL_ART: Record<Level["slug"], string> = { hostage: ART.candle, observer: ART.bulb, analyst: ART.battery };
 
+
+/** Піксельні ✓ і ✕ у сітці 7×7. */
+const PxCheck = () => (
+  <svg viewBox="0 0 7 7" width="14" height="14" shapeRendering="crispEdges" aria-hidden>
+    <path d="M5 1h2v1H5zM4 2h2v1H4zM3 3h2v1H3zM2 4h2v1H2zM0 3h1v1H0zM1 4h1v1H1zM1 5h2v1H1z" fill="currentColor" />
+  </svg>
+);
+const PxCross = () => (
+  <svg viewBox="0 0 7 7" width="12" height="12" shapeRendering="crispEdges" aria-hidden>
+    <path d="M0 0h2v1H0zM5 0h2v1H5zM1 1h2v1H1zM4 1h2v1H4zM2 2h3v1H2zM3 3h1v1H3zM2 4h3v1H2zM1 5h2v1H1zM4 5h2v1H4zM0 6h2v1H0zM5 6h2v1H5z" fill="currentColor" />
+  </svg>
+);
 
 /** Піксельна стрілка в сітці 9×8 — як у малюнку. */
 const Arrow = () => (
@@ -254,8 +268,14 @@ function Option({ v, q, picked, answered, onPick }: { v: Verdict; q: Question; p
         if (!answered) onPick(v);
       }}
     >
-      <span>{VERDICT_LABEL(v)}</span>
-      {mine ? <span className="hint">{UI.picked}</span> : answered ? <span className="hint">{v === q.correct ? "✓" : ""}</span> : <span className="box" aria-hidden />}
+      {/* піксельний перемикач зліва: порожній — можна обрати; після відповіді ✓ або ✕ */}
+      <span className="box" aria-hidden>
+        {answered && v === q.correct ? <PxCheck /> : mine ? <PxCross /> : null}
+      </span>
+      <span className="lbl">
+        {VERDICT_LABEL(v)}
+        {mine && <small>{UI.picked}</small>}
+      </span>
     </button>
   );
 }
@@ -304,17 +324,18 @@ function Sheet({ quiz }: { quiz: QuizApi }) {
         <Grid history={history} now={answered ? undefined : idx} fresh={answered} />
         <div className="qgrid">
           <div className="qmain" key={q.id}>
-            <p className="num" data-scroll-anchor="(max-width: 899px)">
-              <b>{String(idx + 1).padStart(2, "0")}</b>
-              {UI.of(total)}
-            </p>
-            <p className={`st${answered ? " dim" : ""}`} ref={stRef} tabIndex={-1}>
-              {q.statement}
-            </p>
-            <div className="opts">
-              <Option v={true} q={q} picked={picked} answered={answered} onPick={pick} />
-              <Option v={false} q={q} picked={picked} answered={answered} onPick={pick} />
-            </div>
+            {/* плашка твердження: номер, твердження, запитання й два варіанти — одна форма */}
+            <section className="qcard" data-scroll-anchor="(max-width: 899px)">
+              <p className="num">{UI.qOf(idx + 1, total)}</p>
+              <p className={`st${answered ? " dim" : ""}`} ref={stRef} tabIndex={-1}>
+                {q.statement}
+              </p>
+              <p className="ask">{UI.ask}</p>
+              <div className="opts">
+                <Option v={true} q={q} picked={picked} answered={answered} onPick={pick} />
+                <Option v={false} q={q} picked={picked} answered={answered} onPick={pick} />
+              </div>
+            </section>
             {answered && (
               <section className={`ver ${ok ? "ok" : "miss"}`} ref={verRef} tabIndex={-1} aria-live="polite">
                 {/* лампочка висить на шнурі з верхнього краю плашки, свічка стоїть на її куті */}
