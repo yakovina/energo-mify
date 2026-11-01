@@ -13,5 +13,10 @@ export function resultShareUrl(slug: string): string {
   return `${SITE_URL}/r/${slug}/`;
 }
 
+/** URL шер-сторінки з точною кількістю балів: /s/{0..8}/ — зі своєю OG-картинкою. */
+export function scoreShareUrl(score: number): string {
+  return `${SITE_URL}/s/${score}/`;
+}
+
 /** Версія OG-картинок: міняємо, коли картинки перемальовано, щоб соцмережі взяли нові. */
-export const OG_VERSION = "6";
+export const OG_VERSION = "7";

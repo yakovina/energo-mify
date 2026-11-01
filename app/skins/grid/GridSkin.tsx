@@ -10,13 +10,12 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { scrollToStart, type QuizApi } from "../../useQuiz";
 import { COVER_ALT, VERDICT_LABEL, intro, TOTAL, type Level, type Question, type Verdict } from "../../../data/quiz";
 import { asset } from "../../bp";
-import { SITE_URL, TEST_SHARE_TEXT, resultShareUrl } from "../../share";
+import { SITE_URL, TEST_SHARE_TEXT, resultShareUrl, scoreShareUrl } from "../../share";
 import { buzz, glide, useKeys } from "../common";
 import { FB, TG } from "../pixel/icons";
 
 /** Підписи інтерфейсу (не контент тесту) — усі в одному місці. */
 const UI = {
-  kicker: "Тест · Енергетика",
   start: "Почати тест",
   next: "Наступне твердження",
   finish: "Мій результат",
@@ -26,14 +25,11 @@ const UI = {
   sources: "Джерела:",
   again: "Пройти ще раз",
   take: "Пройти тест",
-  shareTest: "Поділитися тестом",
-  shareResult: "Поділитися результатом",
   copy: "Копіювати",
   copied: "Скопійовано",
   other: "Інше…",
   site: "hmarochos.kiev.ua",
   of: (t: number) => `з ${t}`,
-  yourResult: "Ваш результат",
   sharedResult: "Результат тесту",
   live: "підстанцій під напругою",
   nf: "Тут світла немає — сторінку не знайдено",
@@ -142,7 +138,31 @@ function Free({ src, warm, hang, className = "" }: { src: string; warm?: boolean
   );
 }
 
-function Share({ url, text, label }: { url: string; text: string; label: string }) {
+/** Копіювання з запасним шляхом: у вбудованих браузерах (Instagram, Facebook) clipboard API часто недоступний. */
+async function copyText(t: string) {
+  try {
+    await navigator.clipboard.writeText(t);
+    return true;
+  } catch {
+    const ta = document.createElement("textarea");
+    ta.value = t;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.append(ta);
+    ta.select();
+    let ok = false;
+    try {
+      ok = document.execCommand("copy");
+    } catch {
+      /* не вдалося */
+    }
+    ta.remove();
+    return ok;
+  }
+}
+
+function Share({ url, text }: { url: string; text: string }) {
   const [copied, setCopied] = useState(false);
   const [native, setNative] = useState(false);
   useEffect(() => {
@@ -154,12 +174,9 @@ function Share({ url, text, label }: { url: string; text: string; label: string 
   };
   const copy = async () => {
     buzz(8);
-    try {
-      await navigator.clipboard.writeText(`${text} ${url}`);
+    if (await copyText(`${text} ${url}`)) {
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
-    } catch {
-      /* ignore */
     }
   };
   const more = async () => {
@@ -172,7 +189,6 @@ function Share({ url, text, label }: { url: string; text: string; label: string 
   };
   return (
     <div className="share">
-      <p className="cap">{label}</p>
       <div className="shareRow">
         <button type="button" className="sbtn" onClick={() => popup(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`)}>
           <svg viewBox="0 0 24 24" aria-hidden>
@@ -354,10 +370,10 @@ function CountUp({ to }: { to: number }) {
   return <>{n}</>;
 }
 
-function ResultBody({ level, history, onRestart }: { level: Level; history?: boolean[]; onRestart?: () => void }) {
-  const score = history?.filter(Boolean).length;
-  // на шер-сторінці історії немає — показуємо мережу за верхньою межею рівня
-  const shown = history ?? Array.from({ length: level.max }, () => true);
+function ResultBody({ level, history, fixed, onRestart }: { level: Level; history?: boolean[]; fixed?: number; onRestart?: () => void }) {
+  const score = history ? history.filter(Boolean).length : fixed;
+  // на шер-сторінці історії немає — вмикаємо стільки підстанцій, скільки балів
+  const shown = history ?? Array.from({ length: fixed ?? level.max }, () => true);
   return (
     <main className="nm result">
       <div className="col">
@@ -367,7 +383,7 @@ function ResultBody({ level, history, onRestart }: { level: Level; history?: boo
           <div className="rmain rise">
             <div className="rtop">
             <div>
-            <p className="cap">{history ? UI.yourResult : `${UI.sharedResult} «${intro.title}»`}</p>
+            {!history && <p className="shared">{`${UI.sharedResult} «${intro.title}»`}</p>}
             {score !== undefined ? (
               <p className="score">
                 <b>
@@ -389,9 +405,12 @@ function ResultBody({ level, history, onRestart }: { level: Level; history?: boo
             </div>
             <p className="ldesc">{level.description}</p>
             {history ? (
-              <Share url={resultShareUrl(level.slug)} text={level.shareText} label={UI.shareResult} />
+              <Share
+                url={score !== undefined ? scoreShareUrl(score) : resultShareUrl(level.slug)}
+                text={score !== undefined ? `${score} з ${TOTAL}. ${level.shareText}` : level.shareText}
+              />
             ) : (
-              <Share url={`${SITE_URL}/`} text={TEST_SHARE_TEXT} label={UI.shareTest} />
+              <Share url={`${SITE_URL}/`} text={TEST_SHARE_TEXT} />
             )}
             {onRestart ? (
               <button
@@ -418,8 +437,8 @@ function ResultBody({ level, history, onRestart }: { level: Level; history?: boo
   );
 }
 
-export function ResultPage({ level }: { level: Level }) {
-  return <ResultBody level={level} />;
+export function ResultPage({ level, score }: { level: Level; score?: number }) {
+  return <ResultBody level={level} fixed={score} />;
 }
 
 export function NotFound() {
@@ -457,7 +476,6 @@ export default function GridSkin({ quiz }: { quiz: QuizApi }) {
           <Head />
           <div className="hero">
             <div className="heroText rise">
-              <p className="cap">{UI.kicker}</p>
               <h1 className="title">{intro.title}</h1>
               <Plate src={ART.cover} alt={COVER_ALT} className="heroPlate mobileOnly" />
               <p className="lead">{intro.lead}</p>

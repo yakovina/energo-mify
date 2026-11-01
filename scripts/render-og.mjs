@@ -14,6 +14,8 @@ const jobs = [
   { out: "og-hostage.png", q: "?l=hostage" },
   { out: "og-observer.png", q: "?l=observer" },
   { out: "og-analyst.png", q: "?l=analyst" },
+  // точні бали для шер-сторінок /s/0/ … /s/8/
+  ...Array.from({ length: 9 }, (_, n) => ({ out: `og-s${n}.png`, q: `?s=${n}` })),
 ];
 
 for (const j of jobs) {

@@ -1514,3 +1514,10 @@ html:has(.nm) {
     width: 240px;
   }
 }
+
+/* на чужій шер-сторінці — звичайний рядок над балами, без дрібних заголовків капсом */
+.nm .shared {
+  margin: 0 0 6px;
+  font: italic 400 16px/1.4 "Lora", serif;
+  color: var(--mute);
+}

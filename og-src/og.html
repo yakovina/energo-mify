@@ -27,7 +27,7 @@ body.night .ground { background-image: url("../public/art/px/hills-night.png"); 
 .px { image-rendering: pixelated; display: block; }
 
 /* старт */
-.start .text { position: absolute; left: 72px; top: 136px; width: 500px; }
+.start .text { position: absolute; left: 72px; top: 150px; width: 500px; }
 .start h1 { margin: 16px 0 0; font: 700 70px/1.02 "Lora", serif; letter-spacing: -.015em; }
 .cta { display: inline-flex; align-items: center; gap: 22px; margin-top: 34px; height: 78px; padding: 0 32px 6px; background: var(--amber); color: var(--text); font-weight: 700; font-size: 26px; box-shadow: inset 0 0 0 3px var(--text), inset 0 -10px 0 0 var(--amber-2), inset 0 -10px 0 3px var(--text); }
 .plate { position: absolute; }
@@ -35,26 +35,37 @@ body.night .ground { background-image: url("../public/art/px/hills-night.png"); 
 .start .plate img { width: 100%; }
 
 /* лінія мережі */
-.grid { position: absolute; left: 72px; right: 72px; bottom: 92px; height: 20px; }
+.grid { position: absolute; left: 72px; right: 72px; top: 100px; height: 20px; }
 .grid::before { content: ""; position: absolute; left: 0; right: 0; top: 9px; height: 2px; background: var(--line-2); }
 .grid i { position: absolute; top: 1px; width: 18px; height: 18px; transform: translateX(-50%); background: var(--bg-2); border: 3px solid var(--line-2); }
 .grid i.on { background: #b8ca4a; border-color: #4d6135; box-shadow: 0 0 16px rgba(184,202,74,.9); }
 .grid .pulse { position: absolute; top: 7px; width: 120px; height: 6px; background: linear-gradient(90deg, transparent 0 16px, var(--amber) 16px 24px, transparent 24px 44px, var(--amber) 44px 60px, transparent 60px 68px, var(--orange) 68px 92px, var(--amber) 92px 120px); }
 
-/* рівень */
+/* рівень: плашка як на сайті — світла, тонка лінія, піксельна тінь; арт усередині праворуч */
 .lvl { display: none; }
+.card { position: absolute; left: 150px; right: 150px; top: 132px; height: 300px; background: rgba(247,248,253,.95); border: 2px solid var(--line); box-shadow: 8px 8px 0 var(--cloud); }
+.card .text { position: absolute; left: 52px; top: 40px; width: 560px; }
+.card .art { position: absolute; right: 60px; top: 0; bottom: 0; display: grid; place-items: center; }
+.card .art img { position: relative; image-rendering: auto; }
+.card .art::before { content: ""; position: absolute; left: 50%; top: 50%; width: 300px; height: 300px; transform: translate(-50%, -50%); background: radial-gradient(closest-side, rgba(248,232,64,.5), rgba(248,232,64,0)); }
+.card .art.warm::before { background: radial-gradient(closest-side, rgba(252,150,50,.45), rgba(252,150,50,0)); }
+/* лампочка висить на шнурі від верхнього краю плашки */
+.card .art.hang { place-items: start center; padding-top: 44px; }
+.card .art.hang::after { content: ""; position: absolute; left: 50%; top: 0; width: 4px; height: 48px; transform: translateX(-50%); background: #232323; }
+.mill, .plant { position: absolute; bottom: 40px; image-rendering: auto; }
+.mill { left: 10px; width: 170px; }
+.plant { right: 20px; width: 170px; }
 body.level .start { display: none; }
 body.level .lvl { display: block; }
-.lvl .text { position: absolute; left: 72px; top: 124px; width: 640px; }
-.score { display: flex; align-items: baseline; gap: 18px; margin-top: 18px; }
+
+.score { display: flex; align-items: baseline; gap: 18px; }
 .score b { font: 700 104px/.9 "Lora", serif; color: var(--text); letter-spacing: -.03em; padding: 0 6px; background: linear-gradient(transparent 70%, #b8ca4a 70% 88%, transparent 88%); }
 .score span { font: italic 400 30px "Lora", serif; color: var(--mute); }
-.lvl h1 { margin: 26px 0 0; font: 700 66px/1.04 "Lora", serif; letter-spacing: -.01em; }
-.lvl .plate { right: 80px; top: 112px; width: 390px; height: 350px; display: grid; place-items: center; background: none; box-shadow: none; }
+.lvl h1 { margin: 26px 0 0; font: 700 60px/1.04 "Lora", serif; letter-spacing: -.01em; }
 
 
-.lvl .plate img { position: relative; image-rendering: auto; filter: drop-shadow(0 0 22px rgba(248,232,64,.9)); }
-.lvl .plate.warm img { filter: drop-shadow(0 0 22px rgba(252,150,50,.8)); }
+
+
 </style>
 </head>
 <body>
@@ -62,7 +73,6 @@ body.level .lvl { display: block; }
 
   <div class="start">
     <div class="text">
-      <div class="cap">Тест · Енергетика</div>
       <h1>Міфи про українську енергетику</h1>
       <div class="cta">Пройти тест <svg viewBox="0 0 22 10" width="34" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M0 5h20M16 1l4 4-4 4"/></svg></div>
     </div>
@@ -70,12 +80,15 @@ body.level .lvl { display: block; }
   </div>
 
   <div class="lvl">
-    <div class="text">
-      <div class="cap">Мій результат у тесті Хмарочоса</div>
-      <div class="score"><b id="range"></b><span>з 8</span></div>
-      <h1 id="title"></h1>
+    <img class="mill" src="../public/art/windmill.webp" alt="">
+    <img class="plant" src="../public/art/plant.webp" alt="">
+    <div class="card">
+      <div class="text">
+        <div class="score"><b id="range"></b><span>з 8</span></div>
+        <h1 id="title"></h1>
+      </div>
+      <div class="art" id="plate"><img id="art" alt=""></div>
     </div>
-    <div class="plate" id="plate"><img class="px" id="art" alt=""></div>
   </div>
 
   <div class="grid" id="grid"></div>
@@ -83,23 +96,27 @@ body.level .lvl { display: block; }
 
 <script>
   const LEVELS = {
-    hostage: { title: "Заручник інфопростору", range: "0–3", max: 3, art: "candle", w: 112, warm: true },
-    observer: { title: "Уважний спостерігач", range: "4–6", max: 6, art: "bulb-lamp", w: 150 },
-    analyst: { title: "Енергетичний аналітик", range: "7–8", max: 8, art: "battery", w: 340 },
+    hostage: { title: "Заручник інфопростору", range: "0–3", max: 3, art: "candle", w: 100, warm: true },
+    observer: { title: "Уважний спостерігач", range: "4–6", max: 6, art: "bulb-lamp", w: 120 },
+    analyst: { title: "Енергетичний аналітик", range: "7–8", max: 8, art: "battery", w: 260 },
   };
-  const l = LEVELS[new URLSearchParams(location.search).get("l")];
-  const lit = l ? l.max : 0;
+  // ?s=<бали> — точна кількість балів; ?l=<рівень> — діапазон рівня
+  const qs = new URLSearchParams(location.search);
+  const sc = qs.has("s") ? Number(qs.get("s")) : null;
+  const l = sc !== null ? Object.values(LEVELS).find((v) => sc <= v.max) : LEVELS[qs.get("l")];
+  const lit = l ? (sc ?? l.max) : 0;
   document.getElementById("grid").innerHTML =
     Array.from({ length: 8 }, (_, i) => `<i class="${i < lit ? "on" : ""}" style="left:${(i / 7) * 100}%"></i>`).join("") +
     `<span class="pulse" style="left:${l ? Math.min(85, (lit / 7) * 100) - 12 : 30}%"></span>`;
   if (l) {
     document.body.classList.add("level");
     document.getElementById("title").textContent = l.title;
-    document.getElementById("range").textContent = l.range;
+    document.getElementById("range").textContent = sc !== null ? String(sc) : l.range;
+    if (l.art === "bulb-lamp") document.getElementById("plate").classList.add("hang");
     const a = document.getElementById("art");
     a.src = `../public/art/${l.art}.webp`;
     a.style.width = l.w + "px";
-    if (l.warm) { document.getElementById("plate").classList.add("warm"); document.body.classList.add("night"); }
+    if (l.warm) { document.getElementById("plate").classList.add("warm"); document.body.classList.add("night"); document.querySelectorAll(".mill,.plant").forEach((e) => (e.style.filter = "brightness(.55) saturate(.7)")); }
   }
 </script>
 </body>
