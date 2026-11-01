@@ -303,11 +303,11 @@ function Sheet({ quiz }: { quiz: QuizApi }) {
         <Grid history={history} now={answered ? undefined : idx} fresh={answered} />
         <div className="qgrid">
           <div className="qmain" key={q.id}>
-            <p className="num rise" data-scroll-anchor="(max-width: 899px)">
+            <p className="num" data-scroll-anchor="(max-width: 899px)">
               <b>{String(idx + 1).padStart(2, "0")}</b>
               {UI.of(total)}
             </p>
-            <p className={`st rise${answered ? " dim" : ""}`} ref={stRef} tabIndex={-1}>
+            <p className={`st${answered ? " dim" : ""}`} ref={stRef} tabIndex={-1}>
               {q.statement}
             </p>
             <div className="opts">
@@ -315,7 +315,7 @@ function Sheet({ quiz }: { quiz: QuizApi }) {
               <Option v={false} q={q} picked={picked} answered={answered} onPick={pick} />
             </div>
             {answered && (
-              <section className={`ver rise ${ok ? "ok" : "miss"}`} ref={verRef} tabIndex={-1} aria-live="polite">
+              <section className={`ver ${ok ? "ok" : "miss"}`} ref={verRef} tabIndex={-1} aria-live="polite">
                 {/* лампочка висить на шнурі з верхнього краю плашки, свічка стоїть на її куті */}
                 <Free src={ok ? ART.bulb : ART.candle} warm={!ok} hang={ok} className={`verArt ${ok ? "lv-observer" : "lv-hostage"}`} />
                 {ok && <span className="hangSpace" aria-hidden />}
@@ -377,7 +377,7 @@ function ResultBody({ level, history, fixed, onRestart }: { level: Level; histor
         <Head />
         <Grid history={shown} />
         <div className="rgrid">
-          <div className="rmain rise">
+          <div className="rmain">
             <div className="rtop">
             <div>
             {!history && <p className="shared">{`${UI.sharedResult} «${intro.title}»`}</p>}
@@ -472,7 +472,7 @@ export default function GridSkin({ quiz }: { quiz: QuizApi }) {
         <div className="col">
           <Head />
           <div className="hero">
-            <div className="heroText rise">
+            <div className="heroText">
               <h1 className="title">{intro.title}</h1>
               <Plate src={ART.cover} alt={COVER_ALT} className="heroPlate mobileOnly" />
               <p className="lead">{intro.lead}</p>

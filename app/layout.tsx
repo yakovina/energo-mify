@@ -48,6 +48,8 @@ const FONTS = [
   "/fonts/hm/open-sans-v29-latin_cyrillic-ext-700.woff2",
   "/fonts/hm/lora-v24-latin_cyrillic-ext-500.woff2",
   "/fonts/hm/lora-v24-latin_cyrillic-ext-700.woff2",
+  // курсив — «з 8» біля номера й балів; без попереднього завантаження він підміняється пізніше
+  "/fonts/hm/lora-v24-latin_cyrillic-ext-italic.woff2",
 ];
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
