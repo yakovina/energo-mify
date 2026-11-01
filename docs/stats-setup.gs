@@ -119,8 +119,15 @@ function setupStats_(ss) {
 
   var sh = ss.getSheetByName('stats') || ss.getSheetByName('Статистика') || ss.insertSheet('Статистика', 0);
   if (sh.getName() !== 'Статистика') sh.setName('Статистика');
+  // налаштування переживають перебудову
+  var keepSite = '*', keepTest = 'ні';
+  if (String(sh.getRange('A5').getValue()).indexOf('сайту') >= 0) {
+    keepSite = sh.getRange('B5').getValue() || '*';
+    keepTest = sh.getRange('B6').getValue() === 'так' ? 'так' : 'ні';
+  }
   sh.getCharts().forEach(function (c) { sh.removeChart(c); });
   sh.clear(); sh.clearNotes(); sh.clearConditionalFormatRules();
+  sh.getRange(1, 1, sh.getMaxRows(), sh.getMaxColumns()).setNumberFormat('General');
   sh.getRange('A:F').clearDataValidations();
 
   var rows = [], heads = [], pcts = [], fmts = [];
@@ -131,11 +138,11 @@ function setupStats_(ss) {
 
   // ---------- шапка й налаштування ----------
   row('Міфи про українську енергетику — статистика');
-  var rLast = row('Оновлюється сама з кожним проходженням. Остання відповідь:', '=IFERROR(MAX(' + src + 'A:A),"")');
+  var rLast = row('Остання відповідь (зведення оновлюється саме)', '=IFERROR(MAX(' + src + 'A:A),"")');
   row('');
   head('Налаштування', 'Значення');
-  var rSite = row('Рахувати проходження з сайту (* — з усіх)', '*');
-  var rTest = row('Рахувати перевірочні проходження (адреса з ?test)', 'ні');
+  var rSite = row('Рахувати проходження з сайту (* — з усіх)', keepSite);
+  var rTest = row('Рахувати перевірочні проходження (адреса з ?test)', keepTest);
   row('');
   var SITE = '$B$' + rSite, TEST = '$B$' + rTest;
   // фільтр: сайт + (перевірочні рахуємо лише якщо так обрано)
@@ -195,7 +202,7 @@ function setupStats_(ss) {
 
   // ---------- оформлення ----------
   sh.setHiddenGridlines(true);
-  sh.setColumnWidth(1, 380); sh.setColumnWidth(2, 150); sh.setColumnWidth(3, 170); sh.setColumnWidths(4, 3, 140);
+  sh.setColumnWidth(1, 380); sh.setColumnWidth(2, 175); sh.setColumnWidth(3, 170); sh.setColumnWidths(4, 2, 165); sh.setColumnWidth(6, 120);
   sh.getRange(1, 1, rows.length, 6).setFontFamily('Arial').setFontSize(11).setVerticalAlignment('middle');
   sh.getRange('A1').setFontSize(18).setFontWeight('bold');
   sh.getRange(rLast, 1, 1, 2).setFontColor('#666666');
@@ -213,6 +220,8 @@ function setupStats_(ss) {
   // головні цифри — великі
   sh.getRange('B' + rStart + ':B' + rAvg).setFontSize(16).setFontWeight('bold');
   sh.getRange('B' + rStart + ':C' + rAvg).setHorizontalAlignment('left');
+  sh.getRange('B' + rStart + ':B' + (rQ0 - 1)).setNumberFormat('0');
+  sh.getRange('B' + rAvg).setNumberFormat('0.0');
   pcts.forEach(function (a) { sh.getRange(a).setNumberFormat('0%'); });
   sh.getRange('B' + rLv0 + ':D' + (rQ0 + QUESTIONS.length - 1)).setHorizontalAlignment('left');
   sh.getRange(rows.length - 1, 1, 2, 1).setFontColor('#666666').setFontStyle('italic');
