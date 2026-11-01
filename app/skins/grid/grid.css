@@ -24,6 +24,9 @@
   --green: #8aa23a;
   --night: #232b4a;
   --pad: 20px;
+  /* єдиний таймінг відповіді: струм іде --run, усе наступне стартує, коли він дійшов */
+  --run: 0.36s;
+  --ease-run: cubic-bezier(0.4, 0, 0.2, 1);
 
   min-height: 100vh;
   min-height: 100dvh;
@@ -1237,7 +1240,7 @@ html:has(.nm) {
 }
 
 .nm .seg.on.fresh {
-  animation: nmFlow 0.55s cubic-bezier(0.5, 0, 0.3, 1) both;
+  animation: nmFlow var(--run) var(--ease-run) both;
 }
 
 .nm .seg.miss {
@@ -1246,7 +1249,7 @@ html:has(.nm) {
 }
 
 .nm .seg.miss.fresh {
-  animation: nmShort 0.6s steps(1) both;
+  animation: nmShort 0.36s steps(1) var(--run) both;
 }
 
 @keyframes nmFlow {
@@ -1272,12 +1275,12 @@ html:has(.nm) {
 
 /* підстанція вмикається, коли струм дійшов */
 .nm .node.on.fresh {
-  animation-delay: 0.45s;
+  animation-delay: var(--run);
 }
 
 /* хибна: вузол «іскрить» */
 .nm .node.miss.fresh {
-  animation: nmSpark 0.6s ease-out both;
+  animation: nmSpark 0.5s ease-out var(--run);
 }
 
 @keyframes nmSpark {
@@ -1292,7 +1295,7 @@ html:has(.nm) {
 
 /* хибна відповідь: обраний рядок здригається */
 .nm .opt.bad {
-  animation: nmJolt 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+  animation: nmJolt 0.36s cubic-bezier(0.36, 0.07, 0.19, 0.97) var(--run);
 }
 
 @keyframes nmJolt {
@@ -1330,13 +1333,13 @@ html:has(.nm) {
 .nm .opt.good::after {
   background: linear-gradient(90deg, var(--forest), var(--grass) 85%, #fff59d);
   box-shadow: 0 0 8px rgba(184, 202, 74, 0.9);
-  animation: nmRowFlow 0.45s cubic-bezier(0.5, 0, 0.3, 1) forwards;
+  animation: nmRowFlow var(--run) var(--ease-run) forwards;
 }
 
 .nm .opt.bad::after {
   background: linear-gradient(90deg, var(--rust), #e2533a 80%, #fff2b0);
   box-shadow: 0 0 8px rgba(226, 83, 58, 0.8);
-  animation: nmRowBreak 0.9s ease-out forwards;
+  animation: nmRowBreak calc(var(--run) * 2) linear forwards;
 }
 
 @keyframes nmRowFlow {
@@ -1345,22 +1348,25 @@ html:has(.nm) {
   }
 }
 
+/* перша половина — струм іде (за той самий --run), друга — обрив і два спалахи */
 @keyframes nmRowBreak {
   0% {
     transform: scaleX(0);
     opacity: 1;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
-  35% {
+  50% {
     transform: scaleX(0.42);
     opacity: 1;
   }
-  45% {
+  62% {
+    transform: scaleX(0.42);
     opacity: 0.2;
   }
-  55% {
+  74% {
     opacity: 1;
   }
-  65% {
+  86% {
     opacity: 0.15;
   }
   100% {
@@ -1386,7 +1392,7 @@ html:has(.nm) {
 .nm .ver.ok::before {
   background: var(--grass);
   box-shadow: 0 0 8px rgba(184, 202, 74, 0.9);
-  animation: nmRowFlow 0.5s cubic-bezier(0.5, 0, 0.3, 1) 0.4s forwards;
+  animation: nmRowFlow var(--run) var(--ease-run) var(--run) forwards;
 }
 
 /* хибна: верхня лінія плашки — мертвий іржавий пунктир */
@@ -1397,12 +1403,33 @@ html:has(.nm) {
 }
 
 /* лампочка на плашці спалахує, коли струм дійшов */
-.nm .ver.ok .free.verArt img {
-  animation: nmLightOn 0.6s ease-out 0.7s both;
+/* струм пробіг рядком (--run) і верхом плашки (ще --run) — лампочка праворуч
+   спалахує саме тоді, й тієї ж миті шнур отримує поштовх */
+.nm .ver.ok .free.verArt img,
+.nm .ver.ok .free.verArt::after {
+  animation: nmLightOn 0.5s ease-out calc(var(--run) * 2) both;
 }
 
-.nm .ver.ok .free.verArt::after {
-  animation: nmLightOn 0.6s ease-out 0.7s both;
+.nm .ver.ok .free.verArt.hang {
+  animation: nmKick 1.4s ease-out calc(var(--run) * 2) both;
+}
+
+@keyframes nmKick {
+  0% {
+    transform: none;
+  }
+  18% {
+    transform: rotate(7deg);
+  }
+  42% {
+    transform: rotate(-4deg);
+  }
+  66% {
+    transform: rotate(1.5deg);
+  }
+  100% {
+    transform: none;
+  }
 }
 
 @keyframes nmLightOn {
@@ -1417,5 +1444,73 @@ html:has(.nm) {
   }
   100% {
     opacity: 1;
+  }
+}
+
+/* ——— результат: одна плашка по центру, арт рівня всередині неї ——— */
+
+.nm .rgrid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 900px) {
+  .nm .rgrid {
+    grid-template-columns: minmax(0, 780px);
+    justify-content: center;
+  }
+  .nm .rside {
+    display: none;
+  }
+  .nm .rtop {
+    display: grid;
+  }
+}
+
+.nm .rtop {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 20px;
+}
+
+.nm .rtop .free.rArt {
+  justify-self: end;
+}
+
+/* лампочка висить на шнурі від верхнього краю плашки */
+.nm .rtop .free.rArt.hang {
+  --cord: 34px;
+  align-self: start;
+  /* шнур починається на верхній лінії плашки: вище на її відступ і рамку */
+  margin-top: calc(-22px - 1px);
+}
+
+.nm .rtop .free.lv-observer img {
+  width: 66px;
+}
+
+.nm .rtop .free.lv-hostage img {
+  width: 52px;
+}
+
+.nm .rtop .free.lv-analyst img {
+  width: 128px;
+}
+
+@media (min-width: 900px) {
+  .nm .rtop {
+    gap: 32px;
+  }
+  .nm .rtop .free.rArt.hang {
+    --cord: 40px;
+    margin-top: calc(-30px - 1px);
+  }
+  .nm .rtop .free.lv-observer img {
+    width: 120px;
+  }
+  .nm .rtop .free.lv-hostage img {
+    width: 92px;
+  }
+  .nm .rtop .free.lv-analyst img {
+    width: 240px;
   }
 }

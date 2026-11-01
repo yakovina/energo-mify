@@ -363,11 +363,11 @@ function ResultBody({ level, history, onRestart }: { level: Level; history?: boo
       <div className="col">
         <Head />
         <Grid history={shown} label={score !== undefined ? `Мережа · ${score}/${TOTAL}` : level.range} />
-        <div className={`rgrid${level.slug === "observer" ? " withHang" : ""}`}>
+        <div className="rgrid">
           <div className="rmain rise">
-            <p className="cap">{history ? UI.yourResult : `${UI.sharedResult} «${intro.title}»`}</p>
             <div className="rtop">
             <div>
+            <p className="cap">{history ? UI.yourResult : `${UI.sharedResult} «${intro.title}»`}</p>
             {score !== undefined ? (
               <p className="score">
                 <b>
@@ -384,8 +384,8 @@ function ResultBody({ level, history, onRestart }: { level: Level; history?: boo
             )}
             <h1 className="ltitle">{level.title}</h1>
             </div>
-            {/* на телефоні арт — збоку від балів і звання */}
-            {level.slug !== "observer" && <Free src={LEVEL_ART[level.slug]} warm={level.slug === "hostage"} className={`lv-${level.slug} mobileOnly`} />}
+            {/* арт рівня — усередині плашки, праворуч від балів і звання; лампочка висить на її верхньому краї */}
+            <Free src={LEVEL_ART[level.slug]} warm={level.slug === "hostage"} hang={level.slug === "observer"} className={`lv-${level.slug} rArt`} />
             </div>
             <p className="ldesc">{level.description}</p>
             {history ? (
@@ -410,11 +410,7 @@ function ResultBody({ level, history, onRestart }: { level: Level; history?: boo
               </a>
             )}
           </div>
-          <aside className="rside">
-            {level.slug !== "observer" && <Free src={LEVEL_ART[level.slug]} warm={level.slug === "hostage"} className={`lv-${level.slug}`} />}
-          </aside>
-          {/* «Уважний спостерігач»: лампочка висить на шнурі, прив'язаному до лінії мережі над нею */}
-          {level.slug === "observer" && <Free src={ART.bulb} hang className="lv-observer onGrid" />}
+
         </div>
       </div>
       <Ground night={level.slug === "hostage"} />
