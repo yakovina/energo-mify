@@ -244,14 +244,16 @@ function setupStats_(ss) {
   // графіки — праворуч від таблиць
   sh.insertChart(sh.newChart().asPieChart()
     .addRange(sh.getRange(rLv0, 1, LEVELS.length, 2))
-    .setPosition(rLvHead, 8, 0, 0)
+    .setPosition(4, 8, 0, 0) // праворуч угорі, рядки 4–16
+    .setOption('width', 440).setOption('height', 290)
     .setOption('title', 'Рівні')
     .setOption('colors', ['#b5531f', '#f8e840', '#8aa23a'])
     .setOption('legend', { position: 'right' })
     .build());
   sh.insertChart(sh.newChart().asColumnChart()
     .addRange(sh.getRange(rSc0, 1, 9, 2))
-    .setPosition(rScHead, 8, 0, 0)
+    .setPosition(19, 8, 0, 0) // під першим графіком, рядки 19–31 — не накладаються
+    .setOption('width', 440).setOption('height', 290)
     .setOption('title', 'Розподіл балів')
     .setOption('colors', ['#5f74c4'])
     .setOption('legend', { position: 'none' })
