@@ -172,11 +172,11 @@ function setupStats_(ss) {
   row('');
 
   // ---------- бали ----------
-  var rScHead = head('Бали', 'Людей', 'Частка');
+  var rScHead = head('Бали (з 8)', 'Людей', 'Частка');
   var rSc0 = rows.length + 1;
   for (var s = 0; s <= 8; s++) {
     var r = rows.length + 1;
-    row(s + ' з 8', '=COUNTIFS(' + R('event') + ',"finish",' + R('score') + ',' + s + ',' + H + ')', pct('B' + r, 'B' + rFin));
+    row(String(s), '=COUNTIFS(' + R('event') + ',"finish",' + R('score') + ',' + s + ',' + H + ')', pct('B' + r, 'B' + rFin));
   }
   pcts.push('C' + rSc0 + ':C' + (rSc0 + 8));
   row('');
@@ -198,6 +198,8 @@ function setupStats_(ss) {
   row('Частки рівнів, балів і тверджень — від тих, хто дійшов до результату. Найоманливіший міф — твердження з найкоротшою зеленою шкалою.');
   row('Перевірочні проходження записуються з сайтом «test», тож щоб їх бачити, лиште сайт «*».');
 
+  // бали 0…8 — як текст: так графік бере їх підписами, а не окремою серією
+  sh.getRange(rSc0, 1, 9, 1).setNumberFormat('@');
   sh.getRange(1, 1, rows.length, 6).setValues(rows);
 
   // ---------- оформлення ----------
