@@ -927,9 +927,7 @@ html:has(.nm) {
   width: 118px;
 }
 
-.nm .ground:has(img) {
-  margin-top: 170px;
-}
+
 
 /* на нічних пагорбах («Заручник») — сцена в сутінках */
 .nm .ground.night img {
@@ -946,44 +944,7 @@ html:has(.nm) {
   .nm .ground .plant {
     width: 210px;
   }
-  .nm .ground:has(img) {
-    margin-top: 260px;
-  }
-}
 
-/* ——— ілюстрація твердження ——— */
-
-.nm .qside {
-  display: flex;
-  justify-content: flex-start;
-  order: -1;
-}
-
-.nm .qside.scene .plate {
-  width: min(100%, 300px);
-}
-
-.nm .qside.obj .free img {
-  width: auto;
-  height: 120px;
-  filter: none;
-}
-
-@media (min-width: 900px) {
-  .nm .qside {
-    order: 0;
-    justify-content: center;
-    align-items: center;
-    min-height: 380px;
-  }
-  .nm .qside.scene .plate {
-    width: 100%;
-  }
-  .nm .qside.obj .free img {
-    height: 300px;
-    max-width: 100%;
-    object-fit: contain;
-  }
 }
 
 /* ——— висить на шнурі: шнур угору від цоколя, легке гойдання ——— */
@@ -1037,44 +998,168 @@ html:has(.nm) {
   align-self: start;
 }
 
-/* ——— вердикт: маленька лампочка (висить) або свічка — праворуч, текст обтікає ——— */
 
-.nm .ver {
-  display: block;
+/* ——— твердження: одна колонка посередині ——— */
+
+@media (min-width: 900px) {
+  .nm .qgrid {
+    grid-template-columns: minmax(0, 760px);
+    justify-content: center;
+  }
 }
 
-.nm .ver .free.verArt {
-  float: right;
-  margin: 0 0 8px 16px;
-  display: block;
+/* замість цифр 1 і 2 — піксельний квадратик-«перемикач», що заповнюється під курсором */
+.nm .opt .box {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--line-2);
+  background: var(--bg-2);
+  transition: background-color 0.15s, border-color 0.15s;
 }
 
-.nm .ver .free.verArt img {
-  width: 44px;
+.nm .opt:not([aria-disabled]):hover .box {
+  border-color: var(--text);
+  background: var(--amber);
 }
 
-.nm .ver .free.verArt.lv-hostage img {
-  width: 34px;
-}
+/* ——— плашки для тексту: світла картка з тонкою лінією й жорсткою піксельною тінню ——— */
 
-.nm .ver .free.verArt.hang {
-  --cord: 26px;
-  margin-top: -26px;
-}
-
-.nm .ver .cta {
-  clear: both;
-  margin-top: 20px;
+.nm .ver,
+.nm .rmain {
+  position: relative;
+  padding: 22px 20px 22px;
+  background: rgba(247, 248, 253, 0.94);
+  border: 1px solid var(--line);
+  box-shadow: 4px 4px 0 var(--cloud);
 }
 
 @media (min-width: 900px) {
-  .nm .ver .free.verArt {
-    display: block;
+  .nm .ver,
+  .nm .rmain {
+    padding: 30px 32px 32px;
   }
+}
+
+.nm .ver {
+  display: block;
+  margin-top: 34px;
+}
+
+.nm .ver .cta {
+  margin-top: 20px;
+}
+
+/* лампочка висить на шнурі, прив'язаному до верхнього краю плашки */
+.nm .ver .free.verArt {
+  position: absolute;
+  z-index: 2;
+  right: 20px;
+  top: 0;
+}
+
+.nm .ver .free.verArt.hang {
+  --cord: 22px;
+}
+
+.nm .ver .free.verArt img {
+  width: 46px;
+}
+
+/* місце під лампочку: текст обтікає її зліва */
+.nm .ver .hangSpace {
+  float: right;
+  width: 58px;
+  height: 108px;
+  margin: -22px -6px 4px 12px;
+}
+
+/* свічка стоїть на верхньому куті плашки */
+.nm .ver .free.verArt.lv-hostage {
+  top: auto;
+  bottom: calc(100% - 6px);
+}
+
+.nm .ver .free.verArt.lv-hostage img {
+  width: 30px;
+}
+
+@media (min-width: 900px) {
   .nm .ver .free.verArt img {
-    width: 56px;
+    width: 58px;
+  }
+  .nm .ver .hangSpace {
+    width: 72px;
+    height: 128px;
+    margin-top: -30px;
   }
   .nm .ver .free.verArt.lv-hostage img {
-    width: 42px;
+    width: 38px;
+  }
+}
+
+/* ——— результат: лампочка висить на лінії мережі ——— */
+
+.nm .rgrid {
+  position: relative;
+}
+
+.nm .free.onGrid {
+  --cord: 64px;
+  position: absolute;
+  z-index: 3;
+  right: 22px;
+  /* лінія мережі — на 12 px вище за верх блоку результату */
+  top: -12px;
+}
+
+.nm .free.onGrid img {
+  width: 62px;
+}
+
+.nm .rgrid.withHang .rtop,
+.nm .rgrid.withHang .rmain > .cap {
+  padding-right: 70px;
+}
+
+@media (min-width: 900px) {
+  .nm .free.onGrid {
+    --cord: 150px;
+    right: 15%;
+  }
+  .nm .free.onGrid img {
+    width: 170px;
+  }
+  .nm .rgrid.withHang .rtop,
+  .nm .rgrid.withHang .rmain > .cap {
+    padding-right: 0;
+  }
+}
+
+/* ——— футер-сцена: вітряк і градирні виростають з пагорбів і заходять під плашки ——— */
+
+.nm .col {
+  position: relative;
+  z-index: 2;
+}
+
+.nm .ground.scene {
+  z-index: 1;
+  margin-top: -110px;
+  height: calc(48px + 110px);
+  background-size: auto 48px;
+}
+
+.nm .ground.scene img {
+  bottom: 24px;
+}
+
+@media (min-width: 900px) {
+  .nm .ground.scene {
+    margin-top: -170px;
+    height: calc(64px + 170px);
+    background-size: auto 64px;
+  }
+  .nm .ground.scene img {
+    bottom: 34px;
   }
 }

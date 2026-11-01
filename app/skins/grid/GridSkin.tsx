@@ -50,18 +50,6 @@ const ART = {
 };
 const LEVEL_ART: Record<Level["slug"], string> = { hostage: ART.candle, observer: ART.bulb, analyst: ART.battery };
 
-/** Кожне твердження ілюструє одна з картинок ілюстраторки — за темою.
- *  Так у тесті видно всі вісім малюнків, а не лише обкладинку. */
-const Q_ART: Record<number, { src: string; kind: "scene" | "obj" }> = {
-  1: { src: ART.cover, kind: "scene" }, // експорт — уся енергосистема
-  2: { src: "/art/bulb.webp", kind: "obj" }, // рахунки — лампочка на гірлянді
-  3: { src: "/art/plant.webp", kind: "obj" }, // захист ТЕС — градирні
-  4: { src: ART.cover, kind: "scene" }, // синхронізація мережі
-  5: { src: ART.battery, kind: "obj" }, // промислові батареї
-  6: { src: "/art/windmill.webp", kind: "obj" }, // вітрові станції
-  7: { src: "/art/bulb.webp", kind: "obj" }, // розподіл живлення між регіонами
-  8: { src: ART.candle, kind: "obj" }, // графіки відключень
-};
 
 /** Піксельна стрілка в сітці 9×8 — як у малюнку. */
 const Arrow = () => (
@@ -72,15 +60,17 @@ const Arrow = () => (
 
 /** Пагорби ілюстраторки внизу сторінки, а на них — її вітряк і градирні з димом.
  *  scene=false — лише пагорби (на старті обкладинка вже показує і вітряк, і градирні). */
-function Ground({ night, scene = true }: { night?: boolean; scene?: boolean }) {
+function Ground({ night, scene = true, plant = true }: { night?: boolean; scene?: boolean; plant?: boolean }) {
   return (
-    <div className={`ground${night ? " night" : ""}`} aria-hidden>
+    <div className={`ground${night ? " night" : ""}${scene ? " scene" : ""}`} aria-hidden>
       {scene && (
         <>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img className="mill" src={asset("/art/windmill.webp")} alt="" decoding="async" />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="plant" src={asset("/art/plant.webp")} alt="" decoding="async" />
+          {plant && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img className="plant" src={asset("/art/plant.webp")} alt="" decoding="async" />
+          )}
         </>
       )}
     </div>
@@ -240,7 +230,7 @@ function Option({ v, q, picked, answered, onPick }: { v: Verdict; q: Question; p
       }}
     >
       <span>{VERDICT_LABEL(v)}</span>
-      <span className="hint">{mine ? UI.picked : answered ? (v === q.correct ? "✓" : "") : v ? "1" : "2"}</span>
+      {mine ? <span className="hint">{UI.picked}</span> : answered ? <span className="hint">{v === q.correct ? "✓" : ""}</span> : <span className="box" aria-hidden />}
     </button>
   );
 }
@@ -249,7 +239,6 @@ function Sheet({ quiz }: { quiz: QuizApi }) {
   const { screen, q, idx, total, picked, history } = quiz;
   const answered = screen === "reveal";
   const ok = picked === q.correct;
-  const qa = Q_ART[q.id] ?? Q_ART[1];
   const stRef = useRef<HTMLParagraphElement>(null);
   const verRef = useRef<HTMLElement>(null);
   const lock = useRef(false);
@@ -303,7 +292,9 @@ function Sheet({ quiz }: { quiz: QuizApi }) {
             </div>
             {answered && (
               <section className={`ver rise ${ok ? "ok" : "miss"}`} ref={verRef} tabIndex={-1} aria-live="polite">
+                {/* лампочка висить на шнурі з верхнього краю плашки, свічка стоїть на її куті */}
                 <Free src={ok ? ART.bulb : ART.candle} warm={!ok} hang={ok} className={`verArt ${ok ? "lv-observer" : "lv-hostage"}`} />
+                {ok && <span className="hangSpace" aria-hidden />}
                 <div>
                   <b className="vt">{ok ? UI.right : UI.wrong}</b>
                   <p className="expl">{q.explanation}</p>
@@ -323,13 +314,9 @@ function Sheet({ quiz }: { quiz: QuizApi }) {
               </section>
             )}
           </div>
-          {/* ілюстрація твердження: на телефоні — над номером, на десктопі — праворуч */}
-          <aside className={`qside ${qa.kind}`} aria-hidden>
-            {qa.kind === "scene" ? <Plate src={qa.src} /> : <Free src={qa.src} />}
-          </aside>
         </div>
       </div>
-      <Ground />
+      <Ground plant={idx % 2 === 1} />
     </main>
   );
 }
@@ -365,7 +352,7 @@ function ResultBody({ level, history, onRestart }: { level: Level; history?: boo
       <div className="col">
         <Head />
         <Grid history={shown} label={score !== undefined ? `Мережа · ${score}/${TOTAL}` : level.range} />
-        <div className="rgrid">
+        <div className={`rgrid${level.slug === "observer" ? " withHang" : ""}`}>
           <div className="rmain rise">
             <p className="cap">{history ? UI.yourResult : `${UI.sharedResult} «${intro.title}»`}</p>
             <div className="rtop">
@@ -387,7 +374,7 @@ function ResultBody({ level, history, onRestart }: { level: Level; history?: boo
             <h1 className="ltitle">{level.title}</h1>
             </div>
             {/* на телефоні арт — збоку від балів і звання */}
-            <Free src={LEVEL_ART[level.slug]} warm={level.slug === "hostage"} hang={level.slug === "observer"} className={`lv-${level.slug} mobileOnly`} />
+            {level.slug !== "observer" && <Free src={LEVEL_ART[level.slug]} warm={level.slug === "hostage"} className={`lv-${level.slug} mobileOnly`} />}
             </div>
             <p className="ldesc">{level.description}</p>
             {history ? (
@@ -413,8 +400,10 @@ function ResultBody({ level, history, onRestart }: { level: Level; history?: boo
             )}
           </div>
           <aside className="rside">
-            <Free src={LEVEL_ART[level.slug]} warm={level.slug === "hostage"} hang={level.slug === "observer"} className={`lv-${level.slug}`} />
+            {level.slug !== "observer" && <Free src={LEVEL_ART[level.slug]} warm={level.slug === "hostage"} className={`lv-${level.slug}`} />}
           </aside>
+          {/* «Уважний спостерігач»: лампочка висить на шнурі, прив'язаному до лінії мережі над нею */}
+          {level.slug === "observer" && <Free src={ART.bulb} hang className="lv-observer onGrid" />}
         </div>
       </div>
       <Ground night={level.slug === "hostage"} />
