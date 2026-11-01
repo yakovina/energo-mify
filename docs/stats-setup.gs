@@ -121,7 +121,7 @@ function setupStats_(ss) {
   if (sh.getName() !== 'Статистика') sh.setName('Статистика');
   // налаштування переживають перебудову
   var keepSite = '*', keepTest = 'ні';
-  if (String(sh.getRange('A5').getValue()).indexOf('сайту') >= 0) {
+  if (/[Сс]айт/.test(String(sh.getRange('A5').getValue()))) {
     keepSite = sh.getRange('B5').getValue() || '*';
     keepTest = sh.getRange('B6').getValue() === 'так' ? 'так' : 'ні';
   }
@@ -138,11 +138,11 @@ function setupStats_(ss) {
 
   // ---------- шапка й налаштування ----------
   row('Міфи про українську енергетику — статистика');
-  var rLast = row('Остання відповідь (зведення оновлюється саме)', '=IFERROR(MAX(' + src + 'A:A),"")');
+  var rLast = row('Остання відповідь', '=IFERROR(MAX(' + src + 'A:A),"")');
   row('');
   head('Налаштування', '');
-  var rSite = row('Рахувати проходження з сайту (* — з усіх)', keepSite);
-  var rTest = row('Рахувати перевірочні проходження (адреса з ?test)', keepTest);
+  var rSite = row('Сайт (* — усі)', keepSite);
+  var rTest = row('Рахувати перевірочні (?test)', keepTest);
   row('');
   var SITE = '$B$' + rSite, TEST = '$B$' + rTest;
   // фільтр: сайт + (перевірочні рахуємо лише якщо так обрано)
@@ -158,7 +158,7 @@ function setupStats_(ss) {
   var rDrop = row('Кинули на півдорозі', '=MAX(0,B' + rStart + '-B' + rFin + ')', pct('B' + (rFin + 1), 'B' + rStart));
   pcts.push('C' + rFin + ':C' + rDrop);
   var rAvg = row('Середній бал (з 8)', '=IFERROR(ROUND(AVERAGEIFS(' + R('score') + ',' + R('event') + ',"finish",' + H + '),1),"—")');
-  row('Перевірочних проходжень (?test) усього', '=COUNTIFS(' + R('event') + ',"start",' + R('host') + ',"test")');
+  row('Перевірочних (?test) усього', '=COUNTIFS(' + R('event') + ',"start",' + R('host') + ',"test")');
   row('');
 
   // ---------- рівні ----------
