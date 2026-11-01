@@ -132,8 +132,8 @@
 
 .nm .grid {
   position: relative;
-  height: 40px;
-  margin: 4px 5px 0;
+  height: 52px;
+  margin: 8px 5px 0;
 }
 
 /* лінія 1 px і доріжка для імпульсу: імпульс обрізається її краями, вузли — ні */
@@ -141,7 +141,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: 26px;
+  top: 34px;
   height: 5px;
   overflow: hidden;
 }
@@ -175,7 +175,7 @@
 /* підстанція — піксельний квадрат 10 px з рамкою 2 px */
 .nm .node {
   position: absolute;
-  top: 23px;
+  top: 31px;
   width: 10px;
   height: 10px;
   transform: translateX(-50%);
@@ -411,7 +411,7 @@
 .nm .qgrid {
   display: grid;
   gap: 40px;
-  padding-top: 26px;
+  padding-top: 36px;
 }
 
 
@@ -420,7 +420,7 @@
   .nm .qgrid {
     grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
     gap: 72px;
-    padding-top: 40px;
+    padding-top: 56px;
   }
   .nm .qside {
     display: block;
@@ -476,7 +476,7 @@
   justify-content: space-between;
   width: 100%;
   min-height: 64px;
-  padding: 0 4px;
+  padding: 0 12px 0 4px;
   border: 0;
   border-bottom: 1px solid var(--line);
   background: none;
@@ -529,7 +529,7 @@
 
 .nm .opt.good {
   background: rgba(184, 202, 74, 0.45);
-  padding-left: 16px;
+  padding: 0 16px;
 }
 
 .nm .opt.good .hint {
@@ -547,7 +547,7 @@
 }
 
 .nm .opt.bad {
-  padding-left: 16px;
+  padding: 0 16px;
   background: rgba(181, 83, 31, 0.1);
 }
 
@@ -632,7 +632,7 @@
 .nm .rgrid {
   display: grid;
   gap: 32px;
-  padding-top: 30px;
+  padding-top: 38px;
 }
 
 .nm .rside {
@@ -643,7 +643,7 @@
   .nm .rgrid {
     grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
     gap: 72px;
-    padding-top: 48px;
+    padding-top: 56px;
   }
   .nm .rside {
     order: 0;
@@ -1108,8 +1108,8 @@ html:has(.nm) {
   position: absolute;
   z-index: 3;
   right: 22px;
-  /* лінія мережі — на 12 px вище за верх блоку результату */
-  top: -12px;
+  /* лінія мережі — на 16 px вище за верх блоку результату */
+  top: -16px;
 }
 
 .nm .free.onGrid img {
