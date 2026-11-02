@@ -138,7 +138,7 @@ function setupStats_(ss) {
 
   // ---------- шапка й налаштування ----------
   row('Міфи про українську енергетику — статистика');
-  var rLast = row('Остання відповідь', '=IFERROR(MAX(' + src + 'A:A),"")');
+  var rLast = row('Остання відповідь', '=IF(COUNT(' + src + 'A:A),MAX(' + src + 'A:A),"ще нема")');
   row('');
   head('Налаштування', '');
   var rSite = row('Сайт (* — усі)', keepSite);
