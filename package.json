@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack && node scripts/fix-basepath.mjs",
-    "build:partner": "NEXT_PUBLIC_BASE_PATH=/partner/energo-mify NEXT_PUBLIC_SITE_URL=https://hmarochos.kiev.ua/partner/energo-mify npm run build",
+    "build:partner": "NEXT_PUBLIC_BASE_PATH=/partner/energy NEXT_PUBLIC_SITE_URL=https://hmarochos.kiev.ua/partner/energy npm run build",
     "deploy": "bash scripts/deploy.sh",
     "og": "node scripts/render-og.mjs",
     "lint": "eslint"
