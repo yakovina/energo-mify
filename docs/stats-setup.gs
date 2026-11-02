@@ -285,8 +285,11 @@ function clearTestData() {
     }
   }
   FormApp.openByUrl(sh.getFormUrl()).deleteAllResponses();
-  (ss.getSheetByName('Статистика') || ss.getSheetByName('stats')).getRange('B5').setValue('*hmarochos.kiev.ua');
-  Logger.log('Видалено тестових записів: ' + hosts.length + '. Фільтр зведення: *hmarochos.kiev.ua');
+  var st = ss.getSheetByName('Статистика') || ss.getSheetByName('stats');
+  st.getRange('B5').setValue('*hmarochos.kiev.ua');
+  st.getRange('B6').setValue('ні');
+  setupStats_(ss);
+  Logger.log('Видалено тестових записів: ' + hosts.length + '. Фільтр зведення: *hmarochos.kiev.ua, перевірочні не рахуються');
 }
 
 /** Вивести в журнал блок FORM для app/stats.ts — для вже створеної форми (і перебудувати «stats»). */
